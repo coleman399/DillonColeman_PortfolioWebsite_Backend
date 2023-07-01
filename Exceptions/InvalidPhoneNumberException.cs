@@ -1,10 +1,8 @@
 ﻿namespace PortfolioWebsite_Backend.Exceptions
 {
     [Serializable]
-    public class InvalidPhoneNumberException : Exception
+    public class InvalidPhoneNumberException : FormatException
     {
-        public InvalidPhoneNumberException(string invalidPhoneNumber) : base("Invalid Phone Number : " + invalidPhoneNumber)
-        {
-        }
+        public InvalidPhoneNumberException(string invalidPhoneNumber) : base("Invalid Phone Number : " + invalidPhoneNumber) { }
     }
 }

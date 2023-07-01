@@ -1,10 +1,9 @@
 ﻿namespace PortfolioWebsite_Backend.Exceptions
 {
     [Serializable]
-    public class InvalidEmailException : Exception
+    public class InvalidEmailException : FormatException
     {
-        public InvalidEmailException(string invalidEmail) : base("Invalid Email : " + invalidEmail)
-        {
-        }
+        public InvalidEmailException(string invalidEmail) : base("Invalid Email : " + invalidEmail) { }
     }
 }
+

@@ -11,24 +11,6 @@
             _context = context;
         }
 
-        public async Task<ContactServiceResponse<List<GetContactDto>>> AddContact(AddContactDto newContact)
-        {
-            if (RegexFilters.IsValidEmail(newContact.Email!) == false)
-            {
-                throw new InvalidEmailException(newContact.Email!);
-            }
-            if (RegexFilters.IsValidPhoneNum(newContact.Phone!) == false)
-            {
-                throw new InvalidPhoneNumberException(newContact.Phone!);
-            }
-            var serviceResponse = new ContactServiceResponse<List<GetContactDto>>();
-            _context.Contacts.Add(_mapper.Map<Contact>(newContact));
-            _context.SaveChanges();
-            var dbContacts = await _context.Contacts.ToListAsync();
-            serviceResponse.Data = dbContacts.Select(c => _mapper.Map<GetContactDto>(c)).ToList();
-            return serviceResponse;
-        }
-
         public async Task<ContactServiceResponse<List<GetContactDto>>> GetContacts()
         {
             var dbContacts = await _context.Contacts.ToListAsync();
@@ -46,8 +28,40 @@
             return serviceResponse;
         }
 
+        public async Task<ContactServiceResponse<GetContactDto>> GetContactByEmail(string email)
+        {
+            var dbContacts = await _context.Contacts.ToListAsync();
+            var serviceResponse = new ContactServiceResponse<GetContactDto>();
+            var foundContact = dbContacts.FirstOrDefault(c => c.Email == email)!;
+            serviceResponse.Data = _mapper.Map<GetContactDto>(foundContact);
+            return serviceResponse;
+        }
+
+        public async Task<ContactServiceResponse<GetContactDto>> GetContactByName(string name)
+        {
+            var dbContacts = await _context.Contacts.ToListAsync();
+            var serviceResponse = new ContactServiceResponse<GetContactDto>();
+            var foundContact = dbContacts.FirstOrDefault(c => c.Name == name)!;
+            serviceResponse.Data = _mapper.Map<GetContactDto>(foundContact);
+            return serviceResponse;
+        }
+
+        public async Task<ContactServiceResponse<List<GetContactDto>>> AddContact(AddContactDto newContact)
+        {
+            if (!RegexFilters.IsValidEmail(newContact.Email!)) throw new InvalidEmailException(newContact.Email!);
+            if (!RegexFilters.IsValidPhoneNum(newContact.Phone!)) throw new InvalidPhoneNumberException(newContact.Phone!); ;
+            var serviceResponse = new ContactServiceResponse<List<GetContactDto>>();
+            _context.Contacts.Add(_mapper.Map<Contact>(newContact));
+            _context.SaveChanges();
+            var dbContacts = await _context.Contacts.ToListAsync();
+            serviceResponse.Data = dbContacts.Select(c => _mapper.Map<GetContactDto>(c)).ToList();
+            return serviceResponse;
+        }
+
         public async Task<ContactServiceResponse<GetContactDto>> UpdateContact(int id, UpdateContactDto contact)
         {
+            if (!RegexFilters.IsValidEmail(contact.Email!)) throw new InvalidEmailException(contact.Email!);
+            if (!RegexFilters.IsValidPhoneNum(contact.Phone!)) throw new InvalidPhoneNumberException(contact.Phone!); ;
             Contact updatedContact = _context.Contacts.FirstOrDefault(c => c.Id == id)! ?? throw new ContactNotFoundException(id);
             _context.Contacts.Update(_mapper.Map<Contact>(contact));
             _context.SaveChanges();

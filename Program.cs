@@ -9,7 +9,10 @@ global using System.Text.Json.Serialization;
 using DillonColeman_PortfolioWebsite;
 using System.Reflection;
 
+
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 
