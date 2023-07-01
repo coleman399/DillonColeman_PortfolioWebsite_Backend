@@ -1,0 +1,8 @@
+﻿prep database for migrations: dotnet ef migrations add InitialCreate
++// apply migrations to database: dotnet ef database update
+
+dotnet build
+
+dotnet watch run
+
+dotnet ef database update
