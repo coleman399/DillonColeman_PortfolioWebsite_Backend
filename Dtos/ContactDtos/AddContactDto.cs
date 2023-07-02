@@ -7,6 +7,6 @@
         public string? Phone { get; set; }
         public string? Message { get; set; }
         [JsonIgnore]
-        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

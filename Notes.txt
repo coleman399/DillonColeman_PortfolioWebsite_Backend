@@ -1,8 +1,17 @@
-﻿prep database for migrations: dotnet ef migrations add InitialCreate
-+// apply migrations to database: dotnet ef database update
+﻿To run the project, navigate to the project folder and run the following commands:
 
-dotnet build
+dotnet build DillonColeman_PortfolioWebsite.sln
 
-dotnet watch run
+dotnet watch run DillonColeman_PortfolioWebsite.sln
+
+To migrate the database, navigate to the project folder and run the following commands:
+
+dotnet ef migrations add <DescriptiveName>
 
 dotnet ef database update
+
+To delete the database, navigate to the project folder and run the following commands:
+
+dotnet ef database update 0
+
+dotnet ef migrations remove

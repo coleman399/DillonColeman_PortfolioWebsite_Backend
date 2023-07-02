@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace PortfolioWebsite_Backend.Migrations
 {
     [DbContext(typeof(ContactContext))]
-    [Migration("20230701190616_InitialCreate")]
+    [Migration("20230701221427_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

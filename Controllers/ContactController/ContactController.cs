@@ -17,68 +17,80 @@ namespace DillonColeman_PortfolioWebsite.Controllers.ContactController
         }
 
         // GET: api/<ContactController>
-        [HttpGet]
+        [HttpGet("getContacts")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ContactServiceResponse<List<GetContactDto>>>> GetContacts()
         {
-            return Ok(await _contactService.GetContacts());
+            ContactServiceResponse<List<GetContactDto>> result = await _contactService.GetContacts();
+            if (result.Success == false) return BadRequest(result);
+            return Ok(result);
         }
 
         // GET api/<ContactController>/{id}
-        [HttpGet("{id}")]
+        [HttpGet("getById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> GetContactById(int id)
         {
-            return Ok(await _contactService.GetContactById(id));
+            ContactServiceResponse<GetContactDto> result = await _contactService.GetContactById(id);
+            if (result.Success == false) return BadRequest(result);
+            return Ok(result);
         }
 
         // GET api/<ContactController>/{email}
-        [HttpGet("{email}")]
+        [HttpGet("getbyEmail")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> GetContactByEmail(string email)
         {
-            return Ok(await _contactService.GetContactByEmail(email));
+            ContactServiceResponse<GetContactDto> result = await _contactService.GetContactByEmail(email);
+            if (result.Success == false) return BadRequest(result);
+            return Ok(result);
         }
 
         // GET api/<ContactController>/{name}
-        [HttpGet("{name}")]
+        [HttpGet("getbyName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> GetContactByName(string name)
         {
-            return Ok(await _contactService.GetContactByName(name));
+            ContactServiceResponse<GetContactDto> result = await _contactService.GetContactByName(name);
+            if (result.Success == false) return BadRequest(result);
+            return Ok(result);
         }
 
         // POST api/<ContactController>
-        [HttpPost]
+        [HttpPost("addContact")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> PostContact([FromBody] AddContactDto contact)
         {
-            return Created("", await _contactService.AddContact(contact));
+            ContactServiceResponse<List<GetContactDto>> result = await _contactService.AddContact(contact);
+            if (result.Success == false) return BadRequest(result);
+            return Created("", result);
         }
 
         // PUT api/<ContactController>/{id}
-        [HttpPut("{id}")]
+        [HttpPut("updateContact")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> PutContact(int id, [FromBody] UpdateContactDto contact)
         {
-            return Ok(await _contactService.UpdateContact(id, contact));
+            ContactServiceResponse<GetContactDto> result = await _contactService.UpdateContact(id, contact);
+            if (result.Success == false) return BadRequest(result);
+            return Ok(result);
         }
 
         // DELETE api/<ContactController>/{id}
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteContact")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ContactServiceResponse<List<GetContactDto>>>> DeleteContact(int id)
         {
-            return Ok(await _contactService.DeleteContact(id));
+            ContactServiceResponse<List<GetContactDto>> result = await _contactService.DeleteContact(id);
+            if (result.Success == false) return BadRequest(result);
+            return Ok(result);
         }
     }
 }
