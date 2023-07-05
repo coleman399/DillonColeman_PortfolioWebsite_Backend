@@ -29,7 +29,7 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
 
         // GET api/<ContactController>/{id}
         // Only admin should be able to search by id
-        [HttpGet("getContactById"), Authorize(Roles = "Admin")]
+        [HttpGet("getContactById"), Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> GetContactById(int id)
@@ -42,19 +42,21 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
 
         // GET api/<ContactController>/{email}
         // Admin should be able to get all contacts, user should only be able to get their own contacts
-        [HttpGet("geContactByEmail"), Authorize(Roles = "Admin, User")]
+        [HttpGet("geContactsByEmail"), Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> GetContactByEmail(string email)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<ContactServiceResponse<List<GetContactDto>>>> GetContactsByEmail(string email)
         {
-            ContactServiceResponse<GetContactDto> result = await _contactService.GetContactByEmail(email);
+            ContactServiceResponse<List<GetContactDto>> result = await _contactService.GetContactsByEmail(email);
             if (result.Success == false) return BadRequest(result);
+            if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
         }
 
         // GET api/<ContactController>/{name}
         // Only admin should be able to search by name
-        [HttpGet("getContactsByName")]
+        [HttpGet("getContactsByName"), Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ContactServiceResponse<List<GetContactDto>>>> GetContactsByName(string name)
@@ -78,25 +80,29 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
 
         // PUT api/<ContactController>/{id}
         // Admin should be able to update any contact, user should only be able to update their own contacts
-        [HttpPut("updateContact")]
+        [HttpPut("updateContact"), Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> PutContact(int id, [FromBody] UpdateContactDto contact)
         {
             ContactServiceResponse<GetContactDto> result = await _contactService.UpdateContact(id, contact);
             if (result.Success == false) return BadRequest(result);
+            if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
         }
 
         // DELETE api/<ContactController>/{id}
         // Admin should be able to delete any contact, user should only be able to delete their own contacts
-        [HttpDelete("deleteContact")]
+        [HttpDelete("deleteContact"), Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ContactServiceResponse<DeleteContactDto>>> DeleteContact(int id)
         {
             ContactServiceResponse<DeleteContactDto> result = await _contactService.DeleteContact(id);
             if (result.Success == false) return BadRequest(result);
+            if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
         }
     }

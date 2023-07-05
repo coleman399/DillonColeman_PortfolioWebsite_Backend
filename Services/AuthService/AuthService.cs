@@ -33,7 +33,7 @@ namespace PortfolioWebsite_Backend.Services.AuthService
             {
                 serviceResponse.Success = false;
                 serviceResponse.Data = null;
-                serviceResponse.Message = exception.Message + " " + exception.InnerException + " " + exception;
+                serviceResponse.Message = exception.Message + " " + exception;
                 return serviceResponse;
             }
         }
@@ -90,15 +90,14 @@ namespace PortfolioWebsite_Backend.Services.AuthService
             {
                 serviceResponse.Success = false;
                 serviceResponse.Data = null;
-                serviceResponse.Message = exception.Message + " " + exception.InnerException + " " + exception;
+                serviceResponse.Message = exception.Message + " " + exception;
                 return serviceResponse;
             }
         }
 
         public async Task<UserServiceResponse<GetLoggedInUserDto>> LoginUser(LoginUserDto loginUser)
         {
-            // need to set the serviceResponse.Data and serviceResponse.Success to false
-            var serviceResponse = new UserServiceResponse<GetLoggedInUserDto>();
+            var serviceResponse = new UserServiceResponse<GetLoggedInUserDto>() { Success = false, Data = null };
             try
             {
                 bool userFound = false;
@@ -118,7 +117,7 @@ namespace PortfolioWebsite_Backend.Services.AuthService
                         }
                     }
                 });
-                // Need to change this to it does not tell the user if the email or username is incorrect
+                // Need to change this to it does not tell the user if the email or user name is incorrect
                 if (userFound && userVerified)
                 {
                     serviceResponse.Message = "User logged in successfully.";
@@ -137,9 +136,7 @@ namespace PortfolioWebsite_Backend.Services.AuthService
             }
             catch (Exception exception)
             {
-                serviceResponse.Success = false;
-                serviceResponse.Data = null;
-                serviceResponse.Message = exception.Message + " " + exception.InnerException + " " + exception;
+                serviceResponse.Message = exception.Message + " " + exception;
                 return serviceResponse;
             }
         }

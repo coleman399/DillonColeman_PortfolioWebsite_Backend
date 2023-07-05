@@ -23,6 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables().AddUserSecrets(Assembly.GetExecutingAssembly(), true);
 builder.Services.AddDbContext<UserContext>();
 builder.Services.AddDbContext<ContactContext>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
