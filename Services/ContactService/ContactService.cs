@@ -26,12 +26,12 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                     var dbContacts = await _context.Contacts.ToListAsync();
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()))
                     {
-                        //  Return all contacts
+                        // Update response with all contacts
                         serviceResponse.Data = dbContacts.Select(c => _mapper.Map<GetContactDto>(c)).ToList();
                     }
                     else
                     {
-                        // Return all contacts that share the same email as the user
+                        // Update response with all contacts that share the same email as the user
                         serviceResponse.Data = dbContacts.Select(c => _mapper.Map<GetContactDto>(c)).Where(c => c.Email == _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Email)).ToList();
                     }
                 }

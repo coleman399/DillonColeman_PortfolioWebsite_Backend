@@ -32,10 +32,12 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
         [HttpGet("getContactById"), Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> GetContactById(int id)
         {
             ContactServiceResponse<GetContactDto> result = await _contactService.GetContactById(id);
             if (result.Success == false) return BadRequest(result);
+            if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
         }
 
