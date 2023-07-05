@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace DillonColeman_PortfolioWebsite.Controllers.ContactController
+namespace PortfolioWebsite_Backend.Controllers.ContactController
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -17,7 +16,8 @@ namespace DillonColeman_PortfolioWebsite.Controllers.ContactController
         }
 
         // GET: api/<ContactController>
-        [HttpGet("getContacts")]
+        // Admin should be able to see all contacts, user should only be able to see their own contacts
+        [HttpGet("getContacts"), Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ContactServiceResponse<List<GetContactDto>>>> GetContacts()
@@ -28,7 +28,8 @@ namespace DillonColeman_PortfolioWebsite.Controllers.ContactController
         }
 
         // GET api/<ContactController>/{id}
-        [HttpGet("getById")]
+        // Only admin should be able to search by id
+        [HttpGet("getContactById"), Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> GetContactById(int id)
@@ -38,8 +39,10 @@ namespace DillonColeman_PortfolioWebsite.Controllers.ContactController
             return Ok(result);
         }
 
+
         // GET api/<ContactController>/{email}
-        [HttpGet("getbyEmail")]
+        // Admin should be able to get all contacts, user should only be able to get their own contacts
+        [HttpGet("geContactByEmail"), Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> GetContactByEmail(string email)
@@ -50,28 +53,31 @@ namespace DillonColeman_PortfolioWebsite.Controllers.ContactController
         }
 
         // GET api/<ContactController>/{name}
-        [HttpGet("getbyName")]
+        // Only admin should be able to search by name
+        [HttpGet("getContactsByName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> GetContactByName(string name)
+        public async Task<ActionResult<ContactServiceResponse<List<GetContactDto>>>> GetContactsByName(string name)
         {
-            ContactServiceResponse<GetContactDto> result = await _contactService.GetContactByName(name);
+            ContactServiceResponse<List<GetContactDto>> result = await _contactService.GetContactsWithSimilarNameTo(name);
             if (result.Success == false) return BadRequest(result);
             return Ok(result);
         }
 
-        // POST api/<ContactController>
-        [HttpPost("addContact")]
+        // POST api/<ContactController> 
+        // Anyone can add a contact
+        [HttpPost("addContact"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> PostContact([FromBody] AddContactDto contact)
         {
-            ContactServiceResponse<List<GetContactDto>> result = await _contactService.AddContact(contact);
+            ContactServiceResponse<GetContactDto> result = await _contactService.AddContact(contact);
             if (result.Success == false) return BadRequest(result);
             return Created("", result);
         }
 
         // PUT api/<ContactController>/{id}
+        // Admin should be able to update any contact, user should only be able to update their own contacts
         [HttpPut("updateContact")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -83,12 +89,13 @@ namespace DillonColeman_PortfolioWebsite.Controllers.ContactController
         }
 
         // DELETE api/<ContactController>/{id}
+        // Admin should be able to delete any contact, user should only be able to delete their own contacts
         [HttpDelete("deleteContact")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ContactServiceResponse<List<GetContactDto>>>> DeleteContact(int id)
+        public async Task<ActionResult<ContactServiceResponse<DeleteContactDto>>> DeleteContact(int id)
         {
-            ContactServiceResponse<List<GetContactDto>> result = await _contactService.DeleteContact(id);
+            ContactServiceResponse<DeleteContactDto> result = await _contactService.DeleteContact(id);
             if (result.Success == false) return BadRequest(result);
             return Ok(result);
         }

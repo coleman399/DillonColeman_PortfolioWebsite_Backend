@@ -1,4 +1,4 @@
-﻿namespace DillonColeman_PortfolioWebsite.Models.ContactModel
+﻿namespace PortfolioWebsite_Backend.Models.ContactModel
 {
     public class ContactServiceResponse<T>
     {

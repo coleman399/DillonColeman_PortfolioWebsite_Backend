@@ -1,7 +1,12 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Models",
+    "\\Models\\ContactModel",
+    "\\Models\\UserModel",
+    "\\Services",
+    "\\Services\\UserService"
   ],
-  "SelectedNode": "\\DillonColeman_PortfolioWebsite.sln",
+  "SelectedNode": "\\Program.cs",
   "PreviewInSolutionExplorer": false
 }

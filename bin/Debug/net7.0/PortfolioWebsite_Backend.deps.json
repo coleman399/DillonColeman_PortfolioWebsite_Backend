@@ -9,11 +9,14 @@
       "PortfolioWebsite_Backend/1.0.0": {
         "dependencies": {
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.1",
+          "BCrypt.Net-Next": "4.0.3",
+          "F23.StringSimilarity": "5.1.0",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.8",
           "Microsoft.AspNetCore.OpenApi": "7.0.8",
           "Microsoft.EntityFrameworkCore": "7.0.8",
           "Microsoft.EntityFrameworkCore.Design": "7.0.8",
-          "Microsoft.EntityFrameworkCore.SqlServer": "7.0.7",
-          "Microsoft.EntityFrameworkCore.Tools": "7.0.7",
+          "Microsoft.EntityFrameworkCore.SqlServer": "7.0.8",
+          "Microsoft.EntityFrameworkCore.Tools": "7.0.8",
           "Microsoft.Extensions.Configuration.UserSecrets": "7.0.0",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "7.0.7",
           "MySql.Data": "8.0.33",
@@ -80,6 +83,25 @@
           "lib/netstandard2.0/Azure.Identity.dll": {
             "assemblyVersion": "1.6.0.0",
             "fileVersion": "1.600.22.20503"
+          }
+        }
+      },
+      "BCrypt.Net-Next/4.0.3": {
+        "runtime": {
+          "lib/net6.0/BCrypt.Net-Next.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0"
+          }
+        }
+      },
+      "F23.StringSimilarity/5.1.0": {
+        "dependencies": {
+          "System.Memory": "4.5.5"
+        },
+        "runtime": {
+          "lib/netstandard2.0/F23.StringSimilarity.dll": {
+            "assemblyVersion": "5.1.0.0",
+            "fileVersion": "5.1.0.0"
           }
         }
       },
@@ -657,6 +679,17 @@
           "lib/net6.0/K4os.Hash.xxHash.dll": {
             "assemblyVersion": "1.0.8.0",
             "fileVersion": "1.0.8.0"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.JwtBearer/7.0.8": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.21.0"
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
+            "assemblyVersion": "7.0.8.0",
+            "fileVersion": "7.0.823.31807"
           }
         }
       },
@@ -1282,19 +1315,19 @@
           }
         }
       },
-      "Microsoft.EntityFrameworkCore.SqlServer/7.0.7": {
+      "Microsoft.EntityFrameworkCore.SqlServer/7.0.8": {
         "dependencies": {
           "Microsoft.Data.SqlClient": "5.0.2",
           "Microsoft.EntityFrameworkCore.Relational": "7.0.8"
         },
         "runtime": {
           "lib/net6.0/Microsoft.EntityFrameworkCore.SqlServer.dll": {
-            "assemblyVersion": "7.0.7.0",
-            "fileVersion": "7.0.723.25405"
+            "assemblyVersion": "7.0.8.0",
+            "fileVersion": "7.0.823.31802"
           }
         }
       },
-      "Microsoft.EntityFrameworkCore.Tools/7.0.7": {
+      "Microsoft.EntityFrameworkCore.Tools/7.0.8": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Design": "7.0.8"
         }
@@ -2794,6 +2827,20 @@
       "path": "azure.identity/1.6.0",
       "hashPath": "azure.identity.1.6.0.nupkg.sha512"
     },
+    "BCrypt.Net-Next/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-W+U9WvmZQgi5cX6FS5GDtDoPzUCV4LkBLkywq/kRZhuDwcbavOzcDAr3LXJFqHUi952Yj3LEYoWW0jbEUQChsA==",
+      "path": "bcrypt.net-next/4.0.3",
+      "hashPath": "bcrypt.net-next.4.0.3.nupkg.sha512"
+    },
+    "F23.StringSimilarity/5.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RcFtnxG3Pw/wBxQFZv65Wb9VZRLyjorw4rLPW0yqPXasINT3zBKz8cBzKRlESvXve4qrRyo/XSfYfYgmKs/lkg==",
+      "path": "f23.stringsimilarity/5.1.0",
+      "hashPath": "f23.stringsimilarity.5.1.0.nupkg.sha512"
+    },
     "Google.Protobuf/3.21.9": {
       "type": "package",
       "serviceable": true,
@@ -3172,6 +3219,13 @@
       "path": "k4os.hash.xxhash/1.0.8",
       "hashPath": "k4os.hash.xxhash.1.0.8.nupkg.sha512"
     },
+    "Microsoft.AspNetCore.Authentication.JwtBearer/7.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UWGvF86d2q90e1ync37Yg+yg2GRSeSh9y/Q5YRFw42YfzTDQd0X6somujDFVc9HWn6zVB7osSZnxHMW8BwoRSA==",
+      "path": "microsoft.aspnetcore.authentication.jwtbearer/7.0.8",
+      "hashPath": "microsoft.aspnetcore.authentication.jwtbearer.7.0.8.nupkg.sha512"
+    },
     "Microsoft.AspNetCore.OpenApi/7.0.8": {
       "type": "package",
       "serviceable": true,
@@ -3354,19 +3408,19 @@
       "path": "microsoft.entityframeworkcore.relational/7.0.8",
       "hashPath": "microsoft.entityframeworkcore.relational.7.0.8.nupkg.sha512"
     },
-    "Microsoft.EntityFrameworkCore.SqlServer/7.0.7": {
+    "Microsoft.EntityFrameworkCore.SqlServer/7.0.8": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-XkLuNg99Y0KHmEyygzsqCkqDHE0h3vfNNu3bTaWx8bX6nDaCmK9EWhtCrDKReMpztDKyjrIweuUz346rXk5mbQ==",
-      "path": "microsoft.entityframeworkcore.sqlserver/7.0.7",
-      "hashPath": "microsoft.entityframeworkcore.sqlserver.7.0.7.nupkg.sha512"
+      "sha512": "sha512-w4mGjE/3XvulWqpY6hOGR3Z0oKINuYebO+S6ccQSZDFGrz3xBmPg0EenEpfs8rqFWHM4125nqA1NLProsDgDCw==",
+      "path": "microsoft.entityframeworkcore.sqlserver/7.0.8",
+      "hashPath": "microsoft.entityframeworkcore.sqlserver.7.0.8.nupkg.sha512"
     },
-    "Microsoft.EntityFrameworkCore.Tools/7.0.7": {
+    "Microsoft.EntityFrameworkCore.Tools/7.0.8": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Q5iBac9t7Elrx5qnB0A4V1RlInZrmSYe+FlMdV887Cv+arZXKW80N0gydXJJ2ghD62PoDf4LL/7kJ/uc4GyJlg==",
-      "path": "microsoft.entityframeworkcore.tools/7.0.7",
-      "hashPath": "microsoft.entityframeworkcore.tools.7.0.7.nupkg.sha512"
+      "sha512": "sha512-98zo4OdBnPXYVD+Fl+a5ofsVLokd9hsp9W1D+VeuIowG0Cbxr2gQ9PqCIqOXxafl5ykKlbO+Bmn7lLRclMOq4Q==",
+      "path": "microsoft.entityframeworkcore.tools/7.0.8",
+      "hashPath": "microsoft.entityframeworkcore.tools.7.0.8.nupkg.sha512"
     },
     "Microsoft.Extensions.ApiDescription.Server/6.0.5": {
       "type": "package",

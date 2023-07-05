@@ -1,8 +1,16 @@
 ﻿To run the project, navigate to the project folder and run the following commands:
 
-dotnet build DillonColeman_PortfolioWebsite.sln
+dotnet build
 
-dotnet watch run DillonColeman_PortfolioWebsite.sln
+dotnet watch run
+
+or
+
+dotnet build <Solution>
+
+dotnet watch run <Solution>
+
+___________________________________________________________________________________________
 
 To migrate the database, navigate to the project folder and run the following commands:
 
@@ -10,8 +18,32 @@ dotnet ef migrations add <DescriptiveName>
 
 dotnet ef database update
 
+___________________________________________________________________________________________
+
 To delete the database, navigate to the project folder and run the following commands:
 
 dotnet ef database update 0
 
 dotnet ef migrations remove
+
+___________________________________________________________________________________________
+
+To migrate multiple dbContexts, navigate to the project folder and run the following commands:
+
+dotnet ef migrations add <DescriptiveName> --context <DbContextName>
+
+dotnet ef database update --context <DbContextName>
+
+Each dbContext has its own Migrations folder and its own snapshot file.
+
+___________________________________________________________________________________________
+
+To delete multiple dbContexts migrations, navigate to the project folder and run the following commands:
+
+To delete the database, navigate to the project folder and run the following commands:
+
+dotnet ef database update 0 --context <DbContextName>
+
+dotnet ef migrations remove --context <DbContextName>
+
+___________________________________________________________________________________________

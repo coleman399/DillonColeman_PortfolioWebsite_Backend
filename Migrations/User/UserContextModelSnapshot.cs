@@ -3,14 +3,14 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PortfolioWebsite_Backend.Models.ContactModel;
+using PortfolioWebsite_Backend.Models.UserModel;
 
 #nullable disable
 
-namespace PortfolioWebsite_Backend.Migrations
+namespace PortfolioWebsite_Backend.Migrations.User
 {
-    [DbContext(typeof(ContactContext))]
-    partial class ContactContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(UserContext))]
+    partial class UserContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -19,7 +19,7 @@ namespace PortfolioWebsite_Backend.Migrations
                 .HasAnnotation("ProductVersion", "7.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("PortfolioWebsite_Backend.Models.ContactModel.Contact", b =>
+            modelBuilder.Entity("PortfolioWebsite_Backend.Models.UserModel.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,27 +35,27 @@ namespace PortfolioWebsite_Backend.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("Message")
-                        .HasMaxLength(250)
-                        .HasColumnType("varchar(250)");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("Phone")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("UpdatedAt")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }

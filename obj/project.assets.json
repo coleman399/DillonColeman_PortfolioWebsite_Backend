@@ -75,6 +75,35 @@
           }
         }
       },
+      "BCrypt.Net-Next/4.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/BCrypt.Net-Next.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/BCrypt.Net-Next.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "F23.StringSimilarity/5.1.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Memory": "4.5.4"
+        },
+        "compile": {
+          "lib/netstandard2.0/F23.StringSimilarity.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/F23.StringSimilarity.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Google.Protobuf/3.21.9": {
         "type": "package",
         "compile": {
@@ -725,6 +754,25 @@
             "related": ".xml"
           }
         }
+      },
+      "Microsoft.AspNetCore.Authentication.JwtBearer/7.0.8": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.15.1"
+        },
+        "compile": {
+          "lib/net7.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
       },
       "Microsoft.AspNetCore.OpenApi/7.0.8": {
         "type": "package",
@@ -1469,11 +1517,11 @@
           }
         }
       },
-      "Microsoft.EntityFrameworkCore.SqlServer/7.0.7": {
+      "Microsoft.EntityFrameworkCore.SqlServer/7.0.8": {
         "type": "package",
         "dependencies": {
           "Microsoft.Data.SqlClient": "5.0.2",
-          "Microsoft.EntityFrameworkCore.Relational": "7.0.7"
+          "Microsoft.EntityFrameworkCore.Relational": "7.0.8"
         },
         "compile": {
           "lib/net6.0/Microsoft.EntityFrameworkCore.SqlServer.dll": {
@@ -1486,10 +1534,10 @@
           }
         }
       },
-      "Microsoft.EntityFrameworkCore.Tools/7.0.7": {
+      "Microsoft.EntityFrameworkCore.Tools/7.0.8": {
         "type": "package",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Design": "7.0.7"
+          "Microsoft.EntityFrameworkCore.Design": "7.0.8"
         },
         "compile": {
           "lib/net6.0/_._": {}
@@ -4431,6 +4479,51 @@
         "lib/netstandard2.0/Azure.Identity.xml"
       ]
     },
+    "BCrypt.Net-Next/4.0.3": {
+      "sha512": "W+U9WvmZQgi5cX6FS5GDtDoPzUCV4LkBLkywq/kRZhuDwcbavOzcDAr3LXJFqHUi952Yj3LEYoWW0jbEUQChsA==",
+      "type": "package",
+      "path": "bcrypt.net-next/4.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "bcrypt.net-next.4.0.3.nupkg.sha512",
+        "bcrypt.net-next.nuspec",
+        "ico.png",
+        "lib/net20/BCrypt.Net-Next.dll",
+        "lib/net20/BCrypt.Net-Next.xml",
+        "lib/net35/BCrypt.Net-Next.dll",
+        "lib/net35/BCrypt.Net-Next.xml",
+        "lib/net462/BCrypt.Net-Next.dll",
+        "lib/net462/BCrypt.Net-Next.xml",
+        "lib/net472/BCrypt.Net-Next.dll",
+        "lib/net472/BCrypt.Net-Next.xml",
+        "lib/net48/BCrypt.Net-Next.dll",
+        "lib/net48/BCrypt.Net-Next.xml",
+        "lib/net5.0/BCrypt.Net-Next.dll",
+        "lib/net5.0/BCrypt.Net-Next.xml",
+        "lib/net6.0/BCrypt.Net-Next.dll",
+        "lib/net6.0/BCrypt.Net-Next.xml",
+        "lib/netstandard2.0/BCrypt.Net-Next.dll",
+        "lib/netstandard2.0/BCrypt.Net-Next.xml",
+        "lib/netstandard2.1/BCrypt.Net-Next.dll",
+        "lib/netstandard2.1/BCrypt.Net-Next.xml",
+        "readme.md"
+      ]
+    },
+    "F23.StringSimilarity/5.1.0": {
+      "sha512": "RcFtnxG3Pw/wBxQFZv65Wb9VZRLyjorw4rLPW0yqPXasINT3zBKz8cBzKRlESvXve4qrRyo/XSfYfYgmKs/lkg==",
+      "type": "package",
+      "path": "f23.stringsimilarity/5.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "f23.stringsimilarity.5.1.0.nupkg.sha512",
+        "f23.stringsimilarity.nuspec",
+        "lib/netstandard2.0/F23.StringSimilarity.dll",
+        "lib/netstandard2.0/F23.StringSimilarity.xml",
+        "logo.png"
+      ]
+    },
     "Google.Protobuf/3.21.9": {
       "sha512": "OTpFujTgkmqMLbg3KT7F/iuKi1rg6s5FCS2M9XcVLDn40zL8wgXm37CY/F6MeOEXKjdcnXGCN/h7oyMkVydVsg==",
       "type": "package",
@@ -5261,6 +5354,21 @@
         "lib/netstandard2.0/K4os.Hash.xxHash.xml",
         "lib/netstandard2.1/K4os.Hash.xxHash.dll",
         "lib/netstandard2.1/K4os.Hash.xxHash.xml"
+      ]
+    },
+    "Microsoft.AspNetCore.Authentication.JwtBearer/7.0.8": {
+      "sha512": "UWGvF86d2q90e1ync37Yg+yg2GRSeSh9y/Q5YRFw42YfzTDQd0X6somujDFVc9HWn6zVB7osSZnxHMW8BwoRSA==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.authentication.jwtbearer/7.0.8",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net7.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+        "lib/net7.0/Microsoft.AspNetCore.Authentication.JwtBearer.xml",
+        "microsoft.aspnetcore.authentication.jwtbearer.7.0.8.nupkg.sha512",
+        "microsoft.aspnetcore.authentication.jwtbearer.nuspec"
       ]
     },
     "Microsoft.AspNetCore.OpenApi/7.0.8": {
@@ -6224,31 +6332,31 @@
         "microsoft.entityframeworkcore.relational.nuspec"
       ]
     },
-    "Microsoft.EntityFrameworkCore.SqlServer/7.0.7": {
-      "sha512": "XkLuNg99Y0KHmEyygzsqCkqDHE0h3vfNNu3bTaWx8bX6nDaCmK9EWhtCrDKReMpztDKyjrIweuUz346rXk5mbQ==",
+    "Microsoft.EntityFrameworkCore.SqlServer/7.0.8": {
+      "sha512": "w4mGjE/3XvulWqpY6hOGR3Z0oKINuYebO+S6ccQSZDFGrz3xBmPg0EenEpfs8rqFWHM4125nqA1NLProsDgDCw==",
       "type": "package",
-      "path": "microsoft.entityframeworkcore.sqlserver/7.0.7",
+      "path": "microsoft.entityframeworkcore.sqlserver/7.0.8",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "lib/net6.0/Microsoft.EntityFrameworkCore.SqlServer.dll",
         "lib/net6.0/Microsoft.EntityFrameworkCore.SqlServer.xml",
-        "microsoft.entityframeworkcore.sqlserver.7.0.7.nupkg.sha512",
+        "microsoft.entityframeworkcore.sqlserver.7.0.8.nupkg.sha512",
         "microsoft.entityframeworkcore.sqlserver.nuspec"
       ]
     },
-    "Microsoft.EntityFrameworkCore.Tools/7.0.7": {
-      "sha512": "Q5iBac9t7Elrx5qnB0A4V1RlInZrmSYe+FlMdV887Cv+arZXKW80N0gydXJJ2ghD62PoDf4LL/7kJ/uc4GyJlg==",
+    "Microsoft.EntityFrameworkCore.Tools/7.0.8": {
+      "sha512": "98zo4OdBnPXYVD+Fl+a5ofsVLokd9hsp9W1D+VeuIowG0Cbxr2gQ9PqCIqOXxafl5ykKlbO+Bmn7lLRclMOq4Q==",
       "type": "package",
-      "path": "microsoft.entityframeworkcore.tools/7.0.7",
+      "path": "microsoft.entityframeworkcore.tools/7.0.8",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "lib/net6.0/_._",
-        "microsoft.entityframeworkcore.tools.7.0.7.nupkg.sha512",
+        "microsoft.entityframeworkcore.tools.7.0.8.nupkg.sha512",
         "microsoft.entityframeworkcore.tools.nuspec",
         "tools/EntityFrameworkCore.PS2.psd1",
         "tools/EntityFrameworkCore.PS2.psm1",
@@ -12588,11 +12696,14 @@
   "projectFileDependencyGroups": {
     "net7.0": [
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 12.0.1",
+      "BCrypt.Net-Next >= 4.0.3",
+      "F23.StringSimilarity >= 5.1.0",
+      "Microsoft.AspNetCore.Authentication.JwtBearer >= 7.0.8",
       "Microsoft.AspNetCore.OpenApi >= 7.0.8",
       "Microsoft.EntityFrameworkCore >= 7.0.8",
       "Microsoft.EntityFrameworkCore.Design >= 7.0.8",
-      "Microsoft.EntityFrameworkCore.SqlServer >= 7.0.7",
-      "Microsoft.EntityFrameworkCore.Tools >= 7.0.7",
+      "Microsoft.EntityFrameworkCore.SqlServer >= 7.0.8",
+      "Microsoft.EntityFrameworkCore.Tools >= 7.0.8",
       "Microsoft.Extensions.Configuration.UserSecrets >= 7.0.0",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 7.0.7",
       "MySql.Data >= 8.0.33",
@@ -12609,11 +12720,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\DillonColeman_PortfolioWebsite\\PortfolioWebsite_Backend.csproj",
+      "projectUniqueName": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend\\PortfolioWebsite_Backend.csproj",
       "projectName": "PortfolioWebsite_Backend",
-      "projectPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\DillonColeman_PortfolioWebsite\\PortfolioWebsite_Backend.csproj",
+      "projectPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend\\PortfolioWebsite_Backend.csproj",
       "packagesPath": "C:\\Users\\Pendragon\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\DillonColeman_PortfolioWebsite\\obj\\",
+      "outputPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -12651,6 +12762,18 @@
             "target": "Package",
             "version": "[12.0.1, )"
           },
+          "BCrypt.Net-Next": {
+            "target": "Package",
+            "version": "[4.0.3, )"
+          },
+          "F23.StringSimilarity": {
+            "target": "Package",
+            "version": "[5.1.0, )"
+          },
+          "Microsoft.AspNetCore.Authentication.JwtBearer": {
+            "target": "Package",
+            "version": "[7.0.8, )"
+          },
           "Microsoft.AspNetCore.OpenApi": {
             "target": "Package",
             "version": "[7.0.8, )"
@@ -12667,13 +12790,13 @@
           },
           "Microsoft.EntityFrameworkCore.SqlServer": {
             "target": "Package",
-            "version": "[7.0.7, )"
+            "version": "[7.0.8, )"
           },
           "Microsoft.EntityFrameworkCore.Tools": {
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "suppressParent": "All",
             "target": "Package",
-            "version": "[7.0.7, )"
+            "version": "[7.0.8, )"
           },
           "Microsoft.Extensions.Configuration.UserSecrets": {
             "target": "Package",
