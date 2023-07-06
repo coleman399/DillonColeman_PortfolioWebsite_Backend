@@ -86,7 +86,7 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> PutContact(int id, [FromBody] UpdateContactDto contact)
+        public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> UpdateContact(int id, [FromBody] UpdateContactDto contact)
         {
             ContactServiceResponse<GetContactDto> result = await _contactService.UpdateContact(id, contact);
             if (result.Success == false) return BadRequest(result);

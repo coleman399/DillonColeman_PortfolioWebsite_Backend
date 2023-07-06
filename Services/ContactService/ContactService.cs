@@ -39,15 +39,14 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                 {
                     throw new HttpContextFailureException();
                 }
-                return serviceResponse;
             }
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Data = null;
                 serviceResponse.Message = exception.Message;
-                return serviceResponse;
             }
+            return serviceResponse;
         }
 
         public async Task<ContactServiceResponse<GetContactDto>> GetContactById(int id)
@@ -87,13 +86,12 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                 {
                     throw new HttpContextFailureException();
                 }
-                return serviceResponse;
             }
             catch (Exception exception)
             {
                 serviceResponse.Message = exception.Message;
-                return serviceResponse;
             }
+            return serviceResponse;
         }
 
         public async Task<ContactServiceResponse<List<GetContactDto>>> GetContactsByEmail(string email)
@@ -140,16 +138,15 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                 {
                     throw new HttpContextFailureException();
                 }
-                return serviceResponse;
             }
             catch (Exception exception)
             {
                 serviceResponse.Message = exception.Message;
-                return serviceResponse;
+
             }
+            return serviceResponse;
         }
 
-        // Users should be able to find their contacts by name
         public async Task<ContactServiceResponse<List<GetContactDto>>> GetContactsWithSimilarNameTo(string name)
         {
             var serviceResponse = new ContactServiceResponse<List<GetContactDto>>();
@@ -209,15 +206,14 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                 {
                     throw new HttpContextFailureException();
                 }
-                return serviceResponse;
             }
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Data = null;
                 serviceResponse.Message = exception.Message;
-                return serviceResponse;
             }
+            return serviceResponse;
         }
 
         public async Task<ContactServiceResponse<GetContactDto>> AddContact(AddContactDto newContact)
@@ -242,7 +238,7 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                 _context.Contacts.Add(createdContact);
                 _context.SaveChanges();
 
-                // Check if contact was created
+                // Verify contact was created
                 var dbContacts = await _context.Contacts.ToListAsync();
                 var foundContact = dbContacts.FirstOrDefault(c => c.Email == createdContact.Email) ?? throw new ContactNotSavedException();
 
@@ -260,58 +256,60 @@ namespace PortfolioWebsite_Backend.Services.ContactService
             }
         }
 
-
         public async Task<ContactServiceResponse<GetContactDto>> UpdateContact(int id, UpdateContactDto updateContact)
         {
-            var serviceResponse = new ContactServiceResponse<GetContactDto>() { Success = false };
+            var serviceResponse = new ContactServiceResponse<GetContactDto>() { Success = false, Data = null };
             try
             {
-
                 // Email is always required, check if it's valid
                 if (!RegexFilters.IsValidEmail(updateContact.Email!)) throw new InvalidEmailException(updateContact.Email!);
 
-                // Check if phone number was provided, if so, check if it's valid
+                // Verify phone number was provided, if so, check if it's valid
                 if (updateContact.Phone != null)
                 {
                     if (!RegexFilters.IsValidPhoneNum(updateContact.Phone!)) throw new InvalidPhoneNumberException(updateContact.Phone!);
                 }
 
-                // Check if contact exists
-                var dbContacts = await _context.Contacts.ToListAsync();
-                var foundContact = dbContacts.FirstOrDefault(c => c.Id == id) ?? throw new ContactNotFoundException(id);
-
                 if (_httpContextAccessor.HttpContext != null)
                 {
+                    // Verify contact exists
+                    var dbContacts = await _context.Contacts.ToListAsync();
+                    var dbContact = dbContacts.FirstOrDefault(c => c.Id == id) ?? throw new ContactNotFoundException(id);
+
+                    // Check role
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()))
                     {
-                        if (foundContact.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email))
+                        // Check if user is authorized to update contact, if not, throw exception
+                        if (dbContact.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email))
                         {
                             serviceResponse.Success = true;
                             throw new UnauthorizedAccessException("You are not authorized to update this contact.");
                         }
                     }
+
+                    // Update contact
+                    _context.Contacts.Update(_mapper.Map(updateContact, dbContact));
+                    _context.SaveChanges();
+
+                    // Verify contact was updated
+                    dbContacts = await _context.Contacts.ToListAsync();
+                    dbContact = dbContacts.FirstOrDefault(c => c.Id == id) ?? throw new ContactNotUpdatedException();
+
+                    // Update response
+                    serviceResponse.Success = true;
+                    serviceResponse.Data = _mapper.Map<GetContactDto>(dbContact);
+                    serviceResponse.Message = "Contact updated successfully.";
                 }
                 else
                 {
                     throw new HttpContextFailureException();
                 }
-
-                // Update contact
-                _context.Contacts.Update(_mapper.Map(updateContact, foundContact));
-                _context.SaveChanges();
-
-                // return contact with response
-                serviceResponse.Success = true;
-                serviceResponse.Data = _mapper.Map<GetContactDto>(foundContact);
-                serviceResponse.Message = $"Updated contact with id {id}.";
-                return serviceResponse;
             }
             catch (Exception exception)
             {
-                serviceResponse.Data = null;
                 serviceResponse.Message = exception.Message;
-                return serviceResponse;
             }
+            return serviceResponse;
         }
 
         public async Task<ContactServiceResponse<DeleteContactDto>> DeleteContact(int id)
@@ -324,8 +322,10 @@ namespace PortfolioWebsite_Backend.Services.ContactService
 
                 if (_httpContextAccessor.HttpContext != null)
                 {
+                    // Check role
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()))
                     {
+                        // Check if user is authorized to delete contact, if not, throw exception
                         if (contact.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email.ToString()))
                         {
                             serviceResponse.Success = true;
@@ -338,27 +338,20 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                     _context.SaveChanges();
 
                     // verify contact was deleted
-                    var dbContacts = await _context.Contacts.ToListAsync();
-                    var foundContact = dbContacts.FirstOrDefault(c => c.Id == id);
-                    if (foundContact == null)
-                    {
-                        // update response
-                        serviceResponse.Success = true;
-                        serviceResponse.Data = new DeleteContactDto() { Id = id, Email = contact.Email };
-                        serviceResponse.Message = $"Contact with id {id} has been deleted.";
-                    }
-                    else
-                    {
-                        throw new ContactNotDeletedException(id);
-                    }
+                    var dbContact = await _context.Contacts.FirstOrDefaultAsync(c => c.Id == id);
+                    if (dbContact != null) throw new ContactNotDeletedException(id);
+
+                    // update response
+                    serviceResponse.Success = true;
+                    serviceResponse.Data = new DeleteContactDto() { Id = id, Email = contact.Email };
+                    serviceResponse.Message = $"Contact with id {id} has been deleted.";
                 }
-                return serviceResponse;
             }
             catch (Exception exception)
             {
                 serviceResponse.Message = exception.Message;
-                return serviceResponse;
             }
+            return serviceResponse;
         }
     }
 }

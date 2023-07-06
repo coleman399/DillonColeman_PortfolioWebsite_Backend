@@ -2,18 +2,17 @@
 
 namespace PortfolioWebsite_Backend.Dtos.UserDtos
 {
-    public class GetUserDto
+    public class UpdateUserDto
     {
-        public int Id { get; set; }
         [Required]
         public required string UserName { get; set; }
         [Required, EmailAddress]
         public required string Email { get; set; }
         [Required]
-        public required string Role { get; set; }
-        [Timestamp]
+        public required string Password { get; set; }
+        [Required, Compare("Password")]
+        public required string PasswordConfirmation { get; set; }
+        [JsonIgnore, Timestamp]
         public DateTime CreatedAt { get; set; }
-        [Timestamp]
-        public DateTime UpdatedAt { get; set; }
     }
 }
