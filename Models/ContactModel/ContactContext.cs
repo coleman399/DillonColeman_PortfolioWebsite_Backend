@@ -1,22 +1,20 @@
-﻿namespace DillonColeman_PortfolioWebsite.Models.ContactModel
+﻿namespace PortfolioWebsite_Backend.Models.ContactModel
 {
     public class ContactContext : DbContext
     {
         public DbSet<Contact> Contacts { get; set; }
 
-        protected readonly IConfiguration Configuration;
+        protected readonly IConfiguration _configuration;
 
         public ContactContext(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-
-
             // connect to mysql with connection string from app settings
-            var connectionString = Configuration["ConnectionStrings:LocalMySqlDb"];
+            var connectionString = _configuration["ConnectionStrings:LocalMySqlDb"];
 
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }

@@ -1,12 +1,16 @@
-﻿namespace DillonColeman_PortfolioWebsite.Dtos.ContactDtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PortfolioWebsite_Backend.Dtos.ContactDtos
 {
     public class AddContactDto
     {
         public string? Name { get; set; }
-        public string? Email { get; set; }
+        [Required, EmailAddress]
+        public required string Email { get; set; }
+        [Phone]
         public string? Phone { get; set; }
         public string? Message { get; set; }
-        [JsonIgnore]
-        public DateTime CreatedAt { get; set; }
+        [JsonIgnore, Timestamp]
+        public DateTime UpdatedAt { get; set; }
     }
 }

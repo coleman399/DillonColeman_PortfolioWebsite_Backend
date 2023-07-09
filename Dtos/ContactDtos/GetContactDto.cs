@@ -1,4 +1,4 @@
-﻿namespace DillonColeman_PortfolioWebsite.Dtos.ContactDtos
+﻿namespace PortfolioWebsite_Backend.Dtos.ContactDtos
 {
     public class GetContactDto
     {
