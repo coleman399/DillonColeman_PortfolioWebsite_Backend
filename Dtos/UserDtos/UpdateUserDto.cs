@@ -12,7 +12,7 @@ namespace PortfolioWebsite_Backend.Dtos.UserDtos
         public required string Password { get; set; }
         [Required, Compare("Password")]
         public required string PasswordConfirmation { get; set; }
-        [JsonIgnore, Timestamp]
-        public DateTime CreatedAt { get; set; }
+        [JsonIgnore, Required]
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 }

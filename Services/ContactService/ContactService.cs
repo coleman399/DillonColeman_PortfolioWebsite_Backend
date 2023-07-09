@@ -6,24 +6,31 @@ namespace PortfolioWebsite_Backend.Services.ContactService
     public class ContactService : IContactService
     {
         private readonly IMapper _mapper;
-        private readonly ContactContext _context;
+        private readonly ContactContext _contactContext;
+        private readonly UserContext _userContext;
+        private readonly IUserService _userService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ContactService(IMapper mapper, ContactContext context, IHttpContextAccessor httpContextAccessor)
+        public ContactService(IMapper mapper, ContactContext contactContext, UserContext userContext, IUserService userService, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
-            _context = context;
+            _contactContext = contactContext;
+            _userContext = userContext;
+            _userService = userService;
             _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ContactServiceResponse<List<GetContactDto>>> GetContacts()
         {
+
             var serviceResponse = new ContactServiceResponse<List<GetContactDto>>();
             try
             {
                 if (_httpContextAccessor.HttpContext != null)
                 {
-                    var dbContacts = await _context.Contacts.ToListAsync();
+                    _userService.TokenCheck();
+
+                    var dbContacts = await _contactContext.Contacts.ToListAsync();
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()))
                     {
                         // Update response with all contacts
@@ -56,8 +63,10 @@ namespace PortfolioWebsite_Backend.Services.ContactService
             {
                 if (_httpContextAccessor.HttpContext != null)
                 {
+                    _userService.TokenCheck();
+
                     // Check if contact exists
-                    var dbContacts = await _context.Contacts.ToListAsync();
+                    var dbContacts = await _contactContext.Contacts.ToListAsync();
                     var foundContact = dbContacts.FirstOrDefault(c => c.Id == id) ?? throw new ContactNotFoundException(id);
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()))
                     {
@@ -101,8 +110,10 @@ namespace PortfolioWebsite_Backend.Services.ContactService
             {
                 if (_httpContextAccessor.HttpContext != null)
                 {
+                    _userService.TokenCheck();
+
                     // Check if contacts using the queried email exists
-                    var dbContacts = await _context.Contacts.ToListAsync();
+                    var dbContacts = await _contactContext.Contacts.ToListAsync();
                     var foundContacts = dbContacts.Where(c => c.Email == email).ToList() ?? throw new ContactNotFoundException(email);
 
                     // Check role then update response
@@ -154,11 +165,13 @@ namespace PortfolioWebsite_Backend.Services.ContactService
             {
                 if (_httpContextAccessor.HttpContext != null)
                 {
+                    _userService.TokenCheck();
+
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()))
                     {
                         // Compare names
                         List<GetContactDto> similarlyNamedContacts = new();
-                        var dbContacts = await _context.Contacts.ToListAsync();
+                        var dbContacts = await _contactContext.Contacts.ToListAsync();
                         dbContacts.ForEach(c =>
                         {
                             var l = new Levenshtein();
@@ -180,7 +193,7 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                     {
                         // Compare names
                         List<GetContactDto> userSimilarlyNamedContacts = new();
-                        var dbContacts = await _context.Contacts.ToListAsync();
+                        var dbContacts = await _contactContext.Contacts.ToListAsync();
                         dbContacts.ForEach(c =>
                         {
                             var l = new Levenshtein();
@@ -235,11 +248,11 @@ namespace PortfolioWebsite_Backend.Services.ContactService
 
                 // Save contact to database
                 Contact createdContact = _mapper.Map<Contact>(newContact);
-                _context.Contacts.Add(createdContact);
-                _context.SaveChanges();
+                _contactContext.Contacts.Add(createdContact);
+                _contactContext.SaveChanges();
 
                 // Verify contact was created
-                var dbContacts = await _context.Contacts.ToListAsync();
+                var dbContacts = await _contactContext.Contacts.ToListAsync();
                 var foundContact = dbContacts.FirstOrDefault(c => c.Email == createdContact.Email) ?? throw new ContactNotSavedException();
 
                 // return contact with response
@@ -272,8 +285,10 @@ namespace PortfolioWebsite_Backend.Services.ContactService
 
                 if (_httpContextAccessor.HttpContext != null)
                 {
+                    _userService.TokenCheck();
+
                     // Verify contact exists
-                    var dbContacts = await _context.Contacts.ToListAsync();
+                    var dbContacts = await _contactContext.Contacts.ToListAsync();
                     var dbContact = dbContacts.FirstOrDefault(c => c.Id == id) ?? throw new ContactNotFoundException(id);
 
                     // Check role
@@ -288,11 +303,11 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                     }
 
                     // Update contact
-                    _context.Contacts.Update(_mapper.Map(updateContact, dbContact));
-                    _context.SaveChanges();
+                    _contactContext.Contacts.Update(_mapper.Map(updateContact, dbContact));
+                    _contactContext.SaveChanges();
 
                     // Verify contact was updated
-                    dbContacts = await _context.Contacts.ToListAsync();
+                    dbContacts = await _contactContext.Contacts.ToListAsync();
                     dbContact = dbContacts.FirstOrDefault(c => c.Id == id) ?? throw new ContactNotUpdatedException();
 
                     // Update response
@@ -318,10 +333,12 @@ namespace PortfolioWebsite_Backend.Services.ContactService
             try
             {
                 // Check if contact exists
-                var contact = _context.Contacts.FirstOrDefault(c => c.Id == id) ?? throw new ContactNotFoundException(id);
+                var contact = _contactContext.Contacts.FirstOrDefault(c => c.Id == id) ?? throw new ContactNotFoundException(id);
 
                 if (_httpContextAccessor.HttpContext != null)
                 {
+                    _userService.TokenCheck();
+
                     // Check role
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()))
                     {
@@ -329,16 +346,16 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                         if (contact.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email.ToString()))
                         {
                             serviceResponse.Success = true;
-                            throw new UnauthorizedAccessException("You are not authorized to delete this contact.");
+                            throw new UnauthorizedAccessException();
                         }
                     }
 
                     // Delete contact
-                    _context.Contacts.Remove(contact);
-                    _context.SaveChanges();
+                    _contactContext.Contacts.Remove(contact);
+                    _contactContext.SaveChanges();
 
                     // verify contact was deleted
-                    var dbContact = await _context.Contacts.FirstOrDefaultAsync(c => c.Id == id);
+                    var dbContact = await _contactContext.Contacts.FirstOrDefaultAsync(c => c.Id == id);
                     if (dbContact != null) throw new ContactNotDeletedException(id);
 
                     // update response

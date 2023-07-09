@@ -7,11 +7,11 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly IUserService _userService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IUserService userService)
         {
-            _authService = authService;
+            _userService = userService;
         }
 
         // POST api/<AuthController>/getUsers
@@ -20,7 +20,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserServiceResponse<List<GetUserDto>>>> GetUsers()
         {
-            UserServiceResponse<List<GetUserDto>> result = await _authService.GetUsers();
+            UserServiceResponse<List<GetUserDto>> result = await _userService.GetUsers();
             if (result.Success == false) return BadRequest(result);
             return Ok(result);
         }
@@ -31,7 +31,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserServiceResponse<GetUserDto>>> RegisterUser(RegisterUserDto newUser)
         {
-            UserServiceResponse<GetUserDto> result = await _authService.AddUser(newUser);
+            UserServiceResponse<GetUserDto> result = await _userService.RegisterUser(newUser);
             if (result.Success == false) return BadRequest(result);
             return Ok(result);
         }
@@ -42,7 +42,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<UserServiceResponse<GetLoggedInUserDto>>> LoginUser(LoginUserDto loginUser)
         {
-            UserServiceResponse<GetLoggedInUserDto> result = await _authService.LoginUser(loginUser);
+            UserServiceResponse<GetLoggedInUserDto> result = await _userService.LoginUser(loginUser);
             if (result.Success == false) return Unauthorized(result);
             return Ok(result);
         }
@@ -55,7 +55,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<UserServiceResponse<GetLoggedInUserDto>>> UpdateUser(int id, [FromBody] UpdateUserDto user)
         {
-            UserServiceResponse<GetLoggedInUserDto> result = await _authService.UpdateUser(id, user);
+            UserServiceResponse<GetLoggedInUserDto> result = await _userService.UpdateUser(id, user);
             if (result.Success == false) return BadRequest(result);
             if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
@@ -67,9 +67,29 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserServiceResponse<DeleteUserDto>>> DeleteContact(int id)
+        public async Task<ActionResult<UserServiceResponse<DeleteUserDto>>> DeleteUser(int id)
         {
-            UserServiceResponse<DeleteUserDto> result = await _authService.DeleteUser(id);
+            UserServiceResponse<DeleteUserDto> result = await _userService.DeleteUser(id);
+            if (result.Success == false) return BadRequest(result);
+            if (result.Data == null && result.Success == true) return Unauthorized();
+            return Ok(result);
+        }
+
+        // Need to create a logout route
+
+        // Need to create a forgot password route
+
+        // Need to create a reset password route
+
+
+        // Post api/<AuthController>/refreshToken
+        [HttpPost("refreshToken"), Authorize(Roles = "Admin, User")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<UserServiceResponse<GetLoggedInUserDto>>> RefreshToken()
+        {
+            UserServiceResponse<GetLoggedInUserDto> result = await _userService.RefreshToken();
             if (result.Success == false) return BadRequest(result);
             if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);

@@ -2,5 +2,6 @@
 {
     public class DeleteUserDto
     {
+        // Add success message here
     }
 }

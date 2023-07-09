@@ -8,10 +8,10 @@ using PortfolioWebsite_Backend.Models.ContactModel;
 
 #nullable disable
 
-namespace PortfolioWebsite_Backend.Migrations
+namespace PortfolioWebsite_Backend.Migrations.Contact
 {
     [DbContext(typeof(ContactContext))]
-    [Migration("20230705011103_ContactModel")]
+    [Migration("20230709055054_ContactModel")]
     partial class ContactModel
     {
         /// <inheritdoc />

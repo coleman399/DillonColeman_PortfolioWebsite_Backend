@@ -5,29 +5,34 @@ namespace PortfolioWebsite_Backend.Models.UserModel
 {
     public class User
     {
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
-        public string UserName { get; set; } = string.Empty;
+        public required string UserName { get; set; } = string.Empty;
         [Required]
-        public string PasswordHash { get; set; } = string.Empty;
+        public required string PasswordHash { get; set; } = string.Empty;
         [Required, EmailAddress]
-        public required string Email { get; set; }
+        public required string Email { get; set; } = string.Empty;
         [Required]
-        public required string Role { get; set; } = "User";
-        [Timestamp]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        [Timestamp]
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public required string Role { get; set; } = Roles.User.ToString();
+        [Required]
+        public required string AccessToken { get; set; } = string.Empty;
+        public RefreshToken? RefreshToken { get; set; }
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.MinValue;
+        [Required]
+        public DateTime UpdatedAt { get; set; } = DateTime.MinValue;
 
         public User() { }
 
-        public User(string userName, string passwordHash, string email, string role)
+        public User(string userName, string passwordHash, string email, string role, RefreshToken refreshToken)
         {
             UserName = userName;
             PasswordHash = passwordHash;
             Email = email;
             Role = role;
+            RefreshToken = refreshToken;
         }
 
         public override string? ToString()
