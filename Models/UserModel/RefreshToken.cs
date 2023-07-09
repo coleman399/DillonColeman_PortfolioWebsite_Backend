@@ -15,7 +15,7 @@ namespace PortfolioWebsite_Backend.Models.UserModel
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [Required]
-        public DateTime ExpiresAt { get; set; } = DateTime.Now.AddDays(2);
+        public DateTime ExpiresAt { get; set; } = DateTime.Now.AddDays(1);
 
     }
 }

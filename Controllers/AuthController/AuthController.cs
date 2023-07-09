@@ -75,13 +75,6 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             return Ok(result);
         }
 
-        // Need to create a logout route
-
-        // Need to create a forgot password route
-
-        // Need to create a reset password route
-
-
         // Post api/<AuthController>/refreshToken
         [HttpPost("refreshToken"), Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -93,6 +86,25 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             if (result.Success == false) return BadRequest(result);
             if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
+        }
+
+        // Need to create a logout route
+        // Post api/<AuthController>/logout
+        [HttpPost("logout"), Authorize(Roles = "Admin, User")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<UserServiceResponse<GetLoggedOutUserDto>>> Logout()
+        {
+            UserServiceResponse<GetLoggedOutUserDto> result = await _userService.Logout();
+            if (result.Success == false) return BadRequest(result);
+            if (result.Data == null && result.Success == true) return Unauthorized();
+            return Ok(result);
+
+
+            // Need to create a forgot password route
+
+            // Need to create a reset password route
         }
     }
 }

@@ -7,15 +7,13 @@ namespace PortfolioWebsite_Backend.Services.ContactService
     {
         private readonly IMapper _mapper;
         private readonly ContactContext _contactContext;
-        private readonly UserContext _userContext;
         private readonly IUserService _userService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ContactService(IMapper mapper, ContactContext contactContext, UserContext userContext, IUserService userService, IHttpContextAccessor httpContextAccessor)
+        public ContactService(IMapper mapper, ContactContext contactContext, IUserService userService, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _contactContext = contactContext;
-            _userContext = userContext;
             _userService = userService;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -23,7 +21,7 @@ namespace PortfolioWebsite_Backend.Services.ContactService
         public async Task<ContactServiceResponse<List<GetContactDto>>> GetContacts()
         {
 
-            var serviceResponse = new ContactServiceResponse<List<GetContactDto>>();
+            var serviceResponse = new ContactServiceResponse<List<GetContactDto>>() { Success = true, Data = null };
             try
             {
                 if (_httpContextAccessor.HttpContext != null)
@@ -49,8 +47,6 @@ namespace PortfolioWebsite_Backend.Services.ContactService
             }
             catch (Exception exception)
             {
-                serviceResponse.Success = false;
-                serviceResponse.Data = null;
                 serviceResponse.Message = exception.Message;
             }
             return serviceResponse;
@@ -67,7 +63,7 @@ namespace PortfolioWebsite_Backend.Services.ContactService
 
                     // Check if contact exists
                     var dbContacts = await _contactContext.Contacts.ToListAsync();
-                    var foundContact = dbContacts.FirstOrDefault(c => c.Id == id) ?? throw new ContactNotFoundException(id);
+                    var foundContact = dbContacts.FirstOrDefault(c => c.Id == id) ?? throw new ContactNotFoundException();
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()))
                     {
                         // Update response

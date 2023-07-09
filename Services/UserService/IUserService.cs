@@ -9,5 +9,6 @@
         public Task<UserServiceResponse<DeleteUserDto>> DeleteUser(int id);
         public Task<UserServiceResponse<GetLoggedInUserDto>> RefreshToken();
         public void TokenCheck();
+        public Task<UserServiceResponse<GetLoggedOutUserDto>> Logout();
     }
 }

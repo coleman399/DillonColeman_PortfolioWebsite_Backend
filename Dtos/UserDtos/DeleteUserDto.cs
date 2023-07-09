@@ -2,6 +2,6 @@
 {
     public class DeleteUserDto
     {
-        // Add success message here
+        public string Message = "User successfully deleted.";
     }
 }
