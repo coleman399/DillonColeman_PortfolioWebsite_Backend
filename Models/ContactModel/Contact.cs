@@ -5,6 +5,7 @@ namespace PortfolioWebsite_Backend.Models.ContactModel
 {
     public class Contact
     {
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string? Name { get; set; }
@@ -13,10 +14,10 @@ namespace PortfolioWebsite_Backend.Models.ContactModel
         [Phone]
         public string? Phone { get; set; }
         public string? Message { get; set; }
-        [Timestamp]
+        [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        [Timestamp]
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        [Required]
+        public DateTime UpdatedAt { get; set; } = DateTime.MinValue;
 
         public Contact() { }
 

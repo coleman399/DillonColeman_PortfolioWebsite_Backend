@@ -1,16 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace PortfolioWebsite_Backend.Dtos.UserDtos
+﻿namespace PortfolioWebsite_Backend.Dtos.UserDtos
 {
     public class GetUserDto
     {
         public int Id { get; set; }
-        public string? UserName { get; set; }
-        public string? Email { get; set; }
-        public string? Role { get; set; }
-        [Timestamp]
+        public required string UserName { get; set; }
+        public required string Email { get; set; }
+        public required string Role { get; set; }
         public DateTime CreatedAt { get; set; }
-        [Timestamp]
         public DateTime UpdatedAt { get; set; }
     }
 }

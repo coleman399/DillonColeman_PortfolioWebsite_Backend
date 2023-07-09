@@ -4,6 +4,7 @@
     {
 
         public DbSet<User> Users { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected readonly IConfiguration Configuration;
 
@@ -26,8 +27,6 @@
             base.OnModelCreating(modelBuilder);
 
             // write fluent API configurations here
-
-            //Property Configurations
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -41,6 +40,9 @@
                     .HasMaxLength(50);
                 entity.Property(e => e.Role)
                     .IsRequired();
+                entity.Property(e => e.AccessToken)
+                    .IsRequired();
+                entity.OwnsOne(e => e.RefreshToken);
                 entity.Property(e => e.CreatedAt)
                     .IsRequired();
                 entity.Property(e => e.UpdatedAt);

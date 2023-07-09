@@ -20,10 +20,12 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
         [HttpGet("getContacts"), Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ContactServiceResponse<List<GetContactDto>>>> GetContacts()
         {
             ContactServiceResponse<List<GetContactDto>> result = await _contactService.GetContacts();
             if (result.Success == false) return BadRequest(result);
+            if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
         }
 
@@ -61,10 +63,12 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
         [HttpGet("getContactsByName"), Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ContactServiceResponse<List<GetContactDto>>>> GetContactsByName(string name)
         {
             ContactServiceResponse<List<GetContactDto>> result = await _contactService.GetContactsWithSimilarNameTo(name);
             if (result.Success == false) return BadRequest(result);
+            //if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
         }
 
@@ -73,10 +77,12 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
         [HttpPost("addContact"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> PostContact([FromBody] AddContactDto contact)
         {
             ContactServiceResponse<GetContactDto> result = await _contactService.AddContact(contact);
             if (result.Success == false) return BadRequest(result);
+            if (result.Data == null && result.Success == true) return Unauthorized();
             return Created("", result);
         }
 
@@ -86,7 +92,7 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> PutContact(int id, [FromBody] UpdateContactDto contact)
+        public async Task<ActionResult<ContactServiceResponse<GetContactDto>>> UpdateContact(int id, [FromBody] UpdateContactDto contact)
         {
             ContactServiceResponse<GetContactDto> result = await _contactService.UpdateContact(id, contact);
             if (result.Success == false) return BadRequest(result);

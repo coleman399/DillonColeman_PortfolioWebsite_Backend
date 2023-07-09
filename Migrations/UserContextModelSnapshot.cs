@@ -7,7 +7,7 @@ using PortfolioWebsite_Backend.Models.UserModel;
 
 #nullable disable
 
-namespace PortfolioWebsite_Backend.Migrations.User
+namespace PortfolioWebsite_Backend.Migrations
 {
     [DbContext(typeof(UserContext))]
     partial class UserContextModelSnapshot : ModelSnapshot
@@ -24,6 +24,10 @@ namespace PortfolioWebsite_Backend.Migrations.User
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("AccessToken")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedAt")
                         .IsConcurrencyToken()
@@ -56,6 +60,47 @@ namespace PortfolioWebsite_Backend.Migrations.User
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("PortfolioWebsite_Backend.Models.UserModel.User", b =>
+                {
+                    b.OwnsOne("PortfolioWebsite_Backend.Models.UserModel.RefreshToken", "RefreshToken", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("CreatedAt")
+                                .IsConcurrencyToken()
+                                .ValueGeneratedOnAddOrUpdate()
+                                .HasColumnType("datetime(6)");
+
+                            b1.Property<DateTime>("ExpiresAt")
+                                .IsConcurrencyToken()
+                                .ValueGeneratedOnAddOrUpdate()
+                                .HasColumnType("datetime(6)");
+
+                            b1.Property<string>("Token")
+                                .IsRequired()
+                                .HasColumnType("longtext");
+
+                            b1.Property<int>("UserId")
+                                .HasColumnType("int");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("UserId")
+                                .IsUnique();
+
+                            b1.ToTable("RefreshTokens");
+
+                            b1.WithOwner("User")
+                                .HasForeignKey("UserId");
+
+                            b1.Navigation("User");
+                        });
+
+                    b.Navigation("RefreshToken");
                 });
 #pragma warning restore 612, 618
         }

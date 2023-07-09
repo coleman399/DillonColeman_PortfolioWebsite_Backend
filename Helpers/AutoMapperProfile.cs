@@ -19,18 +19,32 @@
             CreateMap<GetContactDto, DeleteContactDto>();
             CreateMap<DeleteContactDto, GetContactDto>();
             CreateMap<RegisterUserDto, User>()
-                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
-            CreateMap<User, RegisterUserDto>();
+                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password))
+                .ForMember(dest => dest.RefreshToken, opt => opt.Ignore())
+                .ForMember(dest => dest.AccessToken, opt => opt.Ignore());
+            CreateMap<User, RegisterUserDto>()
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.PasswordHash));
             CreateMap<GetUserDto, User>();
             CreateMap<User, GetUserDto>();
             CreateMap<RegisterUserDto, GetUserDto>();
             CreateMap<GetUserDto, RegisterUserDto>();
-            CreateMap<LoginUserDto, User>();
+            CreateMap<LoginUserDto, User>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
             CreateMap<User, LoginUserDto>()
                 .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.PasswordHash));
             CreateMap<User, GetLoggedInUserDto>()
-                .ForMember(dest => dest.Token, opt => opt.NullSubstitute(""));
-            CreateMap<GetLoggedInUserDto, User>();
+                .ForMember(dest => dest.Token, opt => opt.MapFrom(src => src.AccessToken));
+            CreateMap<GetLoggedInUserDto, User>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
+            CreateMap<UpdateUserDto, User>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
+            CreateMap<User, UpdateUserDto>();
+            CreateMap<DeleteUserDto, User>();
+            CreateMap<User, DeleteUserDto>();
+            CreateMap<GetUserDto, UpdateUserDto>();
+            CreateMap<UpdateUserDto, GetUserDto>();
+            CreateMap<GetUserDto, DeleteUserDto>();
+            CreateMap<DeleteUserDto, GetUserDto>();
 
         }
     }

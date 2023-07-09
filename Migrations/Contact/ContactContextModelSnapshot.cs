@@ -7,7 +7,7 @@ using PortfolioWebsite_Backend.Models.ContactModel;
 
 #nullable disable
 
-namespace PortfolioWebsite_Backend.Migrations
+namespace PortfolioWebsite_Backend.Migrations.Contact
 {
     [DbContext(typeof(ContactContext))]
     partial class ContactContextModelSnapshot : ModelSnapshot
