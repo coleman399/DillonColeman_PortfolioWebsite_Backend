@@ -45,6 +45,13 @@
             CreateMap<UpdateUserDto, GetUserDto>();
             CreateMap<GetUserDto, DeleteUserDto>();
             CreateMap<DeleteUserDto, GetUserDto>();
+            CreateMap<AccountCreatedEmailDto, Email>();
+            CreateMap<AccountUpdatedEmailDto, Email>();
+            CreateMap<AccountDeletedEmailDto, Email>();
+            CreateMap<ContactCreatedEmailDto, Email>();
+            CreateMap<ContactUpdatedEmailDto, Email>();
+            CreateMap<ContactDeletedEmailDto, Email>();
+            CreateMap<Email, GetEmailConfirmationDto>();
 
         }
     }

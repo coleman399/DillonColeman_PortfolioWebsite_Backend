@@ -156,6 +156,13 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 serviceResponse.Message = "User added successfully";
 
                 // Send Email Confirmation
+                // Email confirmation
+                List<string> sendTo = new() { createdUser.Email };
+                var email = new AccountCreatedEmailDto()
+                {
+                    To = sendTo
+                };
+                await _emailService.SendAccountHasBeenCreatedNotification(email);
 
             }
             catch (Exception exception)
@@ -295,12 +302,12 @@ namespace PortfolioWebsite_Backend.Services.UserService
                         await Logout();
                         serviceResponse.Data.Token = string.Empty;
                         serviceResponse.Success = true;
-                        serviceResponse.Message = "User updated successfully. User logged out.";
+                        serviceResponse.Message = "Account updated successfully. User logged out.";
                         return serviceResponse;
                     }
-                    serviceResponse.Data.Token = dbUser.AccessToken;
                     dbUser.AccessToken = CreateAccessToken(dbUser);
                     dbUser.RefreshToken = CreateRefreshToken(dbUser);
+                    serviceResponse.Data.Token = dbUser.AccessToken;
                     SetRefreshToken(dbUser.RefreshToken);
                     _userContext.Users.Update(dbUser);
                     _userContext.SaveChanges();
@@ -384,6 +391,12 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     await Logout();
 
                     // Email confirmation
+                    List<string> sendTo = new() { user.Email };
+                    var email = new AccountDeletedEmailDto()
+                    {
+                        To = sendTo
+                    };
+                    await _emailService.SendAccountHasBeenDeletedNotification(email);
                 }
                 else
                 {
@@ -392,7 +405,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
             }
             catch (Exception exception)
             {
-                serviceResponse.Success = false;
                 serviceResponse.Message = exception.Message + " " + exception;
             }
             return serviceResponse;
@@ -440,14 +452,13 @@ namespace PortfolioWebsite_Backend.Services.UserService
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = exception.Message + " " + exception;
-
             }
             return serviceResponse;
         }
 
         public async Task<UserServiceResponse<GetLoggedOutUserDto>> Logout()
         {
-            var serviceResponse = new UserServiceResponse<GetLoggedOutUserDto>() { Data = null };
+            var serviceResponse = new UserServiceResponse<GetLoggedOutUserDto>() { Success = false, Data = null };
             try
             {
                 if (_httpContextAccessor.HttpContext != null)
@@ -481,7 +492,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
             }
             catch (Exception exception)
             {
-                serviceResponse.Success = false;
                 serviceResponse.Message = exception.Message + " " + exception;
             }
             return serviceResponse;

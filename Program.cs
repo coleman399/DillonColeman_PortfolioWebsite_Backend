@@ -69,10 +69,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 builder.Services.AddAutoMapper(typeof(Program), typeof(AutoMapperProfile));
+builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("EmailConfiguration"));
-builder.Services.AddTransient<IEmailService, EmailService>();
 
 var app = builder.Build();
 
