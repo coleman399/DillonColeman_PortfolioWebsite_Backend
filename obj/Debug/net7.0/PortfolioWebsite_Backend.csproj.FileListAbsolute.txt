@@ -542,3 +542,8 @@ C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\obj\Debug\net7.0\ref\PortfolioWebsite_Backend.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\F23.StringSimilarity.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\BouncyCastle.Cryptography.dll
+C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\MailKit.dll
+C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\MimeKit.dll
+C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Security.Cryptography.Pkcs.dll

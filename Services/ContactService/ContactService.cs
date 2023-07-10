@@ -8,13 +8,15 @@ namespace PortfolioWebsite_Backend.Services.ContactService
         private readonly IMapper _mapper;
         private readonly ContactContext _contactContext;
         private readonly IUserService _userService;
+        private readonly IEmailService _emailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ContactService(IMapper mapper, ContactContext contactContext, IUserService userService, IHttpContextAccessor httpContextAccessor)
+        public ContactService(IMapper mapper, ContactContext contactContext, IUserService userService, IEmailService emailService, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _contactContext = contactContext;
             _userService = userService;
+            _emailService = emailService;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -251,6 +253,14 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                 var dbContacts = await _contactContext.Contacts.ToListAsync();
                 var foundContact = dbContacts.FirstOrDefault(c => c.Email == createdContact.Email) ?? throw new ContactNotSavedException();
 
+                // Email confirmation
+                List<string> sendTo = new() { createdContact.Email };
+                var email = new ContactCreatedEmailDto()
+                {
+                    To = sendTo
+                };
+                await _emailService.SendContactHasBeenCreatedNotification(email);
+
                 // return contact with response
                 serviceResponse.Data = _mapper.Map<GetContactDto>(foundContact);
                 serviceResponse.Message = "Contact added successfully";
@@ -290,11 +300,11 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                     // Check role
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()))
                     {
-                        // Check if user is authorized to update contact, if not, throw exception
-                        if (dbContact.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email))
+                        // Users should not be able to update other users's contacts or their email unless they are updating their account with the same email
+                        if (dbContact.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email) || updateContact.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email))
                         {
                             serviceResponse.Success = true;
-                            throw new UnauthorizedAccessException("You are not authorized to update this contact.");
+                            throw new UnauthorizedAccessException();
                         }
                     }
 
@@ -305,6 +315,14 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                     // Verify contact was updated
                     dbContacts = await _contactContext.Contacts.ToListAsync();
                     dbContact = dbContacts.FirstOrDefault(c => c.Id == id) ?? throw new ContactNotUpdatedException();
+
+                    // Email confirmation
+                    List<string> sendTo = new() { dbContact.Email };
+                    var email = new ContactUpdatedEmailDto()
+                    {
+                        To = sendTo
+                    };
+                    await _emailService.SendContactHasBeenUpdatedNotification(email);
 
                     // Update response
                     serviceResponse.Success = true;
@@ -353,6 +371,14 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                     // verify contact was deleted
                     var dbContact = await _contactContext.Contacts.FirstOrDefaultAsync(c => c.Id == id);
                     if (dbContact != null) throw new ContactNotDeletedException(id);
+
+                    // Email confirmation
+                    List<string> sendTo = new() { contact.Email };
+                    var email = new ContactDeletedEmailDto()
+                    {
+                        To = sendTo
+                    };
+                    await _emailService.SendContactHasBeenDeletedNotification(email);
 
                     // update response
                     serviceResponse.Success = true;
