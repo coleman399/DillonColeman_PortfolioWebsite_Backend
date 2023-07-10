@@ -16,7 +16,7 @@
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
 
-            // connect to mysql with connection string from app settings
+            // Connection string to MySql using user secrets 
             var connectionString = Configuration["ConnectionStrings:LocalMySqlDb"];
 
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));

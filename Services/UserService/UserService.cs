@@ -11,14 +11,17 @@ namespace PortfolioWebsite_Backend.Services.UserService
         private readonly IMapper _mapper;
         private readonly UserContext _userContext;
         private readonly ContactContext _contactContext;
+        private readonly IEmailService _emailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
 
-        public UserService(IMapper mapper, UserContext userContext, ContactContext contactContext, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+
+        public UserService(IMapper mapper, UserContext userContext, ContactContext contactContext, IEmailService emailService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             _mapper = mapper;
             _userContext = userContext;
             _contactContext = contactContext;
+            _emailService = emailService;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
         }
@@ -32,7 +35,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.UserName),
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Keys:JWT"]!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Security:Keys:JWT"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -100,14 +103,13 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 {
                     throw new HttpContextFailureException();
                 }
-                return serviceResponse;
             }
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = exception.Message + " " + exception;
-                return serviceResponse;
             }
+            return serviceResponse;
         }
 
         public async Task<UserServiceResponse<GetUserDto>> RegisterUser(RegisterUserDto newUser)
@@ -152,14 +154,16 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 // Return user with updated response
                 serviceResponse.Data = _mapper.Map<GetUserDto>(createdUser);
                 serviceResponse.Message = "User added successfully";
-                return serviceResponse;
+
+                // Send Email Confirmation
+
             }
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = exception.Message + " " + exception;
-                return serviceResponse;
             }
+            return serviceResponse;
         }
 
         public async Task<UserServiceResponse<GetLoggedInUserDto>> LoginUser(LoginUserDto loginUser)
@@ -190,25 +194,22 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 if (userFound && userVerified)
                 {
                     serviceResponse.Message = "User logged in successfully.";
-                    return serviceResponse;
                 }
                 else if (userFound && !userVerified)
                 {
                     serviceResponse.Message = "Password is incorrect.";
-                    return serviceResponse;
                 }
                 else
                 {
                     serviceResponse.Message = "User could not be found.";
-                    return serviceResponse;
                 }
             }
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = exception.Message + " " + exception;
-                return serviceResponse;
             }
+            return serviceResponse;
         }
 
         public async Task<UserServiceResponse<GetLoggedInUserDto>> UpdateUser(int id, UpdateUserDto updateUser)
@@ -279,13 +280,26 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     dbUser = dbUsers.FirstOrDefault(u => u.Id == id) ?? throw new UserNotFoundException(id);
                     if (dbUser.Email != updateUser.Email && dbUser.UserName != updateUser.UserName || !BCrypt.Net.BCrypt.Verify(updateUser.Password, dbUser.PasswordHash)) throw new UserFailedToUpdateException();
 
-                    // Update user's token and admin/user refresh token
-                    serviceResponse.Data = _mapper.Map<GetLoggedInUserDto>(dbUser);
-                    if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()))
+                    // Email confirmation
+                    List<string> sendTo = new() { dbUser.Email };
+                    var email = new AccountUpdatedEmailDto()
                     {
-                        dbUser.AccessToken = CreateAccessToken(dbUser);
-                        serviceResponse.Data.Token = dbUser.AccessToken;
+                        To = sendTo
+                    };
+                    await _emailService.SendAccountHasBeenUpdatedNotification(email);
+
+                    // Sign user out, keep admin signed in unless admin is updating their own account
+                    serviceResponse.Data = _mapper.Map<GetLoggedInUserDto>(dbUser);
+                    if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()) || dbUser.Email != updateUser.Email || dbUser.UserName != updateUser.UserName)
+                    {
+                        await Logout();
+                        serviceResponse.Data.Token = string.Empty;
+                        serviceResponse.Success = true;
+                        serviceResponse.Message = "User updated successfully. User logged out.";
+                        return serviceResponse;
                     }
+                    serviceResponse.Data.Token = dbUser.AccessToken;
+                    dbUser.AccessToken = CreateAccessToken(dbUser);
                     dbUser.RefreshToken = CreateRefreshToken(dbUser);
                     SetRefreshToken(dbUser.RefreshToken);
                     _userContext.Users.Update(dbUser);
@@ -365,6 +379,11 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     serviceResponse.Success = true;
                     serviceResponse.Data = new DeleteUserDto();
                     serviceResponse.Message = "User deleted successfully.";
+
+                    // Log user out
+                    await Logout();
+
+                    // Email confirmation
                 }
                 else
                 {
@@ -388,7 +407,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 {
                     TokenCheck();
 
-                    // find user
+                    // Find user
                     int userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UserNotFoundException());
                     var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
 
@@ -411,8 +430,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     SetRefreshToken(dbUser.RefreshToken);
                     serviceResponse.Data = _mapper.Map<GetLoggedInUserDto>(dbUser);
                     serviceResponse.Data.Token = dbUser.AccessToken;
-                    return serviceResponse;
-
                 }
                 else
                 {
@@ -423,8 +440,9 @@ namespace PortfolioWebsite_Backend.Services.UserService
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = exception.Message + " " + exception;
-                return serviceResponse;
+
             }
+            return serviceResponse;
         }
 
         public async Task<UserServiceResponse<GetLoggedOutUserDto>> Logout()
@@ -455,7 +473,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     serviceResponse.Success = true;
                     serviceResponse.Data = new GetLoggedOutUserDto();
                     serviceResponse.Message = "User logged out successfully.";
-                    return serviceResponse;
                 }
                 else
                 {
@@ -466,8 +483,8 @@ namespace PortfolioWebsite_Backend.Services.UserService
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = exception.Message + " " + exception;
-                return serviceResponse;
             }
+            return serviceResponse;
         }
     }
 }
