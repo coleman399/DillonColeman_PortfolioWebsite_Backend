@@ -88,7 +88,6 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             return Ok(result);
         }
 
-        // Need to create a logout route
         // Post api/<AuthController>/logout
         [HttpPost("logout"), Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -101,10 +100,39 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
 
+        }
 
-            // Need to create a forgot password route
+        // Post api/<AuthController>/forgotPassword
+        [HttpPost("forgotPassword"), AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<UserServiceResponse<GetForgotPasswordUserDto>>> ForgotPassword(LoginUserDto user)
+        {
+            UserServiceResponse<GetForgotPasswordUserDto> result = await _userService.ForgotPassword(user);
+            if (result.Success == false) return BadRequest(result);
+            return Ok(result);
+        }
 
-            // Need to create a reset password route
+        // Post api/<AuthController>/resetPasswordConfirmation
+        [HttpPost("resetPasswordConfirmation"), AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<UserServiceResponse<GetResetPasswordUserDto>>> ResetPasswordConfirmation(string token)
+        {
+            UserServiceResponse<GetResetPasswordUserDto> result = await _userService.ResetPasswordConfirmation(token);
+            if (result.Success == false) return BadRequest(result);
+            return Ok(result);
+        }
+
+        // Post api/<AuthController>/resetPassword
+        [HttpPost("resetPassword"), AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<UserServiceResponse<GetLoggedInUserDto>>> ResetPassword(LoginUserDto user)
+        {
+            UserServiceResponse<GetLoggedInUserDto> result = await _userService.ResetPassword(user);
+            if (result.Success == false) return BadRequest(result);
+            return Ok(result);
         }
     }
 }

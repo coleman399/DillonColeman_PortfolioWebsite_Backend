@@ -15,7 +15,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
 
-
         public UserService(IMapper mapper, UserContext userContext, ContactContext contactContext, IEmailService emailService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             _mapper = mapper;
@@ -495,6 +494,47 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 serviceResponse.Message = exception.Message + " " + exception;
             }
             return serviceResponse;
+        }
+
+        public async Task<UserServiceResponse<GetForgotPasswordUserDto>> ForgotPassword(LoginUserDto user)
+        {
+            // Verify user exists
+
+            // Generate token
+
+            // Send email with token
+
+            // Update response
+
+            throw new NotImplementedException();
+        }
+
+        public async Task<UserServiceResponse<GetResetPasswordUserDto>> ResetPasswordConfirmation(string token)
+        {
+            // Verify token
+
+            // Create new password
+
+            // Update user
+
+            // Send email with link to reset password
+
+            // Update response
+
+            throw new NotImplementedException();
+        }
+
+        public async Task<UserServiceResponse<GetLoggedInUserDto>> ResetPassword(LoginUserDto user)
+        {
+            // Verify user 
+
+            // Update password
+
+            // Save user
+
+            // Update response
+
+            throw new NotImplementedException();
         }
     }
 }
