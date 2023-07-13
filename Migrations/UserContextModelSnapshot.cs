@@ -30,8 +30,6 @@ namespace PortfolioWebsite_Backend.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -48,8 +46,6 @@ namespace PortfolioWebsite_Backend.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserName")
@@ -60,10 +56,55 @@ namespace PortfolioWebsite_Backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessToken = "",
+                            CreatedAt = new DateTime(2023, 7, 11, 18, 34, 22, 676, DateTimeKind.Local).AddTicks(9679),
+                            Email = "coleman399@gmail.com",
+                            PasswordHash = "$2a$11$IzR9zVslaKricEmQ5TucgOMn87gRSkMcuT4M79avhUpV7pwgbbXRC",
+                            Role = "SuperUser",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "coleman399"
+                        });
                 });
 
             modelBuilder.Entity("PortfolioWebsite_Backend.Models.UserModel.User", b =>
                 {
+                    b.OwnsOne("PortfolioWebsite_Backend.Models.UserModel.ForgotPasswordToken", "ForgotPasswordToken", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("CreatedAt")
+                                .HasColumnType("datetime(6)");
+
+                            b1.Property<DateTime>("ExpiresAt")
+                                .HasColumnType("datetime(6)");
+
+                            b1.Property<string>("Token")
+                                .IsRequired()
+                                .HasColumnType("longtext");
+
+                            b1.Property<int>("UserId")
+                                .HasColumnType("int");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("UserId")
+                                .IsUnique();
+
+                            b1.ToTable("ForgotPasswordTokens");
+
+                            b1.WithOwner("User")
+                                .HasForeignKey("UserId");
+
+                            b1.Navigation("User");
+                        });
+
                     b.OwnsOne("PortfolioWebsite_Backend.Models.UserModel.RefreshToken", "RefreshToken", b1 =>
                         {
                             b1.Property<int>("Id")
@@ -71,13 +112,9 @@ namespace PortfolioWebsite_Backend.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<DateTime>("CreatedAt")
-                                .IsConcurrencyToken()
-                                .ValueGeneratedOnAddOrUpdate()
                                 .HasColumnType("datetime(6)");
 
                             b1.Property<DateTime>("ExpiresAt")
-                                .IsConcurrencyToken()
-                                .ValueGeneratedOnAddOrUpdate()
                                 .HasColumnType("datetime(6)");
 
                             b1.Property<string>("Token")
@@ -99,6 +136,8 @@ namespace PortfolioWebsite_Backend.Migrations
 
                             b1.Navigation("User");
                         });
+
+                    b.Navigation("ForgotPasswordToken");
 
                     b.Navigation("RefreshToken");
                 });

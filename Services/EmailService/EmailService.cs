@@ -16,37 +16,7 @@ namespace PortfolioWebsite_Backend.Services.EmailService
             _mapper = mapper;
         }
 
-        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendAccountHasBeenCreatedNotification(AccountCreatedEmailDto email)
-        {
-            return await SendEmail(_mapper.Map<Email>(email));
-        }
-
-        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendAccountHasBeenDeletedNotification(AccountDeletedEmailDto email)
-        {
-            return await SendEmail(_mapper.Map<Email>(email));
-        }
-
-        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendAccountHasBeenUpdatedNotification(AccountUpdatedEmailDto email)
-        {
-            return await SendEmail(_mapper.Map<Email>(email));
-        }
-
-        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendContactHasBeenCreatedNotification(ContactCreatedEmailDto email)
-        {
-            return await SendEmail(_mapper.Map<Email>(email));
-        }
-
-        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendContactHasBeenDeletedNotification(ContactDeletedEmailDto email)
-        {
-            return await SendEmail(_mapper.Map<Email>(email));
-        }
-
-        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendContactHasBeenUpdatedNotification(ContactUpdatedEmailDto email)
-        {
-            return await SendEmail(_mapper.Map<Email>(email));
-        }
-
-        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendEmail(Email email)
+        private async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendEmail(Email email)
         {
             var serviceResponse = new EmailServiceResponse<GetEmailConfirmationDto>();
             try
@@ -117,6 +87,41 @@ namespace PortfolioWebsite_Backend.Services.EmailService
                 serviceResponse.Message = "Failed to send email";
             }
             return serviceResponse;
+        }
+
+        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendAccountHasBeenCreatedNotification(AccountCreatedEmailDto email)
+        {
+            return await SendEmail(_mapper.Map<Email>(email));
+        }
+
+        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendAccountHasBeenDeletedNotification(AccountDeletedEmailDto email)
+        {
+            return await SendEmail(_mapper.Map<Email>(email));
+        }
+
+        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendAccountHasBeenUpdatedNotification(AccountUpdatedEmailDto email)
+        {
+            return await SendEmail(_mapper.Map<Email>(email));
+        }
+
+        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendContactHasBeenCreatedNotification(ContactCreatedEmailDto email)
+        {
+            return await SendEmail(_mapper.Map<Email>(email));
+        }
+
+        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendContactHasBeenDeletedNotification(ContactDeletedEmailDto email)
+        {
+            return await SendEmail(_mapper.Map<Email>(email));
+        }
+
+        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendContactHasBeenUpdatedNotification(ContactUpdatedEmailDto email)
+        {
+            return await SendEmail(_mapper.Map<Email>(email));
+        }
+
+        public async Task<EmailServiceResponse<GetEmailConfirmationDto>> SendForgetPassword(ForgotPasswordEmailDto email)
+        {
+            return await SendEmail(_mapper.Map<Email>(email));
         }
     }
 }

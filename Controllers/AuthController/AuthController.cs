@@ -15,7 +15,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         }
 
         // POST api/<AuthController>/getUsers
-        [HttpGet("getUsers"), Authorize(Roles = "Admin")]
+        [HttpGet("getUsers"), Authorize(Roles = "SuperUser, Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserServiceResponse<List<GetUserDto>>>> GetUsers()
@@ -48,8 +48,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         }
 
         // PUT api/<AuthController>/{id}
-        // Admin should be able to update any user, user should only be able to update their own account
-        [HttpPut("updateUser"), Authorize(Roles = "Admin, User")]
+        [HttpPut("updateUser"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -62,8 +61,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         }
 
         // DELETE api/<AuthController>/{id}
-        // Admin should be able to delete any user, user should only be able to delete their own account
-        [HttpDelete("deleteUser"), Authorize(Roles = "Admin, User")]
+        [HttpDelete("deleteUser"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -76,7 +74,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         }
 
         // Post api/<AuthController>/refreshToken
-        [HttpPost("refreshToken"), Authorize(Roles = "Admin, User")]
+        [HttpPost("refreshToken"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -89,7 +87,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         }
 
         // Post api/<AuthController>/logout
-        [HttpPost("logout"), Authorize(Roles = "Admin, User")]
+        [HttpPost("logout"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
