@@ -10,6 +10,7 @@ namespace PortfolioWebsite_Backend.Models.UserModel
         public int Id { get; set; }
         [Required]
         public required string Token { get; set; }
+        public bool IsValidated { get; set; } = false;
         public int UserId { get; set; }
         public User? User { get; set; }
         [Required]

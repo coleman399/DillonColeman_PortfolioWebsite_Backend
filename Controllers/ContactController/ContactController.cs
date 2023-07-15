@@ -17,7 +17,7 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
 
         // GET: api/<ContactController>
         // Admin should be able to see all contacts, user should only be able to see their own contacts
-        [HttpGet("getContacts"), Authorize(Roles = "Admin, User")]
+        [HttpGet("getContacts"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -31,7 +31,7 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
 
         // GET api/<ContactController>/{id}
         // Only admin should be able to search by id
-        [HttpGet("getContactById"), Authorize(Roles = "Admin, User")]
+        [HttpGet("getContactById"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -46,7 +46,7 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
 
         // GET api/<ContactController>/{email}
         // Admin should be able to get all contacts, user should only be able to get their own contacts
-        [HttpGet("geContactsByEmail"), Authorize(Roles = "Admin, User")]
+        [HttpGet("geContactsByEmail"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -60,7 +60,7 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
 
         // GET api/<ContactController>/{name}
         // Only admin should be able to search by name
-        [HttpGet("getContactsByName"), Authorize(Roles = "Admin, User")]
+        [HttpGet("getContactsByName"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -88,7 +88,7 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
 
         // PUT api/<ContactController>/{id}
         // Admin should be able to update any contact, user should only be able to update their own contacts
-        [HttpPut("updateContact"), Authorize(Roles = "Admin, User")]
+        [HttpPut("updateContact"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -102,7 +102,7 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
 
         // DELETE api/<ContactController>/{id}
         // Admin should be able to delete any contact, user should only be able to delete their own contacts
-        [HttpDelete("deleteContact"), Authorize(Roles = "Admin, User")]
+        [HttpDelete("deleteContact"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -32,7 +32,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "PortfolioWebsite_Backend", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "PortfolioWebsite_Backend", Version = ".001" });
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: Bearer <token>",
@@ -62,7 +62,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuerSigningKey = false,
+            ValidateIssuerSigningKey = true,
             ValidateAudience = false,
             ValidateIssuer = false,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Security:Keys:JWT"]!)),

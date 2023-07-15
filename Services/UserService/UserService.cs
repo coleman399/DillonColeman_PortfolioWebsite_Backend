@@ -28,9 +28,8 @@ namespace PortfolioWebsite_Backend.Services.UserService
         private ClaimsPrincipal ValidateToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = (JwtSecurityToken)tokenHandler.ReadToken(token) ?? throw new Exception();
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Security:Keys:JWT"]!));
-            TokenValidationParameters parameters = new TokenValidationParameters()
+            TokenValidationParameters parameters = new()
             {
                 ValidateIssuerSigningKey = true,
                 ValidateAudience = false,
@@ -39,8 +38,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 IssuerSigningKey = key,
                 ClockSkew = TimeSpan.Zero
             };
-            SecurityToken securityToken;
-            return tokenHandler.ValidateToken(token, parameters, out securityToken);
+            return tokenHandler.ValidateToken(token, parameters, out _);
         }
 
         private string CreateAccessToken(User user)
@@ -70,7 +68,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
         {
             var refreshToken = new RefreshToken
             {
-                Id = user.RefreshToken!.Id,
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
                 UserId = user.Id,
                 User = user,
@@ -105,7 +102,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(5),
+                Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = creds
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -545,7 +542,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             return serviceResponse;
         }
 
-        public async Task<UserServiceResponse<GetForgotPasswordUserDto>> ForgotPassword(LoginUserDto user)
+        public async Task<UserServiceResponse<GetForgotPasswordUserDto>> ForgotPassword(ForgotPasswordUserDto user)
         {
 
             var serviceResponse = new UserServiceResponse<GetForgotPasswordUserDto>() { Success = false, Data = null };
@@ -553,7 +550,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             {
                 // Verify user exists
                 var dbUsers = await _userContext.Users.ToListAsync();
-                var dbUser = (user.UserName.IsNullOrEmpty() ? dbUsers.FirstOrDefault(u => u.Email == user.Email) : dbUsers.FirstOrDefault(u => u.UserName == user.UserName)) ?? throw new UserNotFoundException();
+                var dbUser = (user.UserName.IsNullOrEmpty() ? dbUsers.FirstOrDefault(u => u.Email == user.Email) : dbUsers.FirstOrDefault(u => u.UserName == user.UserName)) ?? dbUsers.FirstOrDefault(u => u.Email == user.Email) ?? throw new UserNotFoundException();
 
                 // Generate token
                 var token = CreateForgotPasswordToken(dbUser);
@@ -561,7 +558,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 // Save token
                 var forgotPasswordToken = new ForgotPasswordToken
                 {
-                    Id = dbUser.ForgotPasswordToken!.Id,
                     Token = token,
                     UserId = dbUser.Id,
                     User = dbUser,
@@ -581,14 +577,14 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 var email = new ForgotPasswordEmailDto()
                 {
                     To = sendTo,
-                    Body = "Click the link below to reset your password." + Environment.NewLine + _configuration.GetSection("Security:Issuer:Url") + "/api/Auth/forgotPassword/" + token
+                    Body = "Click the link below to reset your password." + "<br><br>\n" + _configuration["Security:Issuer:Url"] + "/api/Auth/resetPasswordConfirmation?token=" + token
                 };
                 await _emailService.SendForgetPassword(email);
 
                 // Update response
                 serviceResponse.Success = true;
                 serviceResponse.Data = new GetForgotPasswordUserDto();
-                serviceResponse.Message = "Forgot Password Operation Successfully Completed";
+                serviceResponse.Message = "Forgot Password Operation Complete.";
             }
             catch (Exception exception)
             {
@@ -599,49 +595,56 @@ namespace PortfolioWebsite_Backend.Services.UserService
 
         public async Task<UserServiceResponse<GetResetPasswordUserDto>> ResetPasswordConfirmation(string token)
         {
-            // Verify token
-            var serviceResponse = new UserServiceResponse<GetForgotPasswordUserDto>() { Success = false, Data = null };
+            var serviceResponse = new UserServiceResponse<GetResetPasswordUserDto>() { Success = false, Data = null };
             try
             {
+                // Validate token
+                var claimsPrincipal = ValidateToken(token);
+
                 // Find user
-                ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(token, new TokenValidationParameters
+                var dbUsers = await _userContext.Users.ToListAsync();
+                var dbUser = dbUsers.FirstOrDefault(u => claimsPrincipal.FindFirstValue("Email") == u.Email) ?? dbUsers.FirstOrDefault(u => claimsPrincipal.FindFirstValue("Name") == u.UserName) ?? throw new UserNotFoundException();
+
+                // Validate that Users ResetPasswordToken is the same as the incoming token then set it to validated
+                // add more to filter
+                if (!dbUser.ForgotPasswordToken!.Token.Equals(token) || dbUser.ForgotPasswordToken.ExpiresAt > DateTime.Now)
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration.GetSection("Security:Issuer:SigningKey").Value!)),
-                    ValidateIssuer = true,
-                    ValidIssuer = _configuration.GetSection("Security:Issuer:Url").Value,
-                    ValidateAudience = true,
-                    ValidAudience = _configuration.GetSection("Security:Issuer:Url").Value,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
+                    serviceResponse.Success = true;
+                    throw new UnauthorizedAccessException();
+                }
+                else
+                {
+                    dbUser.ForgotPasswordToken.IsValidated = true;
+                    _userContext.Users.Update(dbUser);
+                    _userContext.SaveChanges();
+                }
 
+                // Verify that the token was set to validated
+                dbUsers = await _userContext.Users.ToListAsync();
+                dbUser = dbUsers.FirstOrDefault(u => dbUser.Id == u.Id);
+                if (!dbUser!.ForgotPasswordToken!.IsValidated) throw new UserFailedToUpdateException();
 
+                // Update Response
+                serviceResponse.Data = new GetResetPasswordUserDto() { Token = CreateAccessToken(dbUser) };
+                serviceResponse.Success = true;
+                serviceResponse.Message = "Reset Password Confirmation Operation Complete.";
             }
             catch (Exception exception)
             {
-
-                throw;
+                serviceResponse.Message = exception.Message + " " + exception;
             }
-
-            // Create new password
-
-            // Update user
-
-            // Send email with link to reset password
-
-            // Update response
-
-            throw new NotImplementedException();
+            return serviceResponse;
         }
 
-        public async Task<UserServiceResponse<GetLoggedInUserDto>> ResetPassword(LoginUserDto user)
+        public async Task<UserServiceResponse<GetLoggedInUserDto>> ResetPassword(ResetPasswordUserDto resetPassword)
         {
-            // Verify user 
+            // Find sser
 
             // Update password
 
             // Save user
+
+            // Verify user was saved
 
             // Update response
 

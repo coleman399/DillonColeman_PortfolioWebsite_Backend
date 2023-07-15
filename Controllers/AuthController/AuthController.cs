@@ -104,7 +104,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         [HttpPost("forgotPassword"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserServiceResponse<GetForgotPasswordUserDto>>> ForgotPassword(LoginUserDto user)
+        public async Task<ActionResult<UserServiceResponse<GetForgotPasswordUserDto>>> ForgotPassword(ForgotPasswordUserDto user)
         {
             UserServiceResponse<GetForgotPasswordUserDto> result = await _userService.ForgotPassword(user);
             if (result.Success == false) return BadRequest(result);
@@ -123,13 +123,15 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         }
 
         // Post api/<AuthController>/resetPassword
-        [HttpPost("resetPassword"), AllowAnonymous]
+        [HttpPost("resetPassword"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserServiceResponse<GetLoggedInUserDto>>> ResetPassword(LoginUserDto user)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<UserServiceResponse<GetLoggedInUserDto>>> ResetPassword(ResetPasswordUserDto resetPassword)
         {
-            UserServiceResponse<GetLoggedInUserDto> result = await _userService.ResetPassword(user);
+            UserServiceResponse<GetLoggedInUserDto> result = await _userService.ResetPassword(resetPassword);
             if (result.Success == false) return BadRequest(result);
+            if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
         }
     }

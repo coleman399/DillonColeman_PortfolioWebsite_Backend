@@ -2,6 +2,7 @@
 {
     public class GetResetPasswordUserDto
     {
-        public string Message = "Your password has been reset. Please check the email provided for further instruction.";
+        public required string Token { get; set; }
+        public string Message = "Please reset your password.";
     }
 }
