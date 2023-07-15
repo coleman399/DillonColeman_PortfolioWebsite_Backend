@@ -10,7 +10,7 @@
         public Task<UserServiceResponse<GetLoggedInUserDto>> RefreshToken();
         public Task<UserServiceResponse<GetForgotPasswordUserDto>> ForgotPassword(ForgotPasswordUserDto user);
         public Task<UserServiceResponse<GetResetPasswordUserDto>> ResetPasswordConfirmation(string token);
-        public Task<UserServiceResponse<GetLoggedInUserDto>> ResetPassword(ResetPasswordUserDto resetPassword);
+        public Task<UserServiceResponse<PasswordResetUserDto>> ResetPassword(ResetPasswordUserDto resetPassword);
         public Task<UserServiceResponse<GetLoggedOutUserDto>> Logout();
         public void TokenCheck();
     }

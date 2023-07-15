@@ -566,6 +566,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 };
                 dbUser.ForgotPasswordToken = forgotPasswordToken;
                 _userContext.Users.Update(dbUser);
+                _userContext.SaveChanges();
 
                 // Verify token was saved
                 dbUsers = await _userContext.Users.ToListAsync();
@@ -583,7 +584,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
 
                 // Update response
                 serviceResponse.Success = true;
-                serviceResponse.Data = new GetForgotPasswordUserDto();
+                serviceResponse.Data = new GetForgotPasswordUserDto() { Token = token };
                 serviceResponse.Message = "Forgot Password Operation Complete.";
             }
             catch (Exception exception)
@@ -603,11 +604,11 @@ namespace PortfolioWebsite_Backend.Services.UserService
 
                 // Find user
                 var dbUsers = await _userContext.Users.ToListAsync();
-                var dbUser = dbUsers.FirstOrDefault(u => claimsPrincipal.FindFirstValue("Email") == u.Email) ?? dbUsers.FirstOrDefault(u => claimsPrincipal.FindFirstValue("Name") == u.UserName) ?? throw new UserNotFoundException();
+                var dbUser = dbUsers.FirstOrDefault(u => claimsPrincipal.FindFirstValue(ClaimTypes.Email) == u.Email) ?? dbUsers.FirstOrDefault(u => claimsPrincipal.FindFirstValue(ClaimTypes.Name) == u.UserName) ?? throw new UserNotFoundException();
 
                 // Validate that Users ResetPasswordToken is the same as the incoming token then set it to validated
                 // add more to filter
-                if (!dbUser.ForgotPasswordToken!.Token.Equals(token) || dbUser.ForgotPasswordToken.ExpiresAt > DateTime.Now)
+                if (dbUser.ForgotPasswordToken == null || !dbUser.ForgotPasswordToken.Token.Equals(token) || dbUser.ForgotPasswordToken.ExpiresAt < DateTime.Now)
                 {
                     serviceResponse.Success = true;
                     throw new UnauthorizedAccessException();
@@ -625,7 +626,8 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 if (!dbUser!.ForgotPasswordToken!.IsValidated) throw new UserFailedToUpdateException();
 
                 // Update Response
-                serviceResponse.Data = new GetResetPasswordUserDto() { Token = CreateAccessToken(dbUser) };
+                dbUser.AccessToken = CreateAccessToken(dbUser);
+                serviceResponse.Data = new GetResetPasswordUserDto() { Token = dbUser.AccessToken };
                 serviceResponse.Success = true;
                 serviceResponse.Message = "Reset Password Confirmation Operation Complete.";
             }
@@ -636,19 +638,46 @@ namespace PortfolioWebsite_Backend.Services.UserService
             return serviceResponse;
         }
 
-        public async Task<UserServiceResponse<GetLoggedInUserDto>> ResetPassword(ResetPasswordUserDto resetPassword)
+        public async Task<UserServiceResponse<PasswordResetUserDto>> ResetPassword(ResetPasswordUserDto resetPasswordDto)
         {
-            // Find sser
+            var serviceResponse = new UserServiceResponse<PasswordResetUserDto>();
+            try
+            {
+                if (!RegexFilters.IsValidPassword(resetPasswordDto.Password)) throw new InvalidPasswordException(resetPasswordDto.Password);
 
-            // Update password
+                if (_httpContextAccessor.HttpContext != null)
+                {
+                    // Find user
+                    var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UserNotFoundException());
+                    var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
 
-            // Save user
+                    // Update password
+                    dbUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(resetPasswordDto.Password);
+                    dbUser.AccessToken = string.Empty;
+                    _userContext.Users.Update(dbUser);
+                    _userContext.SaveChanges();
 
-            // Verify user was saved
+                    // Verify user was saved
+                    var dbUsers = await _userContext.Users.ToListAsync();
+                    dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+                    if (!BCrypt.Net.BCrypt.Verify(resetPasswordDto.Password, dbUser.PasswordHash)) throw new UserFailedToUpdateException();
 
-            // Update response
+                    // Update response
+                    serviceResponse.Success = true;
+                    serviceResponse.Data = new PasswordResetUserDto() { Message = "User's Password Reset Successfully." };
+                    serviceResponse.Message = "Reset Password Operation Complete.";
+                }
+                else
+                {
+                    throw new HttpContextFailureException();
+                }
 
-            throw new NotImplementedException();
+            }
+            catch (Exception exception)
+            {
+                serviceResponse.Message = exception.Message + " " + exception;
+            }
+            return serviceResponse;
         }
     }
 }

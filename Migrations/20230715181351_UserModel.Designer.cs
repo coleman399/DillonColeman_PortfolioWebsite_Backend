@@ -11,7 +11,7 @@ using PortfolioWebsite_Backend.Models.UserModel;
 namespace PortfolioWebsite_Backend.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20230711233422_UserModel")]
+    [Migration("20230715181351_UserModel")]
     partial class UserModel
     {
         /// <inheritdoc />
@@ -65,9 +65,9 @@ namespace PortfolioWebsite_Backend.Migrations
                         {
                             Id = 1,
                             AccessToken = "",
-                            CreatedAt = new DateTime(2023, 7, 11, 18, 34, 22, 676, DateTimeKind.Local).AddTicks(9679),
+                            CreatedAt = new DateTime(2023, 7, 15, 13, 13, 51, 188, DateTimeKind.Local).AddTicks(2596),
                             Email = "coleman399@gmail.com",
-                            PasswordHash = "$2a$11$IzR9zVslaKricEmQ5TucgOMn87gRSkMcuT4M79avhUpV7pwgbbXRC",
+                            PasswordHash = "$2a$11$jDYl6u6UNccpVbTfurFq0e3gxA.rm9s3CyUXsPl5mrOcs7vZil4Nq",
                             Role = "SuperUser",
                             UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "coleman399"
@@ -87,6 +87,9 @@ namespace PortfolioWebsite_Backend.Migrations
 
                             b1.Property<DateTime>("ExpiresAt")
                                 .HasColumnType("datetime(6)");
+
+                            b1.Property<bool>("IsValidated")
+                                .HasColumnType("tinyint(1)");
 
                             b1.Property<string>("Token")
                                 .IsRequired()
