@@ -5,19 +5,20 @@
 
         public DbSet<User> Users { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<ForgotPasswordToken> ForgotPasswordTokens { get; set; }
 
-        protected readonly IConfiguration Configuration;
+        protected readonly IConfiguration _configuration;
 
         public UserContext(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
 
             // Connection string to MySql using user secrets 
-            var connectionString = Configuration["ConnectionStrings:LocalMySqlDb"];
+            var connectionString = _configuration["ConnectionStrings:LocalMySqlDb"];
 
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
@@ -40,12 +41,20 @@
                     .HasMaxLength(50);
                 entity.Property(e => e.Role)
                     .IsRequired();
-                entity.Property(e => e.AccessToken)
-                    .IsRequired();
+                entity.Property(e => e.AccessToken);
                 entity.OwnsOne(e => e.RefreshToken);
-                entity.Property(e => e.CreatedAt)
-                    .IsRequired();
+                entity.OwnsOne(e => e.ForgotPasswordToken);
+                entity.Property(e => e.CreatedAt);
                 entity.Property(e => e.UpdatedAt);
+            }).Entity<User>().HasData(new User
+            {
+                Id = 1,
+                UserName = _configuration["SuperUser:UserName"]!,
+                Email = _configuration["SuperUser:Email"]!,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(_configuration["SuperUser:Password"]!),
+                Role = Roles.SuperUser.ToString(),
+                AccessToken = string.Empty,
+                CreatedAt = DateTime.Now,
             });
         }
     }

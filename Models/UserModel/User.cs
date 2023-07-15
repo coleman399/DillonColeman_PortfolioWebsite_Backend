@@ -19,6 +19,7 @@ namespace PortfolioWebsite_Backend.Models.UserModel
         [Required]
         public required string AccessToken { get; set; } = string.Empty;
         public RefreshToken? RefreshToken { get; set; }
+        public ForgotPasswordToken? ForgotPasswordToken { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.MinValue;
         [Required]
@@ -26,13 +27,14 @@ namespace PortfolioWebsite_Backend.Models.UserModel
 
         public User() { }
 
-        public User(string userName, string passwordHash, string email, string role, RefreshToken refreshToken)
+        public User(string userName, string passwordHash, string email, string role, RefreshToken refreshToken, ForgotPasswordToken forgotPasswordToken)
         {
             UserName = userName;
             PasswordHash = passwordHash;
             Email = email;
             Role = role;
             RefreshToken = refreshToken;
+            ForgotPasswordToken = forgotPasswordToken;
         }
 
         public override string? ToString()

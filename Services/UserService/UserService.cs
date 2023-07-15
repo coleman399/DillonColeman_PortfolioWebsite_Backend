@@ -15,7 +15,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
 
-
         public UserService(IMapper mapper, UserContext userContext, ContactContext contactContext, IEmailService emailService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             _mapper = mapper;
@@ -24,6 +23,22 @@ namespace PortfolioWebsite_Backend.Services.UserService
             _emailService = emailService;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
+        }
+
+        private ClaimsPrincipal ValidateToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Security:Keys:JWT"]!));
+            TokenValidationParameters parameters = new()
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateLifetime = true,
+                IssuerSigningKey = key,
+                ClockSkew = TimeSpan.Zero
+            };
+            return tokenHandler.ValidateToken(token, parameters, out _);
         }
 
         private string CreateAccessToken(User user)
@@ -53,8 +68,9 @@ namespace PortfolioWebsite_Backend.Services.UserService
         {
             var refreshToken = new RefreshToken
             {
-                Id = user.RefreshToken!.Id,
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                UserId = user.Id,
+                User = user,
                 CreatedAt = DateTime.Now,
                 ExpiresAt = DateTime.Now.AddDays(1),
             };
@@ -71,6 +87,27 @@ namespace PortfolioWebsite_Backend.Services.UserService
             };
             _httpContextAccessor.HttpContext!.Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
             _httpContextAccessor.HttpContext!.Response.Cookies.Append("refreshTokenId", refreshToken.Id.ToString(), cookieOptions);
+        }
+
+        private string CreateForgotPasswordToken(User user)
+        {
+            List<Claim> claims = new()
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.UserName),
+            };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Security:Keys:JWT"]!));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = creds
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var forgotPasswordToken = tokenHandler.WriteToken(token);
+            return forgotPasswordToken ?? throw new Exception("Forgot password token could not be created.");
         }
 
         public void TokenCheck()
@@ -133,6 +170,13 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     }
                 }
                 if (!validRole) throw new InvalidRoleException(newUser.Role);
+                if (!newUser.Role.Equals(Roles.User.ToString()))
+                {
+                    if (!_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.SuperUser.ToString()))
+                    {
+                        throw new UnauthorizedAccessException();
+                    }
+                }
 
                 // Check if email or user name are already being used
                 await _userContext.Users.ForEachAsync(u =>
@@ -155,7 +199,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 serviceResponse.Data = _mapper.Map<GetUserDto>(createdUser);
                 serviceResponse.Message = "User added successfully";
 
-                // Send Email Confirmation
                 // Email confirmation
                 List<string> sendTo = new() { createdUser.Email };
                 var email = new AccountCreatedEmailDto()
@@ -434,6 +477,8 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
                     if (dbUser.AccessToken != dbUser.AccessToken) throw new UserFailedToUpdateException("AccessToken failed to update.");
                     if (dbUser.RefreshToken!.Id != dbUser.RefreshToken.Id) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                    if (dbUser.RefreshToken.User != dbUser) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                    if (dbUser.RefreshToken.UserId != dbUser.Id) throw new UserFailedToUpdateException("RefreshToken failed to update.");
                     if (dbUser.RefreshToken.Token != dbUser.RefreshToken.Token) throw new UserFailedToUpdateException("RefreshToken failed to update.");
                     if (dbUser.RefreshToken.ExpiresAt != dbUser.RefreshToken.ExpiresAt) throw new UserFailedToUpdateException("RefreshToken failed to update.");
                     if (dbUser.RefreshToken.CreatedAt != dbUser.RefreshToken.CreatedAt) throw new UserFailedToUpdateException("RefreshToken failed to update.");
@@ -489,6 +534,144 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 {
                     throw new HttpContextFailureException();
                 }
+            }
+            catch (Exception exception)
+            {
+                serviceResponse.Message = exception.Message + " " + exception;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<UserServiceResponse<GetForgotPasswordUserDto>> ForgotPassword(ForgotPasswordUserDto user)
+        {
+
+            var serviceResponse = new UserServiceResponse<GetForgotPasswordUserDto>() { Success = false, Data = null };
+            try
+            {
+                // Verify user exists
+                var dbUsers = await _userContext.Users.ToListAsync();
+                var dbUser = (user.UserName.IsNullOrEmpty() ? dbUsers.FirstOrDefault(u => u.Email == user.Email) : dbUsers.FirstOrDefault(u => u.UserName == user.UserName)) ?? dbUsers.FirstOrDefault(u => u.Email == user.Email) ?? throw new UserNotFoundException();
+
+                // Generate token
+                var token = CreateForgotPasswordToken(dbUser);
+
+                // Save token
+                var forgotPasswordToken = new ForgotPasswordToken
+                {
+                    Token = token,
+                    UserId = dbUser.Id,
+                    User = dbUser,
+                    CreatedAt = DateTime.Now,
+                    ExpiresAt = DateTime.Now.AddMinutes(30),
+                };
+                dbUser.ForgotPasswordToken = forgotPasswordToken;
+                _userContext.Users.Update(dbUser);
+                _userContext.SaveChanges();
+
+                // Verify token was saved
+                dbUsers = await _userContext.Users.ToListAsync();
+                dbUser = (dbUsers.FirstOrDefault(u => u.Id == dbUser.Id));
+                if (dbUser!.ForgotPasswordToken!.Token != token) throw new UserFailedToUpdateException("ForgotPasswordToken failed to update.");
+
+                // Send email with token
+                List<string> sendTo = new() { dbUser.Email! };
+                var email = new ForgotPasswordEmailDto()
+                {
+                    To = sendTo,
+                    Body = "Click the link below to reset your password." + "<br><br>\n" + _configuration["Security:Issuer:Url"] + "/api/Auth/resetPasswordConfirmation?token=" + token
+                };
+                await _emailService.SendForgetPassword(email);
+
+                // Update response
+                serviceResponse.Success = true;
+                serviceResponse.Data = new GetForgotPasswordUserDto() { Token = token };
+                serviceResponse.Message = "Forgot Password Operation Complete.";
+            }
+            catch (Exception exception)
+            {
+                serviceResponse.Message = exception.Message + " " + exception;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<UserServiceResponse<GetResetPasswordUserDto>> ResetPasswordConfirmation(string token)
+        {
+            var serviceResponse = new UserServiceResponse<GetResetPasswordUserDto>() { Success = false, Data = null };
+            try
+            {
+                // Validate token
+                var claimsPrincipal = ValidateToken(token);
+
+                // Find user
+                var dbUsers = await _userContext.Users.ToListAsync();
+                var dbUser = dbUsers.FirstOrDefault(u => claimsPrincipal.FindFirstValue(ClaimTypes.Email) == u.Email) ?? dbUsers.FirstOrDefault(u => claimsPrincipal.FindFirstValue(ClaimTypes.Name) == u.UserName) ?? throw new UserNotFoundException();
+
+                // Validate that Users ResetPasswordToken is the same as the incoming token then set it to validated
+                // add more to filter
+                if (dbUser.ForgotPasswordToken == null || !dbUser.ForgotPasswordToken.Token.Equals(token) || dbUser.ForgotPasswordToken.ExpiresAt < DateTime.Now)
+                {
+                    serviceResponse.Success = true;
+                    throw new UnauthorizedAccessException();
+                }
+                else
+                {
+                    dbUser.ForgotPasswordToken.IsValidated = true;
+                    _userContext.Users.Update(dbUser);
+                    _userContext.SaveChanges();
+                }
+
+                // Verify that the token was set to validated
+                dbUsers = await _userContext.Users.ToListAsync();
+                dbUser = dbUsers.FirstOrDefault(u => dbUser.Id == u.Id);
+                if (!dbUser!.ForgotPasswordToken!.IsValidated) throw new UserFailedToUpdateException();
+
+                // Update Response
+                dbUser.AccessToken = CreateAccessToken(dbUser);
+                serviceResponse.Data = new GetResetPasswordUserDto() { Token = dbUser.AccessToken };
+                serviceResponse.Success = true;
+                serviceResponse.Message = "Reset Password Confirmation Operation Complete.";
+            }
+            catch (Exception exception)
+            {
+                serviceResponse.Message = exception.Message + " " + exception;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<UserServiceResponse<PasswordResetUserDto>> ResetPassword(ResetPasswordUserDto resetPasswordDto)
+        {
+            var serviceResponse = new UserServiceResponse<PasswordResetUserDto>();
+            try
+            {
+                if (!RegexFilters.IsValidPassword(resetPasswordDto.Password)) throw new InvalidPasswordException(resetPasswordDto.Password);
+
+                if (_httpContextAccessor.HttpContext != null)
+                {
+                    // Find user
+                    var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UserNotFoundException());
+                    var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+
+                    // Update password
+                    dbUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(resetPasswordDto.Password);
+                    dbUser.AccessToken = string.Empty;
+                    _userContext.Users.Update(dbUser);
+                    _userContext.SaveChanges();
+
+                    // Verify user was saved
+                    var dbUsers = await _userContext.Users.ToListAsync();
+                    dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+                    if (!BCrypt.Net.BCrypt.Verify(resetPasswordDto.Password, dbUser.PasswordHash)) throw new UserFailedToUpdateException();
+
+                    // Update response
+                    serviceResponse.Success = true;
+                    serviceResponse.Data = new PasswordResetUserDto() { Message = "User's Password Reset Successfully." };
+                    serviceResponse.Message = "Reset Password Operation Complete.";
+                }
+                else
+                {
+                    throw new HttpContextFailureException();
+                }
+
             }
             catch (Exception exception)
             {

@@ -37,8 +37,7 @@
                     .HasMaxLength(50);
                 entity.Property(e => e.Phone)
                     .HasMaxLength(50);
-                entity.Property(e => e.Message)
-                    .HasMaxLength(250);
+                entity.Property(e => e.Message);
                 entity.Property(e => e.CreatedAt)
                     .IsRequired();
                 entity.Property(e => e.UpdatedAt);

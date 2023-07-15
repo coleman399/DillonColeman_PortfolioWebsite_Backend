@@ -51,6 +51,7 @@
             CreateMap<ContactCreatedEmailDto, Email>();
             CreateMap<ContactUpdatedEmailDto, Email>();
             CreateMap<ContactDeletedEmailDto, Email>();
+            CreateMap<ForgotPasswordEmailDto, Email>();
             CreateMap<Email, GetEmailConfirmationDto>();
 
         }
