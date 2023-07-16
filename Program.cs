@@ -11,13 +11,13 @@ global using PortfolioWebsite_Backend.Models.UserModel;
 global using PortfolioWebsite_Backend.Services.ContactService;
 global using PortfolioWebsite_Backend.Services.EmailService;
 global using PortfolioWebsite_Backend.Services.UserService;
+global using Serilog;
 global using System.Text.Json.Serialization;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Serilog;
 using Serilog.Formatting.Json;
 using System.Reflection;
 using System.Text;
@@ -34,12 +34,12 @@ try
     // Add User Secrets to the configuration <- Change this to key vault in production
     builder.Configuration.AddEnvironmentVariables().AddUserSecrets(Assembly.GetExecutingAssembly(), true);
 
+    // Add services to the container.
     builder.Services.AddHttpContextAccessor();
     // Add Serilog to the logging pipeline
     builder.Host.UseSerilog((context, lc) => lc
         .Enrich.WithCorrelationIdHeader("Correlation-ID")
-            .Enrich.FromLogContext().WriteTo.File(new JsonFormatter(), "C:/Logs/log.txt"));
-    // Add services to the container.
+            .Enrich.FromLogContext().WriteTo.File(new JsonFormatter(), builder.Configuration["LoggingAddress"]!).WriteTo.Console());
     builder.Services.AddDbContext<UserContext>();
     builder.Services.AddDbContext<ContactContext>();
     builder.Services.AddControllers();
@@ -47,7 +47,7 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(options =>
     {
-        options.SwaggerDoc("v1", new OpenApiInfo { Title = "PortfolioWebsite_Backend", Version = "0.0.0.1" });
+        options.SwaggerDoc("v1", new OpenApiInfo { Title = "PortfolioWebsite_Backend", Version = "v1" });
         options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Description = "JWT Authorization header using the Bearer scheme. Example: Bearer <token>",
@@ -95,7 +95,7 @@ try
                                                        tags: new[] { "ServiceCheck" })
                     .AddCheck<ApiHealthCheck>(name: "ApiHealthCheck",
                                               tags: new[] { "SuperUserCheck", "LoggingCheck" });
-    // Healthcheck UI doesn't work with MySql yet <- Entity Framework (EF) doesn't like .net 7
+    // Healthcheck UI doesn't work with MySql yet <- MySql Storage doesn't like .net 7, getting cannot find method error ???
     //builder.Services.AddHealthChecksUI().AddMySqlStorage(builder.Configuration["ConnectionStrings:LocalMySqlDb"]!);
 
     var app = builder.Build();
