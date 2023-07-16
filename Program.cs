@@ -12,7 +12,9 @@ global using PortfolioWebsite_Backend.Services.ContactService;
 global using PortfolioWebsite_Backend.Services.EmailService;
 global using PortfolioWebsite_Backend.Services.UserService;
 global using System.Text.Json.Serialization;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -32,7 +34,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "PortfolioWebsite_Backend", Version = ".001" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "PortfolioWebsite_Backend", Version = "0.0.0.1" });
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: Bearer <token>",
@@ -73,8 +75,24 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("EmailConfiguration"));
+builder.Services.AddHealthChecks()
+                .AddDbContextCheck<UserContext>(name: "UserCheck",
+                                                tags: new[] { "ServiceCheck" })
+                .AddDbContextCheck<ContactContext>(name: "ContactCheck",
+                                                   tags: new[] { "ServiceCheck" })
+                .AddCheck<ApiHealthCheck>(name: "ApiHealthCheck",
+                                          tags: new[] { "SuperUserCheck", "LoggingCheck" });
+// Healthcheck UI doesn't work with MySql yet <- Entity Framework (EF) doesn't like .net 7
+//builder.Services.AddHealthChecksUI().AddMySqlStorage(builder.Configuration["ConnectionStrings:LocalMySqlDb"]!);
 
 var app = builder.Build();
+
+//Healthcheck
+app.MapHealthChecks("/healthcheck", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -88,5 +106,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//app.MapHealthChecksUI();
+
+//app.UseHealthChecksUI(setup =>
+//{
+//    setup.PageTitle = "Health Check";
+//    setup.ApiPath = "/healthcheck";
+//    setup.UIPath = "/healthcheck-ui";
+//});
 
 app.Run();
+

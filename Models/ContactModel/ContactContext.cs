@@ -13,10 +13,15 @@
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            // Connection string to MySql using user secrets 
             var connectionString = _configuration["ConnectionStrings:LocalMySqlDb"];
-
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            try
+            {
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            }
+            catch (Exception exception)
+            {
+                throw new DatabaseFailedToConnectException(exception.Message + " " + exception);
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -16,7 +16,7 @@ namespace PortfolioWebsite_Backend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.8")
+                .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("PortfolioWebsite_Backend.Models.UserModel.User", b =>
@@ -62,9 +62,9 @@ namespace PortfolioWebsite_Backend.Migrations
                         {
                             Id = 1,
                             AccessToken = "",
-                            CreatedAt = new DateTime(2023, 7, 15, 13, 13, 51, 188, DateTimeKind.Local).AddTicks(2596),
+                            CreatedAt = new DateTime(2023, 7, 16, 0, 35, 29, 568, DateTimeKind.Local).AddTicks(1145),
                             Email = "coleman399@gmail.com",
-                            PasswordHash = "$2a$11$jDYl6u6UNccpVbTfurFq0e3gxA.rm9s3CyUXsPl5mrOcs7vZil4Nq",
+                            PasswordHash = "$2a$11$iW9m9VnA4bVaBSfhiNZAbe7kGX0LmJ3yyWrCvYZ3dcVE1x8rH/lu.",
                             Role = "SuperUser",
                             UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "coleman399"
