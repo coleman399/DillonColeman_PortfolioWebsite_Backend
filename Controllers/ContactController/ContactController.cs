@@ -12,7 +12,7 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
 
         public ContactController(IContactService contactService)
         {
-            this._contactService = contactService;
+            _contactService = contactService;
         }
 
         // GET: api/<ContactController>
@@ -42,7 +42,6 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
             if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
         }
-
 
         // GET api/<ContactController>/{email}
         // Admin should be able to get all contacts, user should only be able to get their own contacts

@@ -11,14 +11,14 @@
       "applicationUrl": "http://localhost:5202"
     },
     "https": {
+      "applicationUrl": "http://localhost:5202",
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
+      "dotnetRunMessages": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5202;https://localhost:7263"
+      "launchBrowser": true,
+      "launchUrl": "swagger"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -27,6 +27,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+      //"applicationUrl": "http://localhost:5202"
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json",
