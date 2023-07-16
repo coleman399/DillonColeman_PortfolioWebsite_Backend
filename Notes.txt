@@ -47,3 +47,21 @@ dotnet ef database update 0 --context <DbContextName>
 dotnet ef migrations remove --context <DbContextName>
 
 ___________________________________________________________________________________________
+
+Windows – Start and Stop Server
+Let us understand how it can be done on Windows −
+
+Open ‘Run’ Window by using Win key + R
+
+Type ‘services.msc’
+
+Now search for MySQL service based on the version that is installed.
+
+Click on ‘stop’, ‘start’ or ‘restart’ the service option.
+
+Otherwise, the user can start/stop MySQL from the command prompt. It can be done as shown below −
+
+C:\> "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld"
+C:\> "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqladmin" −u root shutdown
+
+___________________________________________________________________________________________
