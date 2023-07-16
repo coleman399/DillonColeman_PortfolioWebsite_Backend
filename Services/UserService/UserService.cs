@@ -64,7 +64,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             return accessToken ?? throw new Exception("Access token could not be created.");
         }
 
-        private RefreshToken CreateRefreshToken(User user)
+        private static RefreshToken CreateRefreshToken(User user)
         {
             var refreshToken = new RefreshToken
             {
@@ -86,7 +86,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
 
             };
             _httpContextAccessor.HttpContext!.Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
-            _httpContextAccessor.HttpContext!.Response.Cookies.Append("refreshTokenId", refreshToken.Id.ToString(), cookieOptions);
         }
 
         private string CreateForgotPasswordToken(User user)
@@ -113,13 +112,11 @@ namespace PortfolioWebsite_Backend.Services.UserService
         public void TokenCheck()
         {
             int userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UserNotFoundException());
-            int refreshTokenId = int.Parse(_httpContextAccessor.HttpContext.Request.Cookies["refreshTokenId"] ?? throw new UnauthorizedAccessException());
             string accessToken = _httpContextAccessor.HttpContext.Request.Headers["Authorization"]!;
             string refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"] ?? throw new UnauthorizedAccessException();
             var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
             if (dbUser.AccessToken != accessToken.Remove(0, 7)) throw new UnauthorizedAccessException();
             if (refreshToken != dbUser.RefreshToken!.Token) throw new UnauthorizedAccessException();
-            if (refreshTokenId != dbUser.RefreshToken.Id) throw new UnauthorizedAccessException();
             if (dbUser.RefreshToken.ExpiresAt < DateTime.Now) throw new UnauthorizedAccessException();
         }
 
@@ -239,6 +236,12 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     }
                 });
                 _userContext.SaveChanges();
+
+                // Check if tokens were saved
+                var dbUsers = await _userContext.Users.ToListAsync();
+                var dbUser = dbUsers.FirstOrDefault(u => u.Email == loginUser.Email || u.UserName == loginUser.UserName)!;
+                if (dbUser.AccessToken == null || dbUser.RefreshToken == null) throw new UserFailedToUpdateException();
+
 
                 // Need to change this to it does not tell the user if the email or user name is incorrect
                 if (userFound && userVerified)
