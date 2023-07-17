@@ -95,8 +95,20 @@ try
                                                        tags: new[] { "ServiceCheck" })
                     .AddCheck<ApiHealthCheck>(name: "ApiHealthCheck",
                                               tags: new[] { "SuperUserCheck", "LoggingCheck" });
+
     // Healthcheck UI doesn't work with MySql yet <- MySql Storage doesn't like .net 7, getting cannot find method error ???
     //builder.Services.AddHealthChecksUI().AddMySqlStorage(builder.Configuration["ConnectionStrings:LocalMySqlDb"]!);
+    //builder.Services.AddHttpClient<IUserService, UserTestService>();
+    //builder.Services.AddHttpClient<UserTestService>((ServiceProvider, HttpClient) =>
+    //{
+    //    var settings = ServiceProvider.GetRequiredService<IUserService>();
+    //    HttpClientHandler handler = new();
+    //    HttpClient = new HttpClient(handler)
+    //    {
+    //        BaseAddress = new Uri(builder.Configuration["Security:Issuer:Url"]!)
+    //    };
+    //    HttpClient.DefaultRequestHeaders.Add("Correlation-ID", "111151111011115");
+    //});
 
     var app = builder.Build();
 
