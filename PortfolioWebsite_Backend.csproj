@@ -55,6 +55,7 @@
   <ItemGroup>
     <Folder Include="Helpers\temp\" />
     <Folder Include="Migrations\" />
+	<InternalsVisibleTo Include="PortfolioWebsite_Backend_Testing" />
   </ItemGroup>
 
 </Project>

@@ -7,25 +7,7 @@
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ForgotPasswordToken> ForgotPasswordTokens { get; set; }
 
-        protected readonly IConfiguration _configuration;
-
-        public UserContext(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            var connectionString = _configuration["ConnectionStrings:LocalMySqlDb"];
-            try
-            {
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-            }
-            catch (Exception exception)
-            {
-                throw new DatabaseFailedToConnectException(exception.Message + " " + exception);
-            }
-        }
+        public UserContext(DbContextOptions<UserContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -50,16 +32,19 @@
                 entity.OwnsOne(e => e.ForgotPasswordToken);
                 entity.Property(e => e.CreatedAt);
                 entity.Property(e => e.UpdatedAt);
-            }).Entity<User>().HasData(new User
-            {
-                Id = 1,
-                UserName = _configuration["SuperUser:UserName"]!,
-                Email = _configuration["SuperUser:Email"]!,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(_configuration["SuperUser:Password"]!),
-                Role = Roles.SuperUser.ToString(),
-                AccessToken = string.Empty,
-                CreatedAt = DateTime.Now,
-            });
+            }).Entity<User>();
         }
     }
 }
+
+
+//.HasData(new User
+// {
+//     Id = 1,
+//     UserName = _configuration["SuperUser:UserName"]!,
+//     Email = _configuration["SuperUser:Email"]!,
+//     PasswordHash = BCrypt.Net.BCrypt.HashPassword(_configuration["SuperUser:Password"]!),
+//     Role = Roles.SuperUser.ToString(),
+//     AccessToken = string.Empty,
+//     CreatedAt = DateTime.Now,
+// });

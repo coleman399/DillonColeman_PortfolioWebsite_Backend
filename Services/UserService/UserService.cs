@@ -9,7 +9,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
     public class UserService : IUserService
     {
         private readonly IMapper _mapper;
-        private readonly UserContext _userContext;
+        private UserContext _userContext;
         private readonly ContactContext _contactContext;
         private readonly IEmailService _emailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -23,6 +23,11 @@ namespace PortfolioWebsite_Backend.Services.UserService
             _emailService = emailService;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
+        }
+
+        public void SetUserContext(UserContext userContext)
+        {
+            _userContext = userContext;
         }
 
         private ClaimsPrincipal ValidateToken(string token)
@@ -194,7 +199,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
 
                 // Return user with updated response
                 serviceResponse.Data = _mapper.Map<GetUserDto>(createdUser);
-                serviceResponse.Message = "User added successfully";
+                serviceResponse.Message = "User registered successfully";
 
                 // Email confirmation
                 List<string> sendTo = new() { createdUser.Email };

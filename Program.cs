@@ -40,7 +40,11 @@ try
     builder.Host.UseSerilog((context, lc) => lc
         .Enrich.WithCorrelationIdHeader("Correlation-ID")
             .Enrich.FromLogContext().WriteTo.File(new JsonFormatter(), builder.Configuration["LoggingAddress"]!).WriteTo.Console());
-    builder.Services.AddDbContext<UserContext>();
+    var connectionString = builder.Configuration["ConnectionStrings:LocalMySqlDb"];
+    builder.Services.AddDbContext<UserContext>(options =>
+    {
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+    });
     builder.Services.AddDbContext<ContactContext>();
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -141,6 +145,7 @@ try
     //});
 
     app.Run();
+
 }
 catch (Exception exception)
 {
@@ -151,4 +156,4 @@ finally
     Log.CloseAndFlush();
 }
 
-
+public partial class Program { };
