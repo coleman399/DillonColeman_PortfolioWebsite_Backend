@@ -44,10 +44,12 @@ namespace PortfolioWebsite_Backend.Helpers
                 using (var sr = new StreamReader(fs, Encoding.UTF8))
                 {
                     string line;
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                     while ((line = await sr.ReadLineAsync(cancellationToken)) != null)
                     {
                         logs.Add(line);
                     }
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                 }
                 foreach (var log in logs)
                 {

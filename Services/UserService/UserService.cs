@@ -118,7 +118,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
         {
             int userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UserNotFoundException());
             string accessToken = _httpContextAccessor.HttpContext.Request.Headers["Authorization"]!;
-            string refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"] ?? throw new UnauthorizedAccessException();
+            string refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"]!;
             var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
             if (dbUser.AccessToken != accessToken.Remove(0, 7)) throw new UnauthorizedAccessException();
             if (refreshToken != dbUser.RefreshToken!.Token) throw new UnauthorizedAccessException();
@@ -270,6 +270,47 @@ namespace PortfolioWebsite_Backend.Services.UserService
             return serviceResponse;
         }
 
+        public async Task<UserServiceResponse<GetLoggedOutUserDto>> LogoutUser()
+        {
+            var serviceResponse = new UserServiceResponse<GetLoggedOutUserDto>() { Success = false, Data = null };
+            try
+            {
+                if (_httpContextAccessor.HttpContext != null)
+                {
+                    // find user
+                    int userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UserNotFoundException());
+                    var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+
+                    // delete access and refresh token
+                    dbUser.AccessToken = string.Empty;
+                    dbUser.RefreshToken = null;
+                    _userContext.Users.Update(dbUser);
+                    _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
+                    _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshTokenId");
+
+                    // Verify user's token was updated
+                    var dbUsers = await _userContext.Users.ToListAsync();
+                    dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+                    if (dbUser.AccessToken != string.Empty) throw new UserFailedToUpdateException("AccessToken failed to update.");
+                    if (dbUser.RefreshToken != null) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+
+                    // update response
+                    serviceResponse.Success = true;
+                    serviceResponse.Data = new GetLoggedOutUserDto();
+                    serviceResponse.Message = "User logged out successfully.";
+                }
+                else
+                {
+                    throw new HttpContextFailureException();
+                }
+            }
+            catch (Exception exception)
+            {
+                serviceResponse.Message = exception.Message + " " + exception;
+            }
+            return serviceResponse;
+        }
+
         public async Task<UserServiceResponse<GetLoggedInUserDto>> UpdateUser(int id, UpdateUserDto updateUser)
         {
             var serviceResponse = new UserServiceResponse<GetLoggedInUserDto>() { Data = null };
@@ -350,7 +391,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     serviceResponse.Data = _mapper.Map<GetLoggedInUserDto>(dbUser);
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()) || dbUser.Email != updateUser.Email || dbUser.UserName != updateUser.UserName)
                     {
-                        await Logout();
+                        await LogoutUser();
                         serviceResponse.Data.Token = string.Empty;
                         serviceResponse.Success = true;
                         serviceResponse.Message = "Account updated successfully. User logged out.";
@@ -439,7 +480,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     serviceResponse.Message = "User deleted successfully.";
 
                     // Log user out
-                    await Logout();
+                    await LogoutUser();
 
                     // Email confirmation
                     List<string> sendTo = new() { user.Email };
@@ -504,47 +545,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
-            }
-            return serviceResponse;
-        }
-
-        public async Task<UserServiceResponse<GetLoggedOutUserDto>> Logout()
-        {
-            var serviceResponse = new UserServiceResponse<GetLoggedOutUserDto>() { Success = false, Data = null };
-            try
-            {
-                if (_httpContextAccessor.HttpContext != null)
-                {
-                    // find user
-                    int userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UserNotFoundException());
-                    var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
-
-                    // delete access and refresh token
-                    dbUser.AccessToken = string.Empty;
-                    dbUser.RefreshToken = null;
-                    _userContext.Users.Update(dbUser);
-                    _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
-                    _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshTokenId");
-
-                    // Verify user's token was updated
-                    var dbUsers = await _userContext.Users.ToListAsync();
-                    dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
-                    if (dbUser.AccessToken != string.Empty) throw new UserFailedToUpdateException("AccessToken failed to update.");
-                    if (dbUser.RefreshToken != null) throw new UserFailedToUpdateException("RefreshToken failed to update.");
-
-                    // update response
-                    serviceResponse.Success = true;
-                    serviceResponse.Data = new GetLoggedOutUserDto();
-                    serviceResponse.Message = "User logged out successfully.";
-                }
-                else
-                {
-                    throw new HttpContextFailureException();
-                }
-            }
-            catch (Exception exception)
-            {
                 serviceResponse.Message = exception.Message + " " + exception;
             }
             return serviceResponse;

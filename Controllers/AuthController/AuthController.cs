@@ -91,9 +91,9 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserServiceResponse<GetLoggedOutUserDto>>> Logout()
+        public async Task<ActionResult<UserServiceResponse<GetLoggedOutUserDto>>> LogoutUser()
         {
-            UserServiceResponse<GetLoggedOutUserDto> result = await _userService.Logout();
+            UserServiceResponse<GetLoggedOutUserDto> result = await _userService.LogoutUser();
             if (result.Success == false) return BadRequest(result);
             if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
