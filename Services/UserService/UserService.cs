@@ -277,6 +277,8 @@ namespace PortfolioWebsite_Backend.Services.UserService
             {
                 if (_httpContextAccessor.HttpContext != null)
                 {
+                    TokenCheck();
+
                     // find user
                     int userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UserNotFoundException());
                     var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
@@ -316,7 +318,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             var serviceResponse = new UserServiceResponse<GetLoggedInUserDto>() { Data = null };
             try
             {
-                // Check if update user is valid
+                //Check if update user is valid
                 if (!RegexFilters.IsValidUserName(updateUser.UserName!)) throw new InvalidUserNameException(updateUser.UserName!);
                 if (!RegexFilters.IsValidPassword(updateUser.Password!)) throw new InvalidPasswordException(updateUser.Password!);
                 if (!RegexFilters.IsValidEmail(updateUser.Email!)) throw new InvalidEmailException(updateUser.Email!);
@@ -324,29 +326,31 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 if (_httpContextAccessor.HttpContext != null)
                 {
                     TokenCheck();
-                    serviceResponse.Success = false;
 
                     // Check if user exists
                     var dbUsers = await _userContext.Users.ToListAsync();
                     var dbUser = dbUsers.FirstOrDefault(u => u.Id == id) ?? throw new UserNotFoundException(id);
 
-                    // Check if email or user name are already being used
-                    dbUsers.ForEach(u =>
-                    {
-                        if (u.Email == updateUser.Email && u.Id != id) throw new UnavailableEmailException();
-                        if (u.UserName == updateUser.UserName && u.Id != id) throw new UnavailableUserNameException();
-                    });
-
                     // Check role
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()))
                     {
                         // Check if user is authorized to update account, if not, throw exception
-                        if (dbUser.Id.ToString() != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier))
+                        if (dbUser.Id.ToString() != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) && dbUser.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email))
                         {
-                            serviceResponse.Success = true;
-                            throw new UnauthorizedAccessException();
+                            return serviceResponse;
                         }
                     }
+
+                    ////Check if email or user name are already being used
+                    //dbUsers.ForEach(u =>
+                    //{
+                    //    if (u.Email == updateUser.Email && u.Id != id) throw new UnavailableEmailException();
+                    //    if (u.UserName == updateUser.UserName && u.Id != id) throw new UnavailableUserNameException();
+                    //});
+
+
+                    serviceResponse.Data = _mapper.Map<GetLoggedInUserDto>(dbUser);
+                    return serviceResponse;
 
                     // Update user's contacts with new email
                     List<Contact> dbContacts = _contactContext.Contacts.Where(c => c.Email == dbUser.Email).ToList();
@@ -391,9 +395,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     serviceResponse.Data = _mapper.Map<GetLoggedInUserDto>(dbUser);
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()) || dbUser.Email != updateUser.Email || dbUser.UserName != updateUser.UserName)
                     {
-                        await LogoutUser();
-                        serviceResponse.Data.Token = string.Empty;
-                        serviceResponse.Success = true;
+                        serviceResponse.Data = new GetLoggedInUserDto();
                         serviceResponse.Message = "Account updated successfully. User logged out.";
                         return serviceResponse;
                     }
@@ -410,7 +412,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     if (dbUser.AccessToken != serviceResponse.Data.Token) throw new UserFailedToUpdateException("AccessToken failed to update.");
 
                     // Return success message
-                    serviceResponse.Success = true;
                     serviceResponse.Message = "User updated successfully.";
                 }
                 else
@@ -434,7 +435,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 if (_httpContextAccessor.HttpContext != null)
                 {
                     TokenCheck();
-                    serviceResponse.Success = false;
 
                     // Check if user exists
                     var user = _userContext.Users.FirstOrDefault(c => c.Id == id) ?? throw new UserNotFoundException(id);
@@ -445,8 +445,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                         // Check if user is authorized to delete account, if not, throw exception
                         if (user.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email))
                         {
-                            serviceResponse.Success = true;
-                            throw new UnauthorizedAccessException();
+                            return serviceResponse;
                         }
                     }
 
@@ -475,12 +474,8 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     if (dbUser != null) throw new UserNotDeletedException(id);
 
                     // Update response
-                    serviceResponse.Success = true;
                     serviceResponse.Data = new DeleteUserDto();
                     serviceResponse.Message = "User deleted successfully.";
-
-                    // Log user out
-                    await LogoutUser();
 
                     // Email confirmation
                     List<string> sendTo = new() { user.Email };
@@ -497,6 +492,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             }
             catch (Exception exception)
             {
+                serviceResponse.Success = false;
                 serviceResponse.Message = exception.Message + " " + exception;
             }
             return serviceResponse;

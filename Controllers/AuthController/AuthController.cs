@@ -14,7 +14,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             _userService = userService;
         }
 
-        // POST api/<AuthController>/getUsers
+        // POST api/Auth/getUsers
         [HttpGet("getUsers"), Authorize(Roles = "SuperUser, Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -25,7 +25,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             return Ok(result);
         }
 
-        // POST api/<AuthController>/register
+        // POST api/Auth/register
         [HttpPost("register"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -36,7 +36,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             return Ok(result);
         }
 
-        // POST api/<AuthController>/login
+        // POST api/Auth/login
         [HttpPost("login"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -47,12 +47,12 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             return Ok(result);
         }
 
-        // PUT api/<AuthController>/{id}
+        // PUT api/Auth/updateUser?id={id}
         [HttpPut("updateUser"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserServiceResponse<GetLoggedInUserDto>>> UpdateUser(int id, [FromBody] UpdateUserDto user)
+        public async Task<ActionResult<UserServiceResponse<GetLoggedInUserDto>>> UpdateUser([FromQuery] int id, [FromBody] UpdateUserDto user)
         {
             UserServiceResponse<GetLoggedInUserDto> result = await _userService.UpdateUser(id, user);
             if (result.Success == false) return BadRequest(result);
@@ -60,12 +60,12 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             return Ok(result);
         }
 
-        // DELETE api/<AuthController>/{id}
+        // DELETE api/Auth/deleteUser?id={id}
         [HttpDelete("deleteUser"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserServiceResponse<DeleteUserDto>>> DeleteUser(int id)
+        public async Task<ActionResult<UserServiceResponse<DeleteUserDto>>> DeleteUser([FromQuery] int id)
         {
             UserServiceResponse<DeleteUserDto> result = await _userService.DeleteUser(id);
             if (result.Success == false) return BadRequest(result);
@@ -73,7 +73,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             return Ok(result);
         }
 
-        // Post api/<AuthController>/refreshToken
+        // Post api/Auth/refreshToken
         [HttpPost("refreshToken"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -86,7 +86,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             return Ok(result);
         }
 
-        // Post api/<AuthController>/logout
+        // Post api/Auth/logout
         [HttpPost("logout"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -100,7 +100,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
 
         }
 
-        // Post api/<AuthController>/forgotPassword
+        // Post api/Auth/forgotPassword
         [HttpPost("forgotPassword"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -111,7 +111,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             return Ok(result);
         }
 
-        // Post api/<AuthController>/resetPasswordConfirmation
+        // Post api/Auth/resetPasswordConfirmation
         [HttpPost("resetPasswordConfirmation"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -122,7 +122,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
             return Ok(result);
         }
 
-        // Post api/<AuthController>/resetPassword
+        // Post api/Auth/resetPassword
         [HttpPost("resetPassword"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
