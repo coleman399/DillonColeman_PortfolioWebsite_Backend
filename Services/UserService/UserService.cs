@@ -341,16 +341,12 @@ namespace PortfolioWebsite_Backend.Services.UserService
                         }
                     }
 
-                    ////Check if email or user name are already being used
-                    //dbUsers.ForEach(u =>
-                    //{
-                    //    if (u.Email == updateUser.Email && u.Id != id) throw new UnavailableEmailException();
-                    //    if (u.UserName == updateUser.UserName && u.Id != id) throw new UnavailableUserNameException();
-                    //});
-
-
-                    serviceResponse.Data = _mapper.Map<GetLoggedInUserDto>(dbUser);
-                    return serviceResponse;
+                    //Check if email or user name are already being used
+                    dbUsers.ForEach(u =>
+                    {
+                        if (u.Email == updateUser.Email && u.Id != id) throw new UnavailableEmailException();
+                        if (u.UserName == updateUser.UserName && u.Id != id) throw new UnavailableUserNameException();
+                    });
 
                     // Update user's contacts with new email
                     List<Contact> dbContacts = _contactContext.Contacts.Where(c => c.Email == dbUser.Email).ToList();
@@ -548,8 +544,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
 
         public async Task<UserServiceResponse<GetForgotPasswordUserDto>> ForgotPassword(ForgotPasswordUserDto user)
         {
-
-            var serviceResponse = new UserServiceResponse<GetForgotPasswordUserDto>() { Success = false, Data = null };
+            var serviceResponse = new UserServiceResponse<GetForgotPasswordUserDto>() { Data = null };
             try
             {
                 // Verify user exists
@@ -572,7 +567,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 _userContext.Users.Update(dbUser);
                 _userContext.SaveChanges();
 
-                // Verify token was saved
+                //Verify token was saved
                 dbUsers = await _userContext.Users.ToListAsync();
                 dbUser = (dbUsers.FirstOrDefault(u => u.Id == dbUser.Id));
                 if (dbUser!.ForgotPasswordToken!.Token != token) throw new UserFailedToUpdateException("ForgotPasswordToken failed to update.");
@@ -587,12 +582,12 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 await _emailService.SendForgetPassword(email);
 
                 // Update response
-                serviceResponse.Success = true;
                 serviceResponse.Data = new GetForgotPasswordUserDto() { Token = token };
                 serviceResponse.Message = "Forgot Password Operation Complete.";
             }
             catch (Exception exception)
             {
+                serviceResponse.Success = false;
                 serviceResponse.Message = exception.Message + " " + exception;
             }
             return serviceResponse;
@@ -600,7 +595,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
 
         public async Task<UserServiceResponse<GetResetPasswordUserDto>> ResetPasswordConfirmation(string token)
         {
-            var serviceResponse = new UserServiceResponse<GetResetPasswordUserDto>() { Success = false, Data = null };
+            var serviceResponse = new UserServiceResponse<GetResetPasswordUserDto>() { Data = null };
             try
             {
                 // Validate token

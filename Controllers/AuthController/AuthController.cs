@@ -29,7 +29,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         [HttpPost("register"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserServiceResponse<GetUserDto>>> RegisterUser(RegisterUserDto newUser)
+        public async Task<ActionResult<UserServiceResponse<GetUserDto>>> RegisterUser([FromBody] RegisterUserDto newUser)
         {
             UserServiceResponse<GetUserDto> result = await _userService.RegisterUser(newUser);
             if (result.Success == false) return BadRequest(result);
@@ -40,7 +40,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         [HttpPost("login"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserServiceResponse<GetLoggedInUserDto>>> LoginUser(LoginUserDto loginUser)
+        public async Task<ActionResult<UserServiceResponse<GetLoggedInUserDto>>> LoginUser([FromBody] LoginUserDto loginUser)
         {
             UserServiceResponse<GetLoggedInUserDto> result = await _userService.LoginUser(loginUser);
             if (result.Success == false) return Unauthorized(result);
@@ -115,7 +115,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         [HttpPost("resetPasswordConfirmation"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserServiceResponse<GetResetPasswordUserDto>>> ResetPasswordConfirmation(string token)
+        public async Task<ActionResult<UserServiceResponse<GetResetPasswordUserDto>>> ResetPasswordConfirmation([FromQuery] string token)
         {
             UserServiceResponse<GetResetPasswordUserDto> result = await _userService.ResetPasswordConfirmation(token);
             if (result.Success == false) return BadRequest(result);
@@ -126,7 +126,7 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         [HttpPost("resetPassword"), Authorize(Roles = "SuperUser, Admin, User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserServiceResponse<PasswordResetUserDto>>> ResetPassword(ResetPasswordUserDto resetPassword)
+        public async Task<ActionResult<UserServiceResponse<PasswordResetUserDto>>> ResetPassword([FromBody] ResetPasswordUserDto resetPassword)
         {
             UserServiceResponse<PasswordResetUserDto> result = await _userService.ResetPassword(resetPassword);
             if (result.Success == false) return BadRequest(result);
