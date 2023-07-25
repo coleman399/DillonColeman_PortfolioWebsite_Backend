@@ -146,7 +146,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -213,7 +213,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -265,7 +265,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -308,7 +308,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             }
             catch (Exception exception)
             {
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -418,7 +418,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -489,7 +489,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -537,7 +537,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -577,18 +577,18 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 var email = new ForgotPasswordEmailDto()
                 {
                     To = sendTo,
-                    Body = "Click the link below to reset your password." + "<br><br>\n" + _configuration["Security:Issuer:Url"] + "/api/Auth/resetPasswordConfirmation?token=" + token
+                    Body = $"Click the link below to reset your password. <br><br>\n {_configuration["Security:Issuer:Url"]}/api/Auth/resetPasswordConfirmation?token={token}"
                 };
                 await _emailService.SendForgetPassword(email);
 
                 // Update response
-                serviceResponse.Data = new GetForgotPasswordUserDto() { Token = token };
+                serviceResponse.Data = new GetForgotPasswordUserDto();
                 serviceResponse.Message = "Forgot Password Operation Complete.";
             }
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -632,7 +632,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             }
             catch (Exception exception)
             {
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -663,7 +663,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
 
                     // Update response
                     serviceResponse.Success = true;
-                    serviceResponse.Data = new PasswordResetUserDto() { Message = "User's Password Reset Successfully." };
+                    serviceResponse.Data = new PasswordResetUserDto();
                     serviceResponse.Message = "Reset Password Operation Complete.";
                 }
                 else
@@ -674,7 +674,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             }
             catch (Exception exception)
             {
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }

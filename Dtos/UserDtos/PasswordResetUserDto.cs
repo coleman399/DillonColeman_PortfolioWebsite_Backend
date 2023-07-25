@@ -2,6 +2,6 @@
 {
     public class PasswordResetUserDto
     {
-        public string? Message { get; set; }
+        public string Message = "User's Password Reset Successfully.";
     }
 }

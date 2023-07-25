@@ -27,13 +27,13 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
 
         // POST api/Auth/register
         [HttpPost("register"), AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserServiceResponse<GetUserDto>>> RegisterUser([FromBody] RegisterUserDto newUser)
         {
             UserServiceResponse<GetUserDto> result = await _userService.RegisterUser(newUser);
             if (result.Success == false) return BadRequest(result);
-            return Ok(result);
+            return Created("register", result);
         }
 
         // POST api/Auth/login
