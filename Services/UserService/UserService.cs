@@ -9,7 +9,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
     public class UserService : IUserService
     {
         private readonly IMapper _mapper;
-        private readonly UserContext _userContext;
+        private UserContext _userContext;
         private readonly ContactContext _contactContext;
         private readonly IEmailService _emailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -23,6 +23,11 @@ namespace PortfolioWebsite_Backend.Services.UserService
             _emailService = emailService;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
+        }
+
+        public void SetUserContext(UserContext userContext)
+        {
+            _userContext = userContext;
         }
 
         private ClaimsPrincipal ValidateToken(string token)
@@ -113,7 +118,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
         {
             int userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UserNotFoundException());
             string accessToken = _httpContextAccessor.HttpContext.Request.Headers["Authorization"]!;
-            string refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"] ?? throw new UnauthorizedAccessException();
+            string refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"]!;
             var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
             if (dbUser.AccessToken != accessToken.Remove(0, 7)) throw new UnauthorizedAccessException();
             if (refreshToken != dbUser.RefreshToken!.Token) throw new UnauthorizedAccessException();
@@ -141,7 +146,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -194,7 +199,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
 
                 // Return user with updated response
                 serviceResponse.Data = _mapper.Map<GetUserDto>(createdUser);
-                serviceResponse.Message = "User added successfully";
+                serviceResponse.Message = "User registered successfully";
 
                 // Email confirmation
                 List<string> sendTo = new() { createdUser.Email };
@@ -208,7 +213,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -260,7 +265,50 @@ namespace PortfolioWebsite_Backend.Services.UserService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
+            }
+            return serviceResponse;
+        }
+
+        public async Task<UserServiceResponse<GetLoggedOutUserDto>> LogoutUser()
+        {
+            var serviceResponse = new UserServiceResponse<GetLoggedOutUserDto>() { Success = false, Data = null };
+            try
+            {
+                if (_httpContextAccessor.HttpContext != null)
+                {
+                    TokenCheck();
+
+                    // find user
+                    int userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UserNotFoundException());
+                    var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+
+                    // delete access and refresh token
+                    dbUser.AccessToken = string.Empty;
+                    dbUser.RefreshToken = null;
+                    _userContext.Users.Update(dbUser);
+                    _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
+                    _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshTokenId");
+
+                    // Verify user's token was updated
+                    var dbUsers = await _userContext.Users.ToListAsync();
+                    dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+                    if (dbUser.AccessToken != string.Empty) throw new UserFailedToUpdateException("AccessToken failed to update.");
+                    if (dbUser.RefreshToken != null) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+
+                    // update response
+                    serviceResponse.Success = true;
+                    serviceResponse.Data = new GetLoggedOutUserDto();
+                    serviceResponse.Message = "User logged out successfully.";
+                }
+                else
+                {
+                    throw new HttpContextFailureException();
+                }
+            }
+            catch (Exception exception)
+            {
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -270,7 +318,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             var serviceResponse = new UserServiceResponse<GetLoggedInUserDto>() { Data = null };
             try
             {
-                // Check if update user is valid
+                //Check if update user is valid
                 if (!RegexFilters.IsValidUserName(updateUser.UserName!)) throw new InvalidUserNameException(updateUser.UserName!);
                 if (!RegexFilters.IsValidPassword(updateUser.Password!)) throw new InvalidPasswordException(updateUser.Password!);
                 if (!RegexFilters.IsValidEmail(updateUser.Email!)) throw new InvalidEmailException(updateUser.Email!);
@@ -278,29 +326,27 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 if (_httpContextAccessor.HttpContext != null)
                 {
                     TokenCheck();
-                    serviceResponse.Success = false;
 
                     // Check if user exists
                     var dbUsers = await _userContext.Users.ToListAsync();
                     var dbUser = dbUsers.FirstOrDefault(u => u.Id == id) ?? throw new UserNotFoundException(id);
 
-                    // Check if email or user name are already being used
+                    // Check role
+                    if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()))
+                    {
+                        // Check if user is authorized to update account, if not, throw exception
+                        if (dbUser.Id.ToString() != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) && dbUser.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email))
+                        {
+                            return serviceResponse;
+                        }
+                    }
+
+                    //Check if email or user name are already being used
                     dbUsers.ForEach(u =>
                     {
                         if (u.Email == updateUser.Email && u.Id != id) throw new UnavailableEmailException();
                         if (u.UserName == updateUser.UserName && u.Id != id) throw new UnavailableUserNameException();
                     });
-
-                    // Check role
-                    if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()))
-                    {
-                        // Check if user is authorized to update account, if not, throw exception
-                        if (dbUser.Id.ToString() != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier))
-                        {
-                            serviceResponse.Success = true;
-                            throw new UnauthorizedAccessException();
-                        }
-                    }
 
                     // Update user's contacts with new email
                     List<Contact> dbContacts = _contactContext.Contacts.Where(c => c.Email == dbUser.Email).ToList();
@@ -345,9 +391,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     serviceResponse.Data = _mapper.Map<GetLoggedInUserDto>(dbUser);
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()) || dbUser.Email != updateUser.Email || dbUser.UserName != updateUser.UserName)
                     {
-                        await Logout();
-                        serviceResponse.Data.Token = string.Empty;
-                        serviceResponse.Success = true;
+                        serviceResponse.Data = new GetLoggedInUserDto();
                         serviceResponse.Message = "Account updated successfully. User logged out.";
                         return serviceResponse;
                     }
@@ -364,7 +408,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     if (dbUser.AccessToken != serviceResponse.Data.Token) throw new UserFailedToUpdateException("AccessToken failed to update.");
 
                     // Return success message
-                    serviceResponse.Success = true;
                     serviceResponse.Message = "User updated successfully.";
                 }
                 else
@@ -375,7 +418,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -388,7 +431,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 if (_httpContextAccessor.HttpContext != null)
                 {
                     TokenCheck();
-                    serviceResponse.Success = false;
 
                     // Check if user exists
                     var user = _userContext.Users.FirstOrDefault(c => c.Id == id) ?? throw new UserNotFoundException(id);
@@ -399,8 +441,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                         // Check if user is authorized to delete account, if not, throw exception
                         if (user.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email))
                         {
-                            serviceResponse.Success = true;
-                            throw new UnauthorizedAccessException();
+                            return serviceResponse;
                         }
                     }
 
@@ -429,12 +470,8 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     if (dbUser != null) throw new UserNotDeletedException(id);
 
                     // Update response
-                    serviceResponse.Success = true;
                     serviceResponse.Data = new DeleteUserDto();
                     serviceResponse.Message = "User deleted successfully.";
-
-                    // Log user out
-                    await Logout();
 
                     // Email confirmation
                     List<string> sendTo = new() { user.Email };
@@ -451,7 +488,8 @@ namespace PortfolioWebsite_Backend.Services.UserService
             }
             catch (Exception exception)
             {
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -499,56 +537,14 @@ namespace PortfolioWebsite_Backend.Services.UserService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = exception.Message + " " + exception;
-            }
-            return serviceResponse;
-        }
-
-        public async Task<UserServiceResponse<GetLoggedOutUserDto>> Logout()
-        {
-            var serviceResponse = new UserServiceResponse<GetLoggedOutUserDto>() { Success = false, Data = null };
-            try
-            {
-                if (_httpContextAccessor.HttpContext != null)
-                {
-                    // find user
-                    int userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UserNotFoundException());
-                    var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
-
-                    // delete access and refresh token
-                    dbUser.AccessToken = string.Empty;
-                    dbUser.RefreshToken = null;
-                    _userContext.Users.Update(dbUser);
-                    _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
-                    _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshTokenId");
-
-                    // Verify user's token was updated
-                    var dbUsers = await _userContext.Users.ToListAsync();
-                    dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
-                    if (dbUser.AccessToken != string.Empty) throw new UserFailedToUpdateException("AccessToken failed to update.");
-                    if (dbUser.RefreshToken != null) throw new UserFailedToUpdateException("RefreshToken failed to update.");
-
-                    // update response
-                    serviceResponse.Success = true;
-                    serviceResponse.Data = new GetLoggedOutUserDto();
-                    serviceResponse.Message = "User logged out successfully.";
-                }
-                else
-                {
-                    throw new HttpContextFailureException();
-                }
-            }
-            catch (Exception exception)
-            {
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
 
         public async Task<UserServiceResponse<GetForgotPasswordUserDto>> ForgotPassword(ForgotPasswordUserDto user)
         {
-
-            var serviceResponse = new UserServiceResponse<GetForgotPasswordUserDto>() { Success = false, Data = null };
+            var serviceResponse = new UserServiceResponse<GetForgotPasswordUserDto>() { Data = null };
             try
             {
                 // Verify user exists
@@ -571,7 +567,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 _userContext.Users.Update(dbUser);
                 _userContext.SaveChanges();
 
-                // Verify token was saved
+                //Verify token was saved
                 dbUsers = await _userContext.Users.ToListAsync();
                 dbUser = (dbUsers.FirstOrDefault(u => u.Id == dbUser.Id));
                 if (dbUser!.ForgotPasswordToken!.Token != token) throw new UserFailedToUpdateException("ForgotPasswordToken failed to update.");
@@ -581,25 +577,25 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 var email = new ForgotPasswordEmailDto()
                 {
                     To = sendTo,
-                    Body = "Click the link below to reset your password." + "<br><br>\n" + _configuration["Security:Issuer:Url"] + "/api/Auth/resetPasswordConfirmation?token=" + token
+                    Body = $"Click the link below to reset your password. <br><br>\n {_configuration["Security:Issuer:Url"]}/api/Auth/resetPasswordConfirmation?token={token}"
                 };
                 await _emailService.SendForgetPassword(email);
 
                 // Update response
-                serviceResponse.Success = true;
-                serviceResponse.Data = new GetForgotPasswordUserDto() { Token = token };
+                serviceResponse.Data = new GetForgotPasswordUserDto();
                 serviceResponse.Message = "Forgot Password Operation Complete.";
             }
             catch (Exception exception)
             {
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
 
         public async Task<UserServiceResponse<GetResetPasswordUserDto>> ResetPasswordConfirmation(string token)
         {
-            var serviceResponse = new UserServiceResponse<GetResetPasswordUserDto>() { Success = false, Data = null };
+            var serviceResponse = new UserServiceResponse<GetResetPasswordUserDto>() { Data = null };
             try
             {
                 // Validate token
@@ -636,7 +632,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             }
             catch (Exception exception)
             {
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }
@@ -667,7 +663,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
 
                     // Update response
                     serviceResponse.Success = true;
-                    serviceResponse.Data = new PasswordResetUserDto() { Message = "User's Password Reset Successfully." };
+                    serviceResponse.Data = new PasswordResetUserDto();
                     serviceResponse.Message = "Reset Password Operation Complete.";
                 }
                 else
@@ -678,7 +674,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             }
             catch (Exception exception)
             {
-                serviceResponse.Message = exception.Message + " " + exception;
+                serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
         }

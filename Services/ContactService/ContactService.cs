@@ -22,8 +22,7 @@ namespace PortfolioWebsite_Backend.Services.ContactService
 
         public async Task<ContactServiceResponse<List<GetContactDto>>> GetContacts()
         {
-
-            var serviceResponse = new ContactServiceResponse<List<GetContactDto>>() { Success = true, Data = null };
+            var serviceResponse = new ContactServiceResponse<List<GetContactDto>>() { Data = null };
             try
             {
                 if (_httpContextAccessor.HttpContext != null)
@@ -56,7 +55,7 @@ namespace PortfolioWebsite_Backend.Services.ContactService
 
         public async Task<ContactServiceResponse<GetContactDto>> GetContactById(int id)
         {
-            var serviceResponse = new ContactServiceResponse<GetContactDto>() { Success = false, Data = null };
+            var serviceResponse = new ContactServiceResponse<GetContactDto>() { Data = null };
             try
             {
                 if (_httpContextAccessor.HttpContext != null)
@@ -66,27 +65,27 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                     // Check if contact exists
                     var dbContacts = await _contactContext.Contacts.ToListAsync();
                     var foundContact = dbContacts.FirstOrDefault(c => c.Id == id) ?? throw new ContactNotFoundException();
-                    if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()))
+                    if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()) || _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.SuperUser.ToString()))
                     {
                         // Update response
-                        serviceResponse.Success = true;
                         serviceResponse.Data = _mapper.Map<GetContactDto>(foundContact);
                         serviceResponse.Message = $"Contact with id {id} found.";
                     }
                     else
                     {
                         // Check if contact belongs to user
-                        serviceResponse.Success = true;
                         var userEmail = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email.ToString());
                         if (foundContact.Email != userEmail)
                         {
-                            throw new UnauthorizedAccessException("You are not authorized to view contacts with this email.");
+                            return serviceResponse;
                         }
-
-                        // update response
-                        var userContactsDto = _mapper.Map<GetContactDto>(foundContact);
-                        serviceResponse.Data = userContactsDto;
-                        serviceResponse.Message = $"Contact with id {id} found.";
+                        else
+                        {
+                            // update response
+                            var userContactsDto = _mapper.Map<GetContactDto>(foundContact);
+                            serviceResponse.Data = userContactsDto;
+                            serviceResponse.Message = $"Contact with id {id} found.";
+                        }
                     }
                 }
                 else
@@ -96,6 +95,7 @@ namespace PortfolioWebsite_Backend.Services.ContactService
             }
             catch (Exception exception)
             {
+                serviceResponse.Success = false;
                 serviceResponse.Message = exception.Message;
             }
             return serviceResponse;
@@ -103,7 +103,7 @@ namespace PortfolioWebsite_Backend.Services.ContactService
 
         public async Task<ContactServiceResponse<List<GetContactDto>>> GetContactsByEmail(string email)
         {
-            var serviceResponse = new ContactServiceResponse<List<GetContactDto>>() { Success = false, Data = null };
+            var serviceResponse = new ContactServiceResponse<List<GetContactDto>>() { Data = null };
             try
             {
                 if (_httpContextAccessor.HttpContext != null)
@@ -115,11 +115,10 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                     var foundContacts = dbContacts.Where(c => c.Email == email).ToList() ?? throw new ContactNotFoundException(email);
 
                     // Check role then update response
-                    if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()))
+                    if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()) || _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.SuperUser.ToString()))
                     {
                         // update response
                         var foundContactsDto = foundContacts.Select(c => _mapper.Map<GetContactDto>(c)).ToList();
-                        serviceResponse.Success = true;
                         serviceResponse.Data = foundContactsDto;
                         serviceResponse.Message = $"Contact with email {email} found.";
                     }
@@ -129,8 +128,7 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                         var userEmail = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email.ToString());
                         if (email != userEmail)
                         {
-                            serviceResponse.Success = true;
-                            throw new UnauthorizedAccessException("You are not authorized to view contacts with this email.");
+                            return serviceResponse;
                         }
 
                         // Search for contacts with user's email
@@ -138,7 +136,7 @@ namespace PortfolioWebsite_Backend.Services.ContactService
 
                         // update response
                         var userContactsDto = userContacts.Select(c => _mapper.Map<GetContactDto>(c)).ToList();
-                        serviceResponse.Success = true;
+
                         serviceResponse.Data = userContactsDto;
                         serviceResponse.Message = $"Contact with email {email} found.";
                     }
@@ -150,22 +148,22 @@ namespace PortfolioWebsite_Backend.Services.ContactService
             }
             catch (Exception exception)
             {
+                serviceResponse.Success = false;
                 serviceResponse.Message = exception.Message;
-
             }
             return serviceResponse;
         }
 
         public async Task<ContactServiceResponse<List<GetContactDto>>> GetContactsWithSimilarNameTo(string name)
         {
-            var serviceResponse = new ContactServiceResponse<List<GetContactDto>>();
+            var serviceResponse = new ContactServiceResponse<List<GetContactDto>>() { Data = null };
             try
             {
                 if (_httpContextAccessor.HttpContext != null)
                 {
                     _userService.TokenCheck();
 
-                    if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()))
+                    if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()) || _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.SuperUser.ToString()))
                     {
                         // Compare names
                         List<GetContactDto> similarlyNamedContacts = new();
@@ -221,7 +219,6 @@ namespace PortfolioWebsite_Backend.Services.ContactService
             catch (Exception exception)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Data = null;
                 serviceResponse.Message = exception.Message;
             }
             return serviceResponse;

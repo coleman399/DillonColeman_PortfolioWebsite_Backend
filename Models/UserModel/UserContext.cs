@@ -6,26 +6,9 @@
         public DbSet<User> Users { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ForgotPasswordToken> ForgotPasswordTokens { get; set; }
+        private readonly IConfiguration _configuration;
 
-        protected readonly IConfiguration _configuration;
-
-        public UserContext(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            var connectionString = _configuration["ConnectionStrings:LocalMySqlDb"];
-            try
-            {
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-            }
-            catch (Exception exception)
-            {
-                throw new DatabaseFailedToConnectException(exception.Message + " " + exception);
-            }
-        }
+        public UserContext(DbContextOptions<UserContext> options, IConfiguration configuration) : base(options) { _configuration = configuration; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

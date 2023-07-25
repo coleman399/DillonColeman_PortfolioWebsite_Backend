@@ -69,9 +69,17 @@
               "target": "Package",
               "version": "[4.0.3, )"
             },
+            "Cucumber.Messages": {
+              "target": "Package",
+              "version": "[21.0.1, )"
+            },
             "F23.StringSimilarity": {
               "target": "Package",
               "version": "[5.1.0, )"
+            },
+            "Gherkin": {
+              "target": "Package",
+              "version": "[26.0.3, )"
             },
             "MailKit": {
               "target": "Package",
@@ -121,6 +129,10 @@
               "target": "Package",
               "version": "[7.0.9, )"
             },
+            "Microsoft.TestPlatform.TestHost": {
+              "target": "Package",
+              "version": "[17.6.3, )"
+            },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[7.0.8, )"
@@ -136,6 +148,14 @@
             "MySqlConnector": {
               "target": "Package",
               "version": "[2.2.6, )"
+            },
+            "NUnit": {
+              "target": "Package",
+              "version": "[3.13.3, )"
+            },
+            "NUnit3TestAdapter": {
+              "target": "Package",
+              "version": "[4.5.0, )"
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
@@ -153,13 +173,21 @@
               "target": "Package",
               "version": "[5.0.0, )"
             },
+            "SpecFlow": {
+              "target": "Package",
+              "version": "[3.9.74, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.5.0, )"
             },
-            "Xunit.Gherkin.Quick": {
+            "System.Net.Http": {
               "target": "Package",
-              "version": "[4.3.0, )"
+              "version": "[4.3.4, )"
+            },
+            "System.Net.Http.Json": {
+              "target": "Package",
+              "version": "[7.0.1, )"
             }
           },
           "imports": [

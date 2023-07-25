@@ -38,6 +38,7 @@
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
             CreateMap<UpdateUserDto, User>()
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
+
             CreateMap<User, UpdateUserDto>();
             CreateMap<DeleteUserDto, User>();
             CreateMap<User, DeleteUserDto>();
@@ -53,7 +54,6 @@
             CreateMap<ContactDeletedEmailDto, Email>();
             CreateMap<ForgotPasswordEmailDto, Email>();
             CreateMap<Email, GetEmailConfirmationDto>();
-
         }
     }
 }

@@ -65,3 +65,20 @@ C:\> "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld"
 C:\> "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqladmin" −u root shutdown
 
 ___________________________________________________________________________________________
+
+Living Documentation Command
+
+Best way - Provides results and documentation
+
+livingdoc test-assembly ..\PortfolioWebsite_Backend_Testing\bin\Debug\net7.0\PortfolioWebsite_Backend_Testing.dll -t ..\PortfolioWebsite_Backend_Testing\bin\Debug\net7.0\TestExecution.json -o .\LivingDoc.html
+
+Only get information regarding specified feature - DOES NOT PROVIDE RESULTS
+
+livingdoc feature-folder ..\PortfolioWebsite_Backend_Testing\Features
+
+To View the Living Documentation
+
+In the browser, navigate to the following file:
+Copy the full file path of the LivingDoc.html and paste it into the browser
+
+___________________________________________________________________________________________
