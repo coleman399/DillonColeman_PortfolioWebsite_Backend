@@ -240,6 +240,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                         }
                     }
                 });
+                userFound = false ? throw new UserNotFoundException() : userFound;
                 _userContext.SaveChanges();
 
                 // Check if tokens were saved
