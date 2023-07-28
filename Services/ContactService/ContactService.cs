@@ -199,6 +199,15 @@ namespace PortfolioWebsite_Backend.Services.ContactService
                             }
                         });
 
+                        // Verify that user is allowed to view contacts with similar name
+                        foreach (var contact in userSimilarlyNamedContacts)
+                        {
+                            if (contact.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email.ToString()))
+                            {
+                                userSimilarlyNamedContacts.Remove(contact);
+                            }
+                        }
+
                         // Update response
                         if (userSimilarlyNamedContacts.Count == 0)
                         {

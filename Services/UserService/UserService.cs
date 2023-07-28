@@ -172,6 +172,8 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     }
                 }
                 if (!validRole) throw new InvalidRoleException(newUser.Role);
+
+                // Check if user is authorized to create user with role
                 if (!newUser.Role.Equals(Roles.User.ToString()))
                 {
                     if (!_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.SuperUser.ToString()))
@@ -240,6 +242,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                         }
                     }
                 });
+                userFound = false ? throw new UserNotFoundException() : userFound;
                 _userContext.SaveChanges();
 
                 // Check if tokens were saved
@@ -340,6 +343,16 @@ namespace PortfolioWebsite_Backend.Services.UserService
                             return serviceResponse;
                         }
                     }
+                    else
+                    {
+                        if (dbUser.Role.Equals(Roles.SuperUser.ToString()))
+                        {
+                            if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()))
+                            {
+                                return serviceResponse;
+                            }
+                        }
+                    }
 
                     //Check if email or user name are already being used
                     dbUsers.ForEach(u =>
@@ -433,22 +446,39 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     TokenCheck();
 
                     // Check if user exists
-                    var user = _userContext.Users.FirstOrDefault(c => c.Id == id) ?? throw new UserNotFoundException(id);
+                    var userToDelete = _userContext.Users.FirstOrDefault(c => c.Id == id) ?? throw new UserNotFoundException(id);
 
                     // Check role
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()))
                     {
-                        // Check if user is authorized to delete account, if not, throw exception
-                        if (user.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email))
+                        // Check if user is authorized to delete account
+                        if (userToDelete.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email))
                         {
                             return serviceResponse;
+                        }
+                    }
+                    else
+                    {
+                        if (userToDelete.Role.Equals(Roles.SuperUser.ToString()))
+                        {
+                            if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.Admin.ToString()))
+                            {
+                                return serviceResponse;
+                            }
+                            else
+                            {
+                                if (userToDelete.Email.Equals(_configuration["SuperUser:Email"]))
+                                {
+                                    return serviceResponse;
+                                }
+                            }
                         }
                     }
 
                     // Delete user's contacts
                     await _contactContext.Contacts.ForEachAsync(c =>
                     {
-                        if (c.Email == user.Email)
+                        if (c.Email == userToDelete.Email)
                         {
                             _contactContext.Contacts.Remove(c);
                         }
@@ -458,11 +488,11 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     // Verify user's contacts were deleted
                     await _contactContext.Contacts.ForEachAsync(c =>
                     {
-                        if (c.Email == user.Email) throw new ContactsFailedToDeleteException();
+                        if (c.Email == userToDelete.Email) throw new ContactsFailedToDeleteException();
                     });
 
                     // Delete user
-                    _userContext.Users.Remove(user);
+                    _userContext.Users.Remove(userToDelete);
                     _userContext.SaveChanges();
 
                     // Verify user was deleted
@@ -474,7 +504,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     serviceResponse.Message = "User deleted successfully.";
 
                     // Email confirmation
-                    List<string> sendTo = new() { user.Email };
+                    List<string> sendTo = new() { userToDelete.Email };
                     var email = new AccountDeletedEmailDto()
                     {
                         To = sendTo
@@ -599,7 +629,15 @@ namespace PortfolioWebsite_Backend.Services.UserService
             try
             {
                 // Validate token
-                var claimsPrincipal = ValidateToken(token);
+                ClaimsPrincipal claimsPrincipal;
+                try
+                {
+                    claimsPrincipal = ValidateToken(token);
+                }
+                catch
+                {
+                    return serviceResponse;
+                }
 
                 // Find user
                 var dbUsers = await _userContext.Users.ToListAsync();
@@ -609,8 +647,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 // add more to filter
                 if (dbUser.ForgotPasswordToken == null || !dbUser.ForgotPasswordToken.Token.Equals(token) || dbUser.ForgotPasswordToken.ExpiresAt < DateTime.Now)
                 {
-                    serviceResponse.Success = true;
-                    throw new UnauthorizedAccessException();
+                    return serviceResponse;
                 }
                 else
                 {
@@ -627,11 +664,11 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 // Update Response
                 dbUser.AccessToken = CreateAccessToken(dbUser);
                 serviceResponse.Data = new GetResetPasswordUserDto() { Token = dbUser.AccessToken };
-                serviceResponse.Success = true;
                 serviceResponse.Message = "Reset Password Confirmation Operation Complete.";
             }
             catch (Exception exception)
             {
+                serviceResponse.Success = false;
                 serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
@@ -639,7 +676,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
 
         public async Task<UserServiceResponse<PasswordResetUserDto>> ResetPassword(ResetPasswordUserDto resetPasswordDto)
         {
-            var serviceResponse = new UserServiceResponse<PasswordResetUserDto>();
+            var serviceResponse = new UserServiceResponse<PasswordResetUserDto>() { Data = null };
             try
             {
                 if (!RegexFilters.IsValidPassword(resetPasswordDto.Password)) throw new InvalidPasswordException(resetPasswordDto.Password);
@@ -662,7 +699,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     if (!BCrypt.Net.BCrypt.Verify(resetPasswordDto.Password, dbUser.PasswordHash)) throw new UserFailedToUpdateException();
 
                     // Update response
-                    serviceResponse.Success = true;
                     serviceResponse.Data = new PasswordResetUserDto();
                     serviceResponse.Message = "Reset Password Operation Complete.";
                 }
@@ -674,6 +710,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
             }
             catch (Exception exception)
             {
+                serviceResponse.Success = false;
                 serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
