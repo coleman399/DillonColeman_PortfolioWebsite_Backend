@@ -43,7 +43,14 @@ try
     var connectionString = builder.Configuration["ConnectionStrings:LocalMySqlDb"];
     builder.Services.AddDbContext<UserContext>(options =>
     {
-        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+        if (builder.Environment.IsEnvironment("Testing"))
+        {
+            options.UseInMemoryDatabase("PerformanceTestingDB");
+        }
+        else
+        {
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+        }
     });
     builder.Services.AddDbContext<ContactContext>();
     builder.Services.AddControllers();
@@ -149,7 +156,10 @@ try
 }
 catch (Exception exception)
 {
-    Log.Fatal(exception, "Application terminated unexpectedly");
+    if (exception.GetType() != typeof(HostAbortedException))
+    {
+        Log.Fatal(exception, "Application terminated unexpectedly");
+    }
 }
 finally
 {

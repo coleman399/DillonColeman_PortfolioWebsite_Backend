@@ -4,11 +4,13 @@
     {
         public DbSet<Contact> Contacts { get; set; }
 
-        protected readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ContactContext(IConfiguration configuration)
+        public ContactContext(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -16,11 +18,18 @@
             var connectionString = _configuration["ConnectionStrings:LocalMySqlDb"];
             try
             {
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                if (_webHostEnvironment.EnvironmentName.Equals("Testing"))
+                {
+                    options.UseInMemoryDatabase("PerformanceTestingDB");
+                }
+                else
+                {
+                    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                }
             }
             catch (Exception exception)
             {
-                throw new DatabaseFailedToConnectException(exception.Message + " " + exception);
+                throw new DatabaseFailedToConnectException($"{exception.Message} {exception}");
             }
         }
 

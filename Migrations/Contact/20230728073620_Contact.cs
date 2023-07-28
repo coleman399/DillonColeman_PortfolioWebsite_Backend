@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PortfolioWebsite_Backend.Migrations.Contact
 {
     /// <inheritdoc />
-    public partial class Contacts : Migration
+    public partial class Contact : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

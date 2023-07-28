@@ -62,9 +62,9 @@ namespace PortfolioWebsite_Backend.Migrations
                         {
                             Id = 1,
                             AccessToken = "",
-                            CreatedAt = new DateTime(2023, 7, 16, 0, 35, 29, 568, DateTimeKind.Local).AddTicks(1145),
+                            CreatedAt = new DateTime(2023, 7, 28, 2, 33, 34, 50, DateTimeKind.Local).AddTicks(5119),
                             Email = "coleman399@gmail.com",
-                            PasswordHash = "$2a$11$iW9m9VnA4bVaBSfhiNZAbe7kGX0LmJ3yyWrCvYZ3dcVE1x8rH/lu.",
+                            PasswordHash = "$2a$11$9RxQnjgcsyxweKmf5/JiauOE4GkivpF3rizemwip/MnQrOqSrRlUO",
                             Role = "SuperUser",
                             UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "coleman399"

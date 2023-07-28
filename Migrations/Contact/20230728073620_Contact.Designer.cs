@@ -11,8 +11,8 @@ using PortfolioWebsite_Backend.Models.ContactModel;
 namespace PortfolioWebsite_Backend.Migrations.Contact
 {
     [DbContext(typeof(ContactContext))]
-    [Migration("20230716053612_Contacts")]
-    partial class Contacts
+    [Migration("20230728073620_Contact")]
+    partial class Contact
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PortfolioWebsite_Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Users : Migration
+    public partial class User : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -92,7 +92,7 @@ namespace PortfolioWebsite_Backend.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AccessToken", "CreatedAt", "Email", "PasswordHash", "Role", "UpdatedAt", "UserName" },
-                values: new object[] { 1, "", new DateTime(2023, 7, 16, 0, 35, 29, 568, DateTimeKind.Local).AddTicks(1145), "coleman399@gmail.com", "$2a$11$iW9m9VnA4bVaBSfhiNZAbe7kGX0LmJ3yyWrCvYZ3dcVE1x8rH/lu.", "SuperUser", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "coleman399" });
+                values: new object[] { 1, "", new DateTime(2023, 7, 28, 2, 33, 34, 50, DateTimeKind.Local).AddTicks(5119), "coleman399@gmail.com", "$2a$11$9RxQnjgcsyxweKmf5/JiauOE4GkivpF3rizemwip/MnQrOqSrRlUO", "SuperUser", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "coleman399" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ForgotPasswordTokens_UserId",
