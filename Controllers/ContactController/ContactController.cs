@@ -67,7 +67,7 @@ namespace PortfolioWebsite_Backend.Controllers.ContactController
         {
             ContactServiceResponse<List<GetContactDto>> result = await _contactService.GetContactsWithSimilarNameTo(name);
             if (result.Success == false) return BadRequest(result);
-            //if (result.Data == null && result.Success == true) return Unauthorized();
+            if (result.Data == null && result.Success == true) return Unauthorized();
             return Ok(result);
         }
 
