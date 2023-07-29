@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using PortfolioWebsite_Backend.Helpers.Constants;
 
 namespace PortfolioWebsite_Backend.Models.UserModel
 {

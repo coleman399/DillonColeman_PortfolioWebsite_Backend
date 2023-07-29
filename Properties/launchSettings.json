@@ -3,12 +3,12 @@
     "performance_testing": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Testing"
+        "ASPNETCORE_ENVIRONMENT": "Performance_Testing"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5202"
     },
-    "https": {
+    "default": {
       "applicationUrl": "http://localhost:5202",
       "commandName": "Project",
       "dotnetRunMessages": true,

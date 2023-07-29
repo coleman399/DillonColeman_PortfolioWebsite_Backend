@@ -1,4 +1,4 @@
-﻿namespace PortfolioWebsite_Backend.Helpers
+﻿namespace PortfolioWebsite_Backend.Helpers.Constants
 {
     public enum Roles
     {

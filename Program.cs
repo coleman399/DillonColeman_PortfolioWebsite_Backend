@@ -37,9 +37,9 @@ try
     // Add services to the container.
     builder.Services.AddHttpContextAccessor();
     // Add Serilog to the logging pipeline
-    builder.Host.UseSerilog((context, lc) => lc
-        .Enrich.WithCorrelationIdHeader("Correlation-ID")
-            .Enrich.FromLogContext().WriteTo.File(new JsonFormatter(), builder.Configuration["LoggingAddress"]!).WriteTo.Console());
+    builder.Host.UseSerilog((context, lc) =>
+        lc.Enrich.WithCorrelationIdHeader("Correlation-ID")
+          .Enrich.FromLogContext().WriteTo.File(new JsonFormatter(), builder.Configuration["LoggingAddress"]!).WriteTo.Console());
     var connectionString = builder.Configuration["ConnectionStrings:LocalMySqlDb"];
     builder.Services.AddDbContext<UserContext>(options =>
     {
@@ -69,19 +69,19 @@ try
             Scheme = "bearer",
         });
         options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
         {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
+                new OpenApiSecurityScheme
                 {
-                    Id = "Bearer",
-                    Type = ReferenceType.SecurityScheme,
+                    Reference = new OpenApiReference
+                    {
+                        Id = "Bearer",
+                        Type = ReferenceType.SecurityScheme,
+                    },
                 },
+                Array.Empty<string>()
             },
-            Array.Empty<string>()
-        },
-    });
+        });
     });
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -100,12 +100,12 @@ try
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("EmailConfiguration"));
     builder.Services.AddHealthChecks()
-                    .AddDbContextCheck<UserContext>(name: "UserCheck",
-                                                    tags: new[] { "ServiceCheck" })
-                    .AddDbContextCheck<ContactContext>(name: "ContactCheck",
-                                                       tags: new[] { "ServiceCheck" })
-                    .AddCheck<ApiHealthCheck>(name: "ApiHealthCheck",
-                                              tags: new[] { "SuperUserCheck", "LoggingCheck" });
+                        .AddDbContextCheck<UserContext>(name: "UserCheck",
+                                                        tags: new[] { "ServiceCheck" })
+                        .AddDbContextCheck<ContactContext>(name: "ContactCheck",
+                                                            tags: new[] { "ServiceCheck" })
+                        .AddCheck<ApiHealthCheck>(name: "ApiHealthCheck",
+                                                    tags: new[] { "SuperUserCheck", "LoggingCheck" });
 
     // Healthcheck UI doesn't work with MySql yet <- MySql Storage doesn't like .net 7, getting cannot find method error ???
     //builder.Services.AddHealthChecksUI().AddMySqlStorage(builder.Configuration["ConnectionStrings:LocalMySqlDb"]!);

@@ -1,4 +1,6 @@
-﻿namespace PortfolioWebsite_Backend.Models.UserModel
+﻿using PortfolioWebsite_Backend.Helpers.Constants;
+
+namespace PortfolioWebsite_Backend.Models.UserModel
 {
     public class UserContext : DbContext
     {
@@ -7,8 +9,13 @@
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ForgotPasswordToken> ForgotPasswordTokens { get; set; }
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserContext(DbContextOptions<UserContext> options, IConfiguration configuration) : base(options) { _configuration = configuration; }
+        public UserContext(DbContextOptions<UserContext> options, IConfiguration configuration, IWebHostEnvironment webHostEnvironment) : base(options)
+        {
+            _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,8 +48,8 @@
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(_configuration["SuperUser:Password"]!),
                 Role = Roles.SuperUser.ToString(),
                 AccessToken = string.Empty,
-                CreatedAt = DateTime.Now,
             });
         }
     }
 }
+
