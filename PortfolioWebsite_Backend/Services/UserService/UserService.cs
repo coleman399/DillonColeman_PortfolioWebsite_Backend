@@ -395,9 +395,16 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 // Check if user is authorized to create user with role
                 if (!newUser.Role.Equals(Roles.User.ToString()))
                 {
-                    if (!_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.SuperUser.ToString()))
+                    try
                     {
-                        throw new UnauthorizedAccessException();
+                        if (_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.SuperUser.ToString()))
+                        {
+                            return serviceResponse;
+                        }
+                    }
+                    catch
+                    {
+                        return serviceResponse;
                     }
                 }
 

@@ -29,10 +29,12 @@ namespace PortfolioWebsite_Backend.Controllers.AuthController
         [HttpPost("register"), AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<UserServiceResponse<GetUserDto>>> RegisterUser([FromBody] RegisterUserDto newUser)
         {
             UserServiceResponse<GetUserDto> result = await _userService.RegisterUser(newUser);
             if (result.Success == false) return BadRequest(result);
+            if (result.Data == null && result.Success == true) return Unauthorized();
             return Created("register", result);
         }
 

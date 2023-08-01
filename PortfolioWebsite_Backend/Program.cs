@@ -21,7 +21,6 @@ using Microsoft.OpenApi.Models;
 using Serilog.Formatting.Json;
 using System.Reflection;
 using System.Text;
-using Azure.Identity;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -43,14 +42,9 @@ try
     var connectionString = builder.Configuration["ConnectionStrings:LocalMySqlDb"];
     builder.Services.AddDbContext<UserContext>(options =>
     {
-        //if (builder.Environment.IsEnvironment(Constants.PERFORMANCE_TESTING))
-        //{
-        //    options.UseInMemoryDatabase("PerformanceTestingDB");
-        //}
-        //else
-        //{
-        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+        //options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 
+        options.UseSqlServer(builder.Configuration["ConnectionStrings:AzureSqlDb"]);
     });
     builder.Services.AddDbContext<ContactContext>();
     builder.Services.AddControllers();

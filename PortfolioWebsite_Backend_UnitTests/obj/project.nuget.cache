@@ -1,6 +1,10 @@
 {
   "version": 2,
+<<<<<<< HEAD
+  "dgSpecHash": "xnFKBk1+KGbI/Q8ilC4t9clEHeJjvEJDcgb12U8X3dKsN3UDFHqiRpzZtGKRnjaRocGIlzqWUgg4OtpU4NC5gQ==",
+=======
   "dgSpecHash": "lqDEdn+ARFErU43IO628NZ1Ubvfjpg4sPc9W9SF3x7rFsWWROoeT/k8ZWdAE3U6wFMcQbZ2e1qQOqrCfj76BVw==",
+>>>>>>> 8fe01394c586d353509eaf812480ca6565c03ea4
   "success": true,
   "projectFilePath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend_UnitTests\\PortfolioWebsite_Backend_UnitTests.csproj",
   "expectedPackageFiles": [
@@ -115,6 +119,7 @@
     "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.9\\microsoft.entityframeworkcore.7.0.9.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\7.0.9\\microsoft.entityframeworkcore.abstractions.7.0.9.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\7.0.9\\microsoft.entityframeworkcore.analyzers.7.0.9.nupkg.sha512",
+    "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore.design\\6.0.7\\microsoft.entityframeworkcore.design.6.0.7.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\7.0.9\\microsoft.entityframeworkcore.inmemory.7.0.9.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\7.0.9\\microsoft.entityframeworkcore.relational.7.0.9.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore.relational.design\\2.0.0-preview1-final\\microsoft.entityframeworkcore.relational.design.2.0.0-preview1-final.nupkg.sha512",

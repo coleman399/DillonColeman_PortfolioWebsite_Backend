@@ -60,8 +60,9 @@
 
   <ItemGroup>
     <Folder Include="Helpers\temp\" />
+	<Folder Include="Helpers\Constants\" />
     <Folder Include="Migrations\" />
-	<InternalsVisibleTo Include="PortfolioWebsite_Backend_Testing" />
+	<InternalsVisibleTo Include="PortfolioWebsite_Backend_ATDD" />
   </ItemGroup>
 
 </Project>

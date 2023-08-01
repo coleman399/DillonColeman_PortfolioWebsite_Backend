@@ -15,10 +15,11 @@
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            var connectionString = _configuration!["ConnectionStrings:LocalMySqlDb"];
+            //var connectionString = _configuration!["ConnectionStrings:LocalMySqlDb"];
             try
             {
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                options.UseSqlServer(_configuration!["ConnectionStrings:AzureSqlDb"]);
+                //options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 
             }
             catch (Exception exception)
