@@ -51,6 +51,32 @@ namespace PortfolioWebsite_Backend.Migrations.Contact
                     b.HasKey("Id");
 
                     b.ToTable("Contacts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2023, 7, 31, 7, 39, 35, 558, DateTimeKind.Local).AddTicks(1836),
+                            Email = "User1Email@test.test",
+                            Name = "TestName1",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2023, 7, 31, 7, 39, 35, 558, DateTimeKind.Local).AddTicks(1883),
+                            Email = "User2Email@test.test",
+                            Name = "TestName2",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2023, 7, 31, 7, 39, 35, 558, DateTimeKind.Local).AddTicks(1885),
+                            Email = "User3Email@test.test",
+                            Name = "TestName3",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 #pragma warning restore 612, 618
         }

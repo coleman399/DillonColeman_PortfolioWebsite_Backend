@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "performance_testing": {
+    "performance testing": {
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Performance_Testing"

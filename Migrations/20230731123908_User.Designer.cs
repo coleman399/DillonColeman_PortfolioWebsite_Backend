@@ -11,7 +11,7 @@ using PortfolioWebsite_Backend.Models.UserModel;
 namespace PortfolioWebsite_Backend.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20230728073334_User")]
+    [Migration("20230731123908_User")]
     partial class User
     {
         /// <inheritdoc />
@@ -59,19 +59,6 @@ namespace PortfolioWebsite_Backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccessToken = "",
-                            CreatedAt = new DateTime(2023, 7, 28, 2, 33, 34, 50, DateTimeKind.Local).AddTicks(5119),
-                            Email = "coleman399@gmail.com",
-                            PasswordHash = "$2a$11$9RxQnjgcsyxweKmf5/JiauOE4GkivpF3rizemwip/MnQrOqSrRlUO",
-                            Role = "SuperUser",
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserName = "coleman399"
-                        });
                 });
 
             modelBuilder.Entity("PortfolioWebsite_Backend.Models.UserModel.User", b =>
@@ -98,15 +85,24 @@ namespace PortfolioWebsite_Backend.Migrations
                             b1.Property<int>("UserId")
                                 .HasColumnType("int");
 
+                            b1.Property<int?>("UserId1")
+                                .HasColumnType("int");
+
                             b1.HasKey("Id");
 
                             b1.HasIndex("UserId")
                                 .IsUnique();
 
+                            b1.HasIndex("UserId1");
+
                             b1.ToTable("ForgotPasswordTokens");
 
-                            b1.WithOwner("User")
+                            b1.WithOwner()
                                 .HasForeignKey("UserId");
+
+                            b1.HasOne("PortfolioWebsite_Backend.Models.UserModel.User", "User")
+                                .WithMany()
+                                .HasForeignKey("UserId1");
 
                             b1.Navigation("User");
                         });
@@ -130,15 +126,24 @@ namespace PortfolioWebsite_Backend.Migrations
                             b1.Property<int>("UserId")
                                 .HasColumnType("int");
 
+                            b1.Property<int?>("UserId1")
+                                .HasColumnType("int");
+
                             b1.HasKey("Id");
 
                             b1.HasIndex("UserId")
                                 .IsUnique();
 
+                            b1.HasIndex("UserId1");
+
                             b1.ToTable("RefreshTokens");
 
-                            b1.WithOwner("User")
+                            b1.WithOwner()
                                 .HasForeignKey("UserId");
+
+                            b1.HasOne("PortfolioWebsite_Backend.Models.UserModel.User", "User")
+                                .WithMany()
+                                .HasForeignKey("UserId1");
 
                             b1.Navigation("User");
                         });

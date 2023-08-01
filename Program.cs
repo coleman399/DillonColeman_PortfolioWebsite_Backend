@@ -35,7 +35,6 @@ try
     builder.Configuration.AddEnvironmentVariables().AddUserSecrets(Assembly.GetExecutingAssembly(), true);
 
     // Add services to the container.
-    builder.Services.AddHttpContextAccessor();
     // Add Serilog to the logging pipeline
     builder.Host.UseSerilog((context, lc) =>
         lc.Enrich.WithCorrelationIdHeader("Correlation-ID")
@@ -43,17 +42,18 @@ try
     var connectionString = builder.Configuration["ConnectionStrings:LocalMySqlDb"];
     builder.Services.AddDbContext<UserContext>(options =>
     {
-        if (builder.Environment.IsEnvironment("Testing"))
-        {
-            options.UseInMemoryDatabase("PerformanceTestingDB");
-        }
-        else
-        {
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-        }
+        //if (builder.Environment.IsEnvironment(Constants.PERFORMANCE_TESTING))
+        //{
+        //    options.UseInMemoryDatabase("PerformanceTestingDB");
+        //}
+        //else
+        //{
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
     });
     builder.Services.AddDbContext<ContactContext>();
     builder.Services.AddControllers();
+    builder.Services.AddHttpContextAccessor();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(options =>

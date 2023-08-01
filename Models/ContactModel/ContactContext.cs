@@ -2,30 +2,24 @@
 {
     public class ContactContext : DbContext
     {
-        public DbSet<Contact> Contacts { get; set; }
+        public virtual DbSet<Contact> Contacts { get; set; }
 
-        private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IConfiguration? _configuration;
 
-        public ContactContext(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        public ContactContext() { }
+
+        public ContactContext(IConfiguration configuration)
         {
             _configuration = configuration;
-            _webHostEnvironment = webHostEnvironment;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            var connectionString = _configuration["ConnectionStrings:LocalMySqlDb"];
+            var connectionString = _configuration!["ConnectionStrings:LocalMySqlDb"];
             try
             {
-                if (_webHostEnvironment.EnvironmentName.Equals("Testing"))
-                {
-                    options.UseInMemoryDatabase("PerformanceTestingDB");
-                }
-                else
-                {
-                    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-                }
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
             }
             catch (Exception exception)
             {
