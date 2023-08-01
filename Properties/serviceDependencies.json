@@ -3,13 +3,15 @@
     "apis1": {
       "type": "apis"
     },
-    "secrets1": {
-      "type": "secrets",
-      "connectionId": "VaultUri"
-    },
     "mssql1": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:LocalMySqlDb"
+      "connectionId": "ConnectionStrings:LocalMySqlDb",
+      "dynamicId": null
+    },
+    "secrets1": {
+      "type": "secrets",
+      "connectionId": "VaultUri",
+      "dynamicId": null
     }
   }
 }

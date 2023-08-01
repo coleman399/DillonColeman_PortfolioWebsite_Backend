@@ -2,7 +2,7 @@ name: Build and deploy .NET Core application to Web App PortfolioWebsiteBackend2
 on:
   push:
     branches:
-    - PerformanceTesting
+    - main
 env:
   AZURE_WEBAPP_NAME: PortfolioWebsiteBackend20230731233005
   AZURE_WEBAPP_PACKAGE_PATH: .\publish

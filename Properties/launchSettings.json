@@ -3,7 +3,9 @@
     "performance testing": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Performance_Testing"
+        "ASPNETCORE_ENVIRONMENT": "Performance_Testing",
+        "VaultUri": "https://dilloncoleman-keyvault.vault.azure.net/",
+        "AZURE_USERNAME": "coleman399@gmail.com"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5202"
@@ -13,7 +15,9 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "VaultUri": "https://dilloncoleman-keyvault.vault.azure.net/",
+        "AZURE_USERNAME": "coleman399@gmail.com"
       },
       "launchBrowser": true,
       "launchUrl": "swagger"
@@ -24,7 +28,9 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "VaultUri": "https://dilloncoleman-keyvault.vault.azure.net/",
+        "AZURE_USERNAME": "coleman399@gmail.com"
       }
     }
   },
