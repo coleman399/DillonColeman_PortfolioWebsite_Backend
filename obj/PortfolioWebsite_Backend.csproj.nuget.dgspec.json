@@ -65,6 +65,14 @@
               "target": "Package",
               "version": "[12.0.1, )"
             },
+            "Azure.Extensions.AspNetCore.Configuration.Secrets": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "Azure.Identity": {
+              "target": "Package",
+              "version": "[1.6.0, )"
+            },
             "BCrypt.Net-Next": {
               "target": "Package",
               "version": "[4.0.3, )"

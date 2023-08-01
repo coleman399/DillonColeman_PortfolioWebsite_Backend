@@ -21,6 +21,7 @@ using Microsoft.OpenApi.Models;
 using Serilog.Formatting.Json;
 using System.Reflection;
 using System.Text;
+using Azure.Identity;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()

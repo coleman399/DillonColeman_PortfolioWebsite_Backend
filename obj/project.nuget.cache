@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+PBGJIq0fj+sl09O8MLxWI0W29NzFGI2FJESP9KI71NuSPGQvYkwvAV8JbBCd0W/rikzlpfDYRorxvoDWI4nFQ==",
+  "dgSpecHash": "tND0DEaT/FDwN/mCwRDu1L91By01hKDHDuNkXqRIRI57u9GGz+7hmup1SmvCNs6aKJEkKSoWl4pYeargomo8PQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend\\PortfolioWebsite_Backend.csproj",
   "expectedPackageFiles": [
@@ -11,7 +11,9 @@
     "C:\\Users\\Pendragon\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
+    "C:\\Users\\Pendragon\\.nuget\\packages\\azure.extensions.aspnetcore.configuration.secrets\\1.0.0\\azure.extensions.aspnetcore.configuration.secrets.1.0.0.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
+    "C:\\Users\\Pendragon\\.nuget\\packages\\azure.security.keyvault.secrets\\4.0.1\\azure.security.keyvault.secrets.4.0.1.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\bodi\\1.5.0\\bodi.1.5.0.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\bouncycastle.cryptography\\2.2.1\\bouncycastle.cryptography.2.2.1.nupkg.sha512",
