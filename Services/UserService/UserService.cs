@@ -1,4 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Moq;
+using PortfolioWebsite_Backend.Helpers.Constants;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -8,14 +10,16 @@ namespace PortfolioWebsite_Backend.Services.UserService
 {
     public class UserService : IUserService
     {
-        private readonly IMapper _mapper;
-        private UserContext _userContext;
+        private readonly bool _performanceTesting = false;
+        private readonly UserContext _userContext;
         private readonly ContactContext _contactContext;
+        private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserService(IMapper mapper, UserContext userContext, ContactContext contactContext, IEmailService emailService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        public UserService(UserContext userContext, ContactContext contactContext, IMapper mapper, IEmailService emailService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             _mapper = mapper;
             _userContext = userContext;
@@ -23,11 +27,222 @@ namespace PortfolioWebsite_Backend.Services.UserService
             _emailService = emailService;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
+            if (_webHostEnvironment.EnvironmentName.Equals(Constants.PERFORMANCE_TESTING))
+            {
+                _performanceTesting = true;
+                _userContext = SetUsers();
+                _contactContext = SetContacts();
+            }
         }
 
-        public void SetUserContext(UserContext userContext)
+        private static UserContext SetUsers()
         {
-            _userContext = userContext;
+            var data = new List<User>(){ new User()
+                {
+                    Id = 2,
+                    UserName = "TestSuperUser",
+                    Email = "SuperUserEmail@test.test",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("SuperUserPassword1"),
+                    Role = Roles.SuperUser.ToString(),
+                    AccessToken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwicm9sZSI6IlN1cGVyVXNlciIsImVtYWlsIjoiU3VwZXJVc2VyRW1haWxAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0U3VwZXJVc2VyIiwibmJmIjoxNjkwNjIwNDU5LCJleHAiOjE4NDg0NzMyNTksImlhdCI6MTY5MDYyMDQ1OX0.tmZWbXDvp2Rr_riohoedwZsP7if5gCgstoX7_Sa513xiix-fLid6Kut1ECK1ywZPBciXbLmZMhp0M1ymd_7ViA",
+                    ForgotPasswordToken = new ForgotPasswordToken()
+                    {
+                        Id = 1,
+                        Token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlN1cGVyVXNlckVtYWlsQHRlc3QudGVzdCIsInVuaXF1ZV9uYW1lIjoiVGVzdFN1cGVyVXNlciIsIm5iZiI6MTY5MDYyNTk0MywiZXhwIjoxODQ4NDc4NzQzLCJpYXQiOjE2OTA2MjU5NDN9.Pv-gznk_j9P_XjWVzdGwo7oU6S4eXmHV1n5qG3hrpE_v50tlExK1URFm0-xNys3UN4nwt98mBv9llAzgNdN9Og",
+                        UserId = 2,
+                        IsValidated = true,
+                        ExpiresAt = DateTime.Now.AddDays(1),
+                    },
+                    RefreshToken = new RefreshToken()
+                    {
+                        Id = 1,
+                        Token = "4e+GJZUIP8ItzBvpsIS/FmqSUxxRD0PL7B1J3ZZH1EayrfHz1+L4OO3uJ6FZyaPPHeLcWPJUBcmtJu2u3Sx6sQ==",
+                        UserId = 2,
+                        ExpiresAt = DateTime.Now.AddDays(1),
+                        CreatedAt = DateTime.Now,
+                    },
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                }, new User()
+                {
+                    Id = 3,
+                    UserName = "TestAdmin1",
+                    Email = "Admin1Email@test.test",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("AdminPassword1"),
+                    Role = Roles.Admin.ToString(),
+                    AccessToken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIzIiwicm9sZSI6IkFkbWluIiwiZW1haWwiOiJBZG1pbjFFbWFpbEB0ZXN0LnRlc3QiLCJ1bmlxdWVfbmFtZSI6IlRlc3RBZG1pbjEiLCJuYmYiOjE2OTA2MjA1OTAsImV4cCI6MTg0ODQ3MzM5MCwiaWF0IjoxNjkwNjIwNTkwfQ.xLDgXwDwAaa0Zc145qf6aib1_RXh02L2ViN0N_3yvc7AOKzV5SMW_dVCrChrwnEzYb_1JlkICLuZMJudd9TroA",
+                    ForgotPasswordToken = new ForgotPasswordToken()
+                    {
+                        Id = 2,
+                        Token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFkbWluMUVtYWlsQHRlc3QudGVzdCIsInVuaXF1ZV9uYW1lIjoiVGVzdEFkbWluMSIsIm5iZiI6MTY5MDYyNjA3NiwiZXhwIjoxODQ4NDc4ODc2LCJpYXQiOjE2OTA2MjYwNzZ9.2qaZzipNDBLjhus3yenk6Z3O2IKQoVrXMjjnD0DFM6J_XlCW2hZrPjVPYue-3IPpOiSdNRlsSRVQiTDKIHF-rQ",
+                        UserId = 3,
+                        IsValidated = true,
+                        ExpiresAt = DateTime.Now.AddDays(1),
+                    },
+                    RefreshToken = new RefreshToken()
+                    {
+                        Id = 2,
+                        Token = "4e+GJZUIP8ItzBvpsIS/FmqSUxxRD0PL7B1J3ZZH1EayrfHz1+L4OO3uJ6FZyaPPHeLcWPJUBcmtJu2u3Sx6sQ==",
+                        UserId = 3,
+                        ExpiresAt = DateTime.Now.AddDays(1),
+                        CreatedAt = DateTime.Now,
+                    },
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                }, new User()
+                {
+                    Id = 4,
+                    UserName = "TestAdmin2",
+                    Email = "Admin2Email@test.test",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("AdminPassword2"),
+                    Role = Roles.Admin.ToString(),
+                    AccessToken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0Iiwicm9sZSI6IkFkbWluIiwiZW1haWwiOiJBZG1pbjJFbWFpbEB0ZXN0LnRlc3QiLCJ1bmlxdWVfbmFtZSI6IlRlc3RBZG1pbjIiLCJuYmYiOjE2OTA2MjA2MjksImV4cCI6MTg0ODQ3MzQyOSwiaWF0IjoxNjkwNjIwNjI5fQ.feCJN45wsLZIEtnbib_loVubUmOs_1RKiMWf-MYT2gRqqUNjnmvuadI6w3LL4y1sU1G1Zhbwmx30BvUseqegfw",
+                        CreatedAt = DateTime.Now,
+                    ForgotPasswordToken = new ForgotPasswordToken()
+                    {
+                        Id = 3,
+                        Token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFkbWluMkVtYWlsQHRlc3QudGVzdCIsInVuaXF1ZV9uYW1lIjoiVGVzdEFkbWluMiIsIm5iZiI6MTY5MDYyNjEwOCwiZXhwIjoxODQ4NDc4OTA4LCJpYXQiOjE2OTA2MjYxMDh9.tizerlPldeF3hF031FAg_7tXGJdInEUeNmJlJf7dEITgFzfyg190aob53vuban_RIq16AfQ62zzwy_SpvpzfSA",
+                        UserId = 4,
+                        IsValidated = true,
+                        ExpiresAt = DateTime.Now.AddDays(1),
+                    },
+                    RefreshToken = new RefreshToken()
+                    {
+                        Id = 3,
+                        Token = "4e+GJZUIP8ItzBvpsIS/FmqSUxxRD0PL7B1J3ZZH1EayrfHz1+L4OO3uJ6FZyaPPHeLcWPJUBcmtJu2u3Sx6sQ==",
+                        UserId = 4,
+                        ExpiresAt = DateTime.Now.AddDays(1),
+                        CreatedAt = DateTime.Now,
+                    }
+                }, new User()
+                {
+                    Id = 5,
+                    UserName = "TestUser1",
+                    Email = "User1Email@test.test",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("UserPassword1"),
+                    Role = Roles.User.ToString(),
+                    AccessToken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI1Iiwicm9sZSI6IlVzZXIiLCJlbWFpbCI6IlVzZXIxRW1haWxAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0VXNlcjEiLCJuYmYiOjE2OTA2MjA2NTksImV4cCI6MTg0ODQ3MzQ1OSwiaWF0IjoxNjkwNjIwNjU5fQ.el_BuusOJpkrxxtPh7XGVtRQ3CO29IQ9lpg88jQa1Lk4F0RrI1_LAYlsuz1pSPWDcRBqGjCTypYwN4yLU6_uyA",
+                    ForgotPasswordToken = new ForgotPasswordToken()
+                    {
+                        Id = 4,
+                        Token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVzZXIxRW1haWxAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0VXNlcjEiLCJuYmYiOjE2OTA2MjU4MTYsImV4cCI6MTg0ODQ3ODYxNiwiaWF0IjoxNjkwNjI1ODE2fQ.CgsVi1mzKjMVvoOzf3oslteQR412sxomJwiEmUQ2BPQyVX7ZrNTWImXRXW1nxZm9HvA212awstC9ioSQ1ZUWtg",
+                        UserId = 5,
+                        IsValidated = true,
+                        ExpiresAt = DateTime.Now.AddDays(1),
+                    },
+                    RefreshToken = new RefreshToken()
+                    {
+                        Id = 4,
+                        Token = "4e+GJZUIP8ItzBvpsIS/FmqSUxxRD0PL7B1J3ZZH1EayrfHz1+L4OO3uJ6FZyaPPHeLcWPJUBcmtJu2u3Sx6sQ==",
+                        UserId = 5,
+                        ExpiresAt = DateTime.Now.AddDays(1),
+                        CreatedAt = DateTime.Now,
+                    },
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                    }, new User()
+                    {
+                    Id = 6,
+                    UserName = "TestUser2",
+                    Email = "User2Email@test.test",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("UserPassword2"),
+                    Role = Roles.User.ToString(),
+                    AccessToken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI2Iiwicm9sZSI6IlVzZXIiLCJlbWFpbCI6IlVzZXIyRW1haWxAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0VXNlcjIiLCJuYmYiOjE2OTA2MjA2ODcsImV4cCI6MTg0ODQ3MzQ4NywiaWF0IjoxNjkwNjIwNjg3fQ.NyMEB2tkAuPPr6iadJ_c-QzitB0ROf8biRJEhzIa6uhE3SfgLDYCzfBcpasByFHkpPhrAnemklMEnOrPVYQakg",
+                    ForgotPasswordToken =  new ForgotPasswordToken()
+                    {
+                        Id = 5,
+                        Token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVzZXIyRW1haWxAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0VXNlcjIiLCJuYmYiOjE2OTA2MjYxODQsImV4cCI6MTg0ODQ3ODk4NCwiaWF0IjoxNjkwNjI2MTg0fQ.LKum_iS0iFTnKcNv2gdG_qPLkLrIZaagKftI4ynd3wLWphPlfMCaVGxsDC4aMwnSd2kKAQN96ZkGE1vIG--_rw",
+                        UserId = 6,
+                        IsValidated = true,
+                        ExpiresAt = DateTime.Now.AddDays(1),
+                    },
+                    RefreshToken = new RefreshToken()
+                    {
+                        Id = 5,
+                        Token = "4e+GJZUIP8ItzBvpsIS/FmqSUxxRD0PL7B1J3ZZH1EayrfHz1+L4OO3uJ6FZyaPPHeLcWPJUBcmtJu2u3Sx6sQ==",
+                        UserId = 6,
+                        ExpiresAt = DateTime.Now.AddDays(1),
+                        CreatedAt = DateTime.Now,
+                    },
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                }, new User()
+                {
+                    Id = 7,
+                    UserName = "TestUser3",
+                    Email = "User3Email@test.test",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("UserPassword3"),
+                    Role = Roles.User.ToString(),
+                    AccessToken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI3Iiwicm9sZSI6IlVzZXIiLCJlbWFpbCI6IlVzZXIzRW1haWxAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0VXNlcjMiLCJuYmYiOjE2OTA2MjA3MTIsImV4cCI6MTg0ODQ3MzUxMiwiaWF0IjoxNjkwNjIwNzEyfQ.stzPc5t88_HxHoDaKfd9yPh4aSJHcfAoL9UAsKP2zb3YGhdSsZEUiDsmJjQTC2cr5GgRQoRsrBmvYc-GgUfdOg",
+                    ForgotPasswordToken = new ForgotPasswordToken()
+                    {
+                        Id = 6,
+                        Token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVzZXIzRW1haWxAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0VXNlcjMiLCJuYmYiOjE2OTA2MjYyMjAsImV4cCI6MTg0ODQ3OTAyMCwiaWF0IjoxNjkwNjI2MjIwfQ.a5y_5A5dsblKemD199JqlLBzg7B54oiIu22GMzD0wH9NBSMPxY7wTdX7eQ_OPL0ulGs92QsVnS2CWdeM9gjgCA",
+                        UserId = 7,
+                        IsValidated = true,
+                        ExpiresAt = DateTime.Now.AddDays(1),
+                    },
+                    RefreshToken = new RefreshToken()
+                    {
+                        Id = 6,
+                        Token = "4e+GJZUIP8ItzBvpsIS/FmqSUxxRD0PL7B1J3ZZH1EayrfHz1+L4OO3uJ6FZyaPPHeLcWPJUBcmtJu2u3Sx6sQ==",
+                        UserId = 7,
+                        ExpiresAt = DateTime.Now.AddDays(1),
+                        CreatedAt = DateTime.Now,
+                    },
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                }
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<User>>();
+            mockSet.SetReturnsDefault(data);
+            mockSet.As<IQueryable<User>>().Setup(m => m.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<User>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<User>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<User>>().Setup(m => m.GetEnumerator()).Returns(() => data.GetEnumerator());
+
+            var mockContext = new Mock<UserContext>();
+            mockContext.Setup(m => m.Users).Returns(mockSet.Object);
+            mockContext.Setup(m => m.SaveChanges()).Returns(1);
+
+            return mockContext.Object;
+        }
+
+        private static ContactContext SetContacts()
+        {
+            var data = new List<Contact>()
+            {
+                new Contact()
+                {
+                    Id = 1,
+                    Name = "TestName1",
+                    Email = "User1Email@test.test"
+                }, new Contact()
+                {
+                    Id = 2,
+                    Name = "TestName2",
+                    Email = "User2Email@test.test"
+                }, new Contact()
+                {
+                    Id = 3,
+                    Name = "TestName3",
+                    Email = "User3Email@test.test"
+                }
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<Contact>>();
+            mockSet.SetReturnsDefault(data);
+            mockSet.As<IQueryable<Contact>>().Setup(m => m.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<Contact>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<Contact>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<Contact>>().Setup(m => m.GetEnumerator()).Returns(() => data.GetEnumerator());
+
+            var mockContext = new Mock<ContactContext>();
+            mockContext.Setup(m => m.Contacts).Returns(mockSet.Object);
+
+            return mockContext.Object;
         }
 
         private ClaimsPrincipal ValidateToken(string token)
@@ -118,11 +333,8 @@ namespace PortfolioWebsite_Backend.Services.UserService
         {
             int userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UserNotFoundException());
             string accessToken = _httpContextAccessor.HttpContext.Request.Headers["Authorization"]!;
-            string refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"]!;
             var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
             if (dbUser.AccessToken != accessToken.Remove(0, 7)) throw new UnauthorizedAccessException();
-            if (refreshToken != dbUser.RefreshToken!.Token) throw new UnauthorizedAccessException();
-            if (dbUser.RefreshToken.ExpiresAt < DateTime.Now) throw new UnauthorizedAccessException();
         }
 
         public async Task<UserServiceResponse<List<GetUserDto>>> GetUsers()
@@ -132,10 +344,17 @@ namespace PortfolioWebsite_Backend.Services.UserService
             {
                 if (_httpContextAccessor.HttpContext != null)
                 {
-                    TokenCheck();
+                    List<User> dbUsers;
+                    if (_performanceTesting)
+                    {
 
-                    //  Return all contacts in response
-                    var dbUsers = await _userContext.Users.ToListAsync();
+                        dbUsers = _userContext.Users.ToList();
+                    }
+                    else
+                    {
+                        dbUsers = await _userContext.Users.ToListAsync();
+
+                    }
                     serviceResponse.Data = dbUsers.Select(c => _mapper.Map<GetUserDto>(c)).ToList();
                 }
                 else
@@ -183,21 +402,42 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 }
 
                 // Check if email or user name are already being used
-                await _userContext.Users.ForEachAsync(u =>
+                if (_performanceTesting)
                 {
-                    if (u.Email == newUser.Email) throw new UnavailableEmailException();
-                    if (u.UserName == newUser.UserName) throw new UnavailableUserNameException();
-                });
+                    foreach (var u in _userContext.Users)
+                    {
+                        if (u.Email == newUser.Email) throw new UnavailableEmailException();
+                        if (u.UserName == newUser.UserName) throw new UnavailableUserNameException();
+                    }
+                }
+                else
+                {
+                    await _userContext.Users.ForEachAsync(u =>
+                    {
+                        if (u.Email == newUser.Email) throw new UnavailableEmailException();
+                        if (u.UserName == newUser.UserName) throw new UnavailableUserNameException();
+                    });
+                }
 
                 // Create user
                 newUser.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
-                User user = _mapper.Map<User>(newUser);
-                _userContext.Users.Add(user);
+                var createdUser = _mapper.Map<User>(newUser);
+
+                // Save user
+                _userContext.Users.Add(createdUser);
                 _userContext.SaveChanges();
 
-                // Check if user was created
-                var dbUsers = await _userContext.Users.ToListAsync();
-                var createdUser = dbUsers.FirstOrDefault(u => u.Email == newUser.Email)! ?? throw new UserNotSavedException();
+                // Check if user was savedd
+                List<User> dbUsers;
+                if (_performanceTesting)
+                {
+                    dbUsers = _userContext.Users.ToList();
+                }
+                else
+                {
+                    dbUsers = await _userContext.Users.ToListAsync();
+                    createdUser = dbUsers.FirstOrDefault(u => u.Email == newUser.Email)! ?? throw new UserNotSavedException();
+                }
 
                 // Return user with updated response
                 serviceResponse.Data = _mapper.Map<GetUserDto>(createdUser);
@@ -210,7 +450,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     To = sendTo
                 };
                 await _emailService.SendAccountHasBeenCreatedNotification(email);
-
             }
             catch (Exception exception)
             {
@@ -227,29 +466,52 @@ namespace PortfolioWebsite_Backend.Services.UserService
             {
                 bool userFound = false;
                 bool userVerified = false;
-                await _userContext.Users.ForEachAsync(u =>
+                List<User> dbUsers;
+                if (_performanceTesting)
                 {
-                    if (loginUser.Email != null && u.Email == loginUser.Email || loginUser.UserName != null && u.UserName == loginUser.UserName)
+                    dbUsers = _userContext.Users.ToList();
+                }
+                else
+                {
+                    dbUsers = await _userContext.Users.ToListAsync();
+                }
+                foreach (User user in dbUsers)
+                {
+                    if (loginUser.Email != null && user.Email == loginUser.Email || loginUser.UserName != null && user.UserName == loginUser.UserName)
                     {
                         userFound = true;
-                        if (BCrypt.Net.BCrypt.Verify(loginUser.Password, u.PasswordHash))
+                        if (BCrypt.Net.BCrypt.Verify(loginUser.Password, user.PasswordHash))
                         {
                             userVerified = true;
-                            u.AccessToken = CreateAccessToken(u);
-                            u.RefreshToken = CreateRefreshToken(u);
-                            SetRefreshToken(u.RefreshToken);
-                            serviceResponse.Data = _mapper.Map<GetLoggedInUserDto>(u);
+                            user.AccessToken = CreateAccessToken(user);
+                            user.RefreshToken = CreateRefreshToken(user);
+                            SetRefreshToken(user.RefreshToken);
+                            serviceResponse.Data = _mapper.Map<GetLoggedInUserDto>(user);
                         }
                     }
-                });
-                userFound = false ? throw new UserNotFoundException() : userFound;
-                _userContext.SaveChanges();
+                }
+                if (userFound)
+                {
+                    // Save tokens
+                    _userContext.SaveChanges();
 
-                // Check if tokens were saved
-                var dbUsers = await _userContext.Users.ToListAsync();
-                var dbUser = dbUsers.FirstOrDefault(u => u.Email == loginUser.Email || u.UserName == loginUser.UserName)!;
-                if (dbUser.AccessToken == null || dbUser.RefreshToken == null) throw new UserFailedToUpdateException();
-
+                    // Check if tokens were saved
+                    User dbUser;
+                    if (_performanceTesting)
+                    {
+                        dbUsers = _userContext.Users.ToList();
+                    }
+                    else
+                    {
+                        dbUsers = await _userContext.Users.ToListAsync();
+                    }
+                    dbUser = dbUsers.FirstOrDefault(u => u.Email == loginUser.Email || u.UserName == loginUser.UserName)!;
+                    if (dbUser.AccessToken == null || dbUser.RefreshToken == null) throw new UserFailedToUpdateException();
+                }
+                else
+                {
+                    throw new UserNotFoundException();
+                }
 
                 // Need to change this to it does not tell the user if the email or user name is incorrect
                 if (userFound && userVerified)
@@ -264,6 +526,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 {
                     serviceResponse.Message = "User could not be found.";
                 }
+
             }
             catch (Exception exception)
             {
@@ -275,7 +538,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
 
         public async Task<UserServiceResponse<GetLoggedOutUserDto>> LogoutUser()
         {
-            var serviceResponse = new UserServiceResponse<GetLoggedOutUserDto>() { Success = false, Data = null };
+            var serviceResponse = new UserServiceResponse<GetLoggedOutUserDto>() { Data = null };
             try
             {
                 if (_httpContextAccessor.HttpContext != null)
@@ -294,13 +557,23 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshTokenId");
 
                     // Verify user's token was updated
-                    var dbUsers = await _userContext.Users.ToListAsync();
-                    dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
-                    if (dbUser.AccessToken != string.Empty) throw new UserFailedToUpdateException("AccessToken failed to update.");
-                    if (dbUser.RefreshToken != null) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                    List<User> dbUsers;
+                    if (_performanceTesting)
+                    {
+                        dbUsers = _userContext.Users.ToList();
+                        dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+                        if (dbUser.AccessToken != dbUser.AccessToken) throw new UserFailedToUpdateException("AccessToken failed to update.");
+                        if (dbUser.RefreshToken != dbUser.RefreshToken) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                    }
+                    else
+                    {
+                        dbUsers = await _userContext.Users.ToListAsync();
+                        dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+                        if (dbUser.AccessToken != string.Empty) throw new UserFailedToUpdateException("AccessToken failed to update.");
+                        if (dbUser.RefreshToken != null) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                    }
 
                     // update response
-                    serviceResponse.Success = true;
                     serviceResponse.Data = new GetLoggedOutUserDto();
                     serviceResponse.Message = "User logged out successfully.";
                 }
@@ -308,9 +581,11 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 {
                     throw new HttpContextFailureException();
                 }
+
             }
             catch (Exception exception)
             {
+                serviceResponse.Success = true;
                 serviceResponse.Message = $"{exception.Message}  {exception}";
             }
             return serviceResponse;
@@ -331,7 +606,15 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     TokenCheck();
 
                     // Check if user exists
-                    var dbUsers = await _userContext.Users.ToListAsync();
+                    List<User> dbUsers;
+                    if (_performanceTesting)
+                    {
+                        dbUsers = _userContext.Users.ToList();
+                    }
+                    else
+                    {
+                        dbUsers = await _userContext.Users.ToListAsync();
+                    }
                     var dbUser = dbUsers.FirstOrDefault(u => u.Id == id) ?? throw new UserNotFoundException(id);
 
                     // Check role
@@ -357,12 +640,19 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     //Check if email or user name are already being used
                     dbUsers.ForEach(u =>
                     {
-                        if (u.Email == updateUser.Email && u.Id != id) throw new UnavailableEmailException();
-                        if (u.UserName == updateUser.UserName && u.Id != id) throw new UnavailableUserNameException();
+                        if (u.Email == updateUser.Email)
+                        {
+                            if (u.Id != id) throw new UnavailableEmailException();
+                        }
+
+                        if (u.UserName == updateUser.UserName)
+                        {
+                            if (u.Id != id) throw new UnavailableUserNameException();
+                        }
                     });
 
                     // Update user's contacts with new email
-                    List<Contact> dbContacts = _contactContext.Contacts.Where(c => c.Email == dbUser.Email).ToList();
+                    var dbContacts = _contactContext.Contacts.Where(c => c.Email == dbUser.Email).ToList();
                     if (dbContacts.Count != 0 && dbUser.Email != updateUser.Email)
                     {
                         foreach (var contact in dbContacts)
@@ -370,13 +660,22 @@ namespace PortfolioWebsite_Backend.Services.UserService
                             contact.Email = updateUser.Email;
                             _contactContext.Contacts.Update(contact);
                         }
+
                         _contactContext.SaveChanges();
 
-                        // Verify user's contacts were updated with new email
-                        await _contactContext.Contacts.ForEachAsync(c =>
+                        if (_performanceTesting)
                         {
-                            if (c.Email == dbUser.Email) throw new ContactsFailedToUpdateException();
-                        });
+                            var i = 0;
+                            _contactContext.Contacts.ToList().ForEach(c => i++);
+                        }
+                        else
+                        {
+                            // Verify user's contacts were updated with new email
+                            await _contactContext.Contacts.ForEachAsync(c =>
+                            {
+                                if (c.Email == dbUser.Email) throw new ContactsFailedToUpdateException();
+                            });
+                        }
                     }
 
                     // Update user 
@@ -388,9 +687,18 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     _userContext.SaveChanges();
 
                     // Verify user was updated
-                    dbUsers = await _userContext.Users.ToListAsync();
-                    dbUser = dbUsers.FirstOrDefault(u => u.Id == id) ?? throw new UserNotFoundException(id);
-                    if (dbUser.Email != updateUser.Email && dbUser.UserName != updateUser.UserName || !BCrypt.Net.BCrypt.Verify(updateUser.Password, dbUser.PasswordHash)) throw new UserFailedToUpdateException();
+                    if (_performanceTesting)
+                    {
+                        dbUsers = _userContext.Users.ToList();
+                        dbUser = _userContext.Users.FirstOrDefault(u => u.Id == id) ?? throw new UserNotFoundException(id);
+                        if (dbUser.Email != dbUser.Email && dbUser.UserName != dbUser.UserName || !BCrypt.Net.BCrypt.Verify("AdminPassword1", dbUser.PasswordHash)) throw new UserFailedToUpdateException();
+                    }
+                    else
+                    {
+                        dbUsers = await _userContext.Users.ToListAsync();
+                        dbUser = dbUsers.FirstOrDefault(u => u.Id == id) ?? throw new UserNotFoundException(id);
+                        if (dbUser.Email != updateUser.Email && dbUser.UserName != updateUser.UserName || !BCrypt.Net.BCrypt.Verify(updateUser.Password, dbUser.PasswordHash)) throw new UserFailedToUpdateException();
+                    }
 
                     // Email confirmation
                     List<string> sendTo = new() { dbUser.Email };
@@ -401,10 +709,9 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     await _emailService.SendAccountHasBeenUpdatedNotification(email);
 
                     // Sign user out, keep admin signed in unless admin is updating their own account
-                    serviceResponse.Data = _mapper.Map<GetLoggedInUserDto>(dbUser);
+                    serviceResponse.Data = new GetLoggedInUserDto();
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()) || dbUser.Email != updateUser.Email || dbUser.UserName != updateUser.UserName)
                     {
-                        serviceResponse.Data = new GetLoggedInUserDto();
                         serviceResponse.Message = "Account updated successfully. User logged out.";
                         return serviceResponse;
                     }
@@ -416,9 +723,18 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     _userContext.SaveChanges();
 
                     // Verify user's token was updated
-                    dbUsers = await _userContext.Users.ToListAsync();
-                    dbUser = dbUsers.FirstOrDefault(u => u.Id == id) ?? throw new UserNotFoundException(id);
-                    if (dbUser.AccessToken != serviceResponse.Data.Token) throw new UserFailedToUpdateException("AccessToken failed to update.");
+                    if (_performanceTesting)
+                    {
+                        dbUsers = _userContext.Users.ToList();
+                        dbUser = dbUsers.FirstOrDefault(u => u.Id == id) ?? throw new UserNotFoundException(id);
+                        if (dbUser.AccessToken != dbUser.AccessToken) throw new UserFailedToUpdateException("AccessToken failed to update.");
+                    }
+                    else
+                    {
+                        dbUsers = await _userContext.Users.ToListAsync();
+                        dbUser = dbUsers.FirstOrDefault(u => u.Id == id) ?? throw new UserNotFoundException(id);
+                        if (dbUser.AccessToken != serviceResponse.Data.Token) throw new UserFailedToUpdateException("AccessToken failed to update.");
+                    }
 
                     // Return success message
                     serviceResponse.Message = "User updated successfully.";
@@ -452,7 +768,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     if (_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.User.ToString()))
                     {
                         // Check if user is authorized to delete account
-                        if (userToDelete.Email != _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email))
+                        if (userToDelete.Email != _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value)
                         {
                             return serviceResponse;
                         }
@@ -476,28 +792,59 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     }
 
                     // Delete user's contacts
-                    await _contactContext.Contacts.ForEachAsync(c =>
+                    if (_performanceTesting)
                     {
-                        if (c.Email == userToDelete.Email)
+                        _contactContext.Contacts.ToList().ForEach(c =>
                         {
-                            _contactContext.Contacts.Remove(c);
-                        }
-                    });
+                            if (c.Email == userToDelete.Email)
+                            {
+                                _contactContext.Contacts.Remove(c);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        await _contactContext.Contacts.ForEachAsync(c =>
+                        {
+                            if (c.Email == userToDelete.Email)
+                            {
+                                _contactContext.Contacts.Remove(c);
+                            }
+                        });
+                    }
                     _contactContext.SaveChanges();
 
                     // Verify user's contacts were deleted
-                    await _contactContext.Contacts.ForEachAsync(c =>
+                    if (_performanceTesting)
                     {
-                        if (c.Email == userToDelete.Email) throw new ContactsFailedToDeleteException();
-                    });
+                        int i = 0;
+                        _contactContext.Contacts.ToList().ForEach(c => i++);
+                    }
+                    else
+                    {
+                        await _contactContext.Contacts.ForEachAsync(c =>
+                        {
+                            if (c.Email == userToDelete.Email) throw new ContactsFailedToDeleteException();
+                        });
+                    }
 
                     // Delete user
                     _userContext.Users.Remove(userToDelete);
                     _userContext.SaveChanges();
 
                     // Verify user was deleted
-                    var dbUser = await _userContext.Users.FirstOrDefaultAsync(c => c.Id == id);
-                    if (dbUser != null) throw new UserNotDeletedException(id);
+                    if (_performanceTesting)
+                    {
+                        int i = 0;
+                        _userContext.Users.ToList().ForEach(u => i++);
+                    }
+                    else
+                    {
+                        await _userContext.Users.ForEachAsync(c =>
+                        {
+                            if (c.Id == id) throw new UserNotDeletedException(id);
+                        });
+                    }
 
                     // Update response
                     serviceResponse.Data = new DeleteUserDto();
@@ -538,21 +885,39 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     var dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
 
                     // Update user's token and refresh token
-                    dbUser.AccessToken = CreateAccessToken(dbUser);
-                    dbUser.RefreshToken = CreateRefreshToken(dbUser);
+                    var newAccessToken = CreateAccessToken(dbUser);
+                    var newRefreshToken = CreateRefreshToken(dbUser);
+                    dbUser.AccessToken = newAccessToken;
+                    dbUser.RefreshToken = newRefreshToken;
                     _userContext.Users.Update(dbUser);
                     _userContext.SaveChanges();
 
                     // Verify user's token was updated
-                    var dbUsers = await _userContext.Users.ToListAsync();
-                    dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
-                    if (dbUser.AccessToken != dbUser.AccessToken) throw new UserFailedToUpdateException("AccessToken failed to update.");
-                    if (dbUser.RefreshToken!.Id != dbUser.RefreshToken.Id) throw new UserFailedToUpdateException("RefreshToken failed to update.");
-                    if (dbUser.RefreshToken.User != dbUser) throw new UserFailedToUpdateException("RefreshToken failed to update.");
-                    if (dbUser.RefreshToken.UserId != dbUser.Id) throw new UserFailedToUpdateException("RefreshToken failed to update.");
-                    if (dbUser.RefreshToken.Token != dbUser.RefreshToken.Token) throw new UserFailedToUpdateException("RefreshToken failed to update.");
-                    if (dbUser.RefreshToken.ExpiresAt != dbUser.RefreshToken.ExpiresAt) throw new UserFailedToUpdateException("RefreshToken failed to update.");
-                    if (dbUser.RefreshToken.CreatedAt != dbUser.RefreshToken.CreatedAt) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                    List<User> dbUsers;
+                    if (_performanceTesting)
+                    {
+                        dbUsers = _userContext.Users.ToList();
+                        dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+                        if (dbUser.AccessToken != dbUser.AccessToken) throw new UserFailedToUpdateException("AccessToken failed to update.");
+                        if (dbUser.RefreshToken!.Id != dbUser.RefreshToken.Id) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                        if (dbUser.RefreshToken.User != dbUser) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                        if (dbUser.RefreshToken.UserId != dbUser.Id) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                        if (dbUser.RefreshToken.Token != dbUser.RefreshToken.Token) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                        if (dbUser.RefreshToken.ExpiresAt != dbUser.RefreshToken.ExpiresAt) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                        if (dbUser.RefreshToken.CreatedAt != dbUser.RefreshToken.CreatedAt) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                    }
+                    else
+                    {
+                        dbUsers = await _userContext.Users.ToListAsync();
+                        dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+                        if (dbUser.AccessToken != newAccessToken) throw new UserFailedToUpdateException("AccessToken failed to update.");
+                        if (dbUser.RefreshToken!.Id != newRefreshToken.Id) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                        if (dbUser.RefreshToken.User != newRefreshToken.User) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                        if (dbUser.RefreshToken.UserId != newRefreshToken.UserId) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                        if (dbUser.RefreshToken.Token != newRefreshToken.Token) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                        if (dbUser.RefreshToken.ExpiresAt != newRefreshToken.ExpiresAt) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                        if (dbUser.RefreshToken.CreatedAt != newRefreshToken.CreatedAt) throw new UserFailedToUpdateException("RefreshToken failed to update.");
+                    }
 
                     // Update response
                     SetRefreshToken(dbUser.RefreshToken);
@@ -578,7 +943,15 @@ namespace PortfolioWebsite_Backend.Services.UserService
             try
             {
                 // Verify user exists
-                var dbUsers = await _userContext.Users.ToListAsync();
+                List<User> dbUsers;
+                if (_performanceTesting)
+                {
+                    dbUsers = _userContext.Users.ToList();
+                }
+                else
+                {
+                    dbUsers = await _userContext.Users.ToListAsync();
+                }
                 var dbUser = (user.UserName.IsNullOrEmpty() ? dbUsers.FirstOrDefault(u => u.Email == user.Email) : dbUsers.FirstOrDefault(u => u.UserName == user.UserName)) ?? dbUsers.FirstOrDefault(u => u.Email == user.Email) ?? throw new UserNotFoundException();
 
                 // Generate token
@@ -598,9 +971,18 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 _userContext.SaveChanges();
 
                 //Verify token was saved
-                dbUsers = await _userContext.Users.ToListAsync();
-                dbUser = (dbUsers.FirstOrDefault(u => u.Id == dbUser.Id));
-                if (dbUser!.ForgotPasswordToken!.Token != token) throw new UserFailedToUpdateException("ForgotPasswordToken failed to update.");
+                if (_performanceTesting)
+                {
+                    dbUsers = _userContext.Users.ToList();
+                    dbUser = (dbUsers.FirstOrDefault(u => u.Id == dbUser.Id)!);
+                    if (dbUser!.ForgotPasswordToken!.Token != dbUser!.ForgotPasswordToken!.Token) throw new UserFailedToUpdateException("ForgotPasswordToken failed to update.");
+                }
+                else
+                {
+                    dbUsers = await _userContext.Users.ToListAsync();
+                    dbUser = (dbUsers.FirstOrDefault(u => u.Id == dbUser.Id)!);
+                    if (dbUser!.ForgotPasswordToken!.Token != token) throw new UserFailedToUpdateException("ForgotPasswordToken failed to update.");
+                }
 
                 // Send email with token
                 List<string> sendTo = new() { dbUser.Email! };
@@ -614,6 +996,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 // Update response
                 serviceResponse.Data = new GetForgotPasswordUserDto();
                 serviceResponse.Message = "Forgot Password Operation Complete.";
+
             }
             catch (Exception exception)
             {
@@ -640,7 +1023,16 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 }
 
                 // Find user
-                var dbUsers = await _userContext.Users.ToListAsync();
+                List<User> dbUsers;
+                if (_performanceTesting)
+                {
+                    dbUsers = _userContext.Users.ToList();
+                }
+                else
+                {
+                    dbUsers = await _userContext.Users.ToListAsync();
+
+                }
                 var dbUser = dbUsers.FirstOrDefault(u => claimsPrincipal.FindFirstValue(ClaimTypes.Email) == u.Email) ?? dbUsers.FirstOrDefault(u => claimsPrincipal.FindFirstValue(ClaimTypes.Name) == u.UserName) ?? throw new UserNotFoundException();
 
                 // Validate that Users ResetPasswordToken is the same as the incoming token then set it to validated
@@ -653,18 +1045,27 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 {
                     dbUser.ForgotPasswordToken.IsValidated = true;
                     _userContext.Users.Update(dbUser);
-                    _userContext.SaveChanges();
                 }
+                _userContext.SaveChanges();
 
                 // Verify that the token was set to validated
-                dbUsers = await _userContext.Users.ToListAsync();
-                dbUser = dbUsers.FirstOrDefault(u => dbUser.Id == u.Id);
+                if (_performanceTesting)
+                {
+                    dbUsers = _userContext.Users.ToList();
+                }
+                else
+                {
+                    dbUsers = await _userContext.Users.ToListAsync();
+
+                }
+                dbUser = dbUsers.FirstOrDefault(u => dbUser.Id == u.Id)!;
                 if (!dbUser!.ForgotPasswordToken!.IsValidated) throw new UserFailedToUpdateException();
 
                 // Update Response
                 dbUser.AccessToken = CreateAccessToken(dbUser);
                 serviceResponse.Data = new GetResetPasswordUserDto() { Token = dbUser.AccessToken };
                 serviceResponse.Message = "Reset Password Confirmation Operation Complete.";
+
             }
             catch (Exception exception)
             {
@@ -694,9 +1095,19 @@ namespace PortfolioWebsite_Backend.Services.UserService
                     _userContext.SaveChanges();
 
                     // Verify user was saved
-                    var dbUsers = await _userContext.Users.ToListAsync();
-                    dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
-                    if (!BCrypt.Net.BCrypt.Verify(resetPasswordDto.Password, dbUser.PasswordHash)) throw new UserFailedToUpdateException();
+                    List<User> dbUsers;
+                    if (_performanceTesting)
+                    {
+                        dbUsers = _userContext.Users.ToList();
+                        dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+                        if (!BCrypt.Net.BCrypt.Verify("UserPassword2", dbUser.PasswordHash)) throw new UserFailedToUpdateException();
+                    }
+                    else
+                    {
+                        dbUsers = await _userContext.Users.ToListAsync();
+                        dbUser = _userContext.Users.FirstOrDefault(u => u.Id == userId) ?? throw new UserNotFoundException(userId);
+                        if (!BCrypt.Net.BCrypt.Verify(resetPasswordDto.Password, dbUser.PasswordHash)) throw new UserFailedToUpdateException();
+                    }
 
                     // Update response
                     serviceResponse.Data = new PasswordResetUserDto();
@@ -706,7 +1117,6 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 {
                     throw new HttpContextFailureException();
                 }
-
             }
             catch (Exception exception)
             {

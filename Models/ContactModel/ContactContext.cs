@@ -2,9 +2,11 @@
 {
     public class ContactContext : DbContext
     {
-        public DbSet<Contact> Contacts { get; set; }
+        public virtual DbSet<Contact> Contacts { get; set; }
 
-        protected readonly IConfiguration _configuration;
+        private readonly IConfiguration? _configuration;
+
+        public ContactContext() { }
 
         public ContactContext(IConfiguration configuration)
         {
@@ -13,14 +15,15 @@
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            var connectionString = _configuration["ConnectionStrings:LocalMySqlDb"];
+            var connectionString = _configuration!["ConnectionStrings:LocalMySqlDb"];
             try
             {
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
             }
             catch (Exception exception)
             {
-                throw new DatabaseFailedToConnectException(exception.Message + " " + exception);
+                throw new DatabaseFailedToConnectException($"{exception.Message} {exception}");
             }
         }
 

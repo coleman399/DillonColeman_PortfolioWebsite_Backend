@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PortfolioWebsite_Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Users : Migration
+    public partial class User : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,6 +50,7 @@ namespace PortfolioWebsite_Backend.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     IsValidated = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId1 = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
@@ -62,6 +63,11 @@ namespace PortfolioWebsite_Backend.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ForgotPasswordTokens_Users_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -74,6 +80,7 @@ namespace PortfolioWebsite_Backend.Migrations
                     Token = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId1 = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
@@ -86,13 +93,13 @@ namespace PortfolioWebsite_Backend.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Users_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Id", "AccessToken", "CreatedAt", "Email", "PasswordHash", "Role", "UpdatedAt", "UserName" },
-                values: new object[] { 1, "", new DateTime(2023, 7, 16, 0, 35, 29, 568, DateTimeKind.Local).AddTicks(1145), "coleman399@gmail.com", "$2a$11$iW9m9VnA4bVaBSfhiNZAbe7kGX0LmJ3yyWrCvYZ3dcVE1x8rH/lu.", "SuperUser", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "coleman399" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ForgotPasswordTokens_UserId",
@@ -101,10 +108,20 @@ namespace PortfolioWebsite_Backend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ForgotPasswordTokens_UserId1",
+                table: "ForgotPasswordTokens",
+                column: "UserId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_UserId",
                 table: "RefreshTokens",
                 column: "UserId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_UserId1",
+                table: "RefreshTokens",
+                column: "UserId1");
         }
 
         /// <inheritdoc />

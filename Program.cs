@@ -21,6 +21,7 @@ using Microsoft.OpenApi.Models;
 using Serilog.Formatting.Json;
 using System.Reflection;
 using System.Text;
+using Azure.Identity;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -35,18 +36,25 @@ try
     builder.Configuration.AddEnvironmentVariables().AddUserSecrets(Assembly.GetExecutingAssembly(), true);
 
     // Add services to the container.
-    builder.Services.AddHttpContextAccessor();
     // Add Serilog to the logging pipeline
-    builder.Host.UseSerilog((context, lc) => lc
-        .Enrich.WithCorrelationIdHeader("Correlation-ID")
-            .Enrich.FromLogContext().WriteTo.File(new JsonFormatter(), builder.Configuration["LoggingAddress"]!).WriteTo.Console());
+    builder.Host.UseSerilog((context, lc) =>
+        lc.Enrich.WithCorrelationIdHeader("Correlation-ID")
+          .Enrich.FromLogContext().WriteTo.File(new JsonFormatter(), builder.Configuration["LoggingAddress"]!).WriteTo.Console());
     var connectionString = builder.Configuration["ConnectionStrings:LocalMySqlDb"];
     builder.Services.AddDbContext<UserContext>(options =>
     {
+        //if (builder.Environment.IsEnvironment(Constants.PERFORMANCE_TESTING))
+        //{
+        //    options.UseInMemoryDatabase("PerformanceTestingDB");
+        //}
+        //else
+        //{
         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
     });
     builder.Services.AddDbContext<ContactContext>();
     builder.Services.AddControllers();
+    builder.Services.AddHttpContextAccessor();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(options =>
@@ -62,19 +70,19 @@ try
             Scheme = "bearer",
         });
         options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
         {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
+                new OpenApiSecurityScheme
                 {
-                    Id = "Bearer",
-                    Type = ReferenceType.SecurityScheme,
+                    Reference = new OpenApiReference
+                    {
+                        Id = "Bearer",
+                        Type = ReferenceType.SecurityScheme,
+                    },
                 },
+                Array.Empty<string>()
             },
-            Array.Empty<string>()
-        },
-    });
+        });
     });
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -93,12 +101,12 @@ try
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("EmailConfiguration"));
     builder.Services.AddHealthChecks()
-                    .AddDbContextCheck<UserContext>(name: "UserCheck",
-                                                    tags: new[] { "ServiceCheck" })
-                    .AddDbContextCheck<ContactContext>(name: "ContactCheck",
-                                                       tags: new[] { "ServiceCheck" })
-                    .AddCheck<ApiHealthCheck>(name: "ApiHealthCheck",
-                                              tags: new[] { "SuperUserCheck", "LoggingCheck" });
+                        .AddDbContextCheck<UserContext>(name: "UserCheck",
+                                                        tags: new[] { "ServiceCheck" })
+                        .AddDbContextCheck<ContactContext>(name: "ContactCheck",
+                                                            tags: new[] { "ServiceCheck" })
+                        .AddCheck<ApiHealthCheck>(name: "ApiHealthCheck",
+                                                    tags: new[] { "SuperUserCheck", "LoggingCheck" });
 
     // Healthcheck UI doesn't work with MySql yet <- MySql Storage doesn't like .net 7, getting cannot find method error ???
     //builder.Services.AddHealthChecksUI().AddMySqlStorage(builder.Configuration["ConnectionStrings:LocalMySqlDb"]!);
@@ -149,7 +157,10 @@ try
 }
 catch (Exception exception)
 {
-    Log.Fatal(exception, "Application terminated unexpectedly");
+    if (exception.GetType() != typeof(HostAbortedException))
+    {
+        Log.Fatal(exception, "Application terminated unexpectedly");
+    }
 }
 finally
 {

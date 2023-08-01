@@ -293,6 +293,7 @@ C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\BCrypt.Net-Next.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\BoDi.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\BouncyCastle.Cryptography.dll
+C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Castle.Core.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Cucumber.Messages.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\F23.StringSimilarity.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Fractions.dll
@@ -323,6 +324,7 @@ C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.CodeAnalysis.Razor.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.CodeAnalysis.Scripting.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.CodeAnalysis.Workspaces.dll
+C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.VisualStudio.CodeCoverage.Shim.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.Data.SqlClient.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.Data.Sqlite.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.DiaSymReader.dll
@@ -330,6 +332,7 @@ C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.InMemory.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Relational.Design.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Sqlite.dll
@@ -370,6 +373,7 @@ C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\MimeKit.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Mono.TextTemplating.dll
+C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Moq.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\MySql.Data.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\MySql.EntityFrameworkCore.dll
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\MySqlConnector.dll
@@ -681,3 +685,5 @@ C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\obj\Debug\net7.0\PortfolioWebsite_Backend.pdb
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\obj\Debug\net7.0\PortfolioWebsite_Backend.genruntimeconfig.cache
 C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\obj\Debug\net7.0\ref\PortfolioWebsite_Backend.dll
+C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Azure.Extensions.AspNetCore.Configuration.Secrets.dll
+C:\Users\Pendragon\OneDrive\Documents\Save\Dillon\Programming\Project Explorer\C# Projects\PortfolioWebsite_Backend\bin\Debug\net7.0\Azure.Security.KeyVault.Secrets.dll

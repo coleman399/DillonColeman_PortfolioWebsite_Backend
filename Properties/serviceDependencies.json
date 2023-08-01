@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "apis1": {
+      "type": "apis"
+    },
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:LocalMySqlDb",
+      "dynamicId": null
+    },
+    "secrets1": {
+      "type": "secrets",
+      "connectionId": "VaultUri",
+      "dynamicId": null
+    }
+  }
+}
