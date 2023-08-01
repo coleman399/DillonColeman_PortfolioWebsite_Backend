@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PortfolioWebsite_Backend.Models.UserModel;
 
@@ -17,7 +18,9 @@ namespace PortfolioWebsite_Backend.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.9")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("PortfolioWebsite_Backend.Models.UserModel.User", b =>
                 {
@@ -25,37 +28,52 @@ namespace PortfolioWebsite_Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("AccessToken")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessToken = "",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "coleman399@gmail.com",
+                            PasswordHash = "$2a$11$fVHVNCg8TKo2tfHPm7RypOXnUfAzg3Vfnjoi3vMfyrVuimvfxpxMi",
+                            Role = "SuperUser",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "coleman399"
+                        });
                 });
 
             modelBuilder.Entity("PortfolioWebsite_Backend.Models.UserModel.User", b =>
@@ -66,18 +84,20 @@ namespace PortfolioWebsite_Backend.Migrations
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("int");
 
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
                             b1.Property<DateTime>("CreatedAt")
-                                .HasColumnType("datetime(6)");
+                                .HasColumnType("datetime2");
 
                             b1.Property<DateTime>("ExpiresAt")
-                                .HasColumnType("datetime(6)");
+                                .HasColumnType("datetime2");
 
                             b1.Property<bool>("IsValidated")
-                                .HasColumnType("tinyint(1)");
+                                .HasColumnType("bit");
 
                             b1.Property<string>("Token")
                                 .IsRequired()
-                                .HasColumnType("longtext");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<int>("UserId")
                                 .HasColumnType("int");
@@ -110,15 +130,17 @@ namespace PortfolioWebsite_Backend.Migrations
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("int");
 
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
                             b1.Property<DateTime>("CreatedAt")
-                                .HasColumnType("datetime(6)");
+                                .HasColumnType("datetime2");
 
                             b1.Property<DateTime>("ExpiresAt")
-                                .HasColumnType("datetime(6)");
+                                .HasColumnType("datetime2");
 
                             b1.Property<string>("Token")
                                 .IsRequired()
-                                .HasColumnType("longtext");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<int>("UserId")
                                 .HasColumnType("int");

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "UIRM2VfUpCpKfksrI8ntVmq65rzODPYjI31BhIOpQXc6Bt4vRNq/UsbCLhmu47QgPmjPibhAkKmxr6dzPjCq5A==",
+  "dgSpecHash": "xnFKBk1+KGbI/Q8ilC4t9clEHeJjvEJDcgb12U8X3dKsN3UDFHqiRpzZtGKRnjaRocGIlzqWUgg4OtpU4NC5gQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_UnitTests\\PortfolioWebsite_Backend_UnitTests.csproj",
+  "projectFilePath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend_UnitTests\\PortfolioWebsite_Backend_UnitTests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Pendragon\\.nuget\\packages\\aspnetcore.healthchecks.ui\\6.0.5\\aspnetcore.healthchecks.ui.6.0.5.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\aspnetcore.healthchecks.ui.client\\6.0.5\\aspnetcore.healthchecks.ui.client.6.0.5.nupkg.sha512",
@@ -115,6 +115,7 @@
     "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.9\\microsoft.entityframeworkcore.7.0.9.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\7.0.9\\microsoft.entityframeworkcore.abstractions.7.0.9.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\7.0.9\\microsoft.entityframeworkcore.analyzers.7.0.9.nupkg.sha512",
+    "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore.design\\6.0.7\\microsoft.entityframeworkcore.design.6.0.7.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\7.0.9\\microsoft.entityframeworkcore.inmemory.7.0.9.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\7.0.9\\microsoft.entityframeworkcore.relational.7.0.9.nupkg.sha512",
     "C:\\Users\\Pendragon\\.nuget\\packages\\microsoft.entityframeworkcore.relational.design\\2.0.0-preview1-final\\microsoft.entityframeworkcore.relational.design.2.0.0-preview1-final.nupkg.sha512",
