@@ -15418,11 +15418,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_ATDD\\PortfolioWebsite_Backend_ATDD.csproj",
+      "projectUniqueName": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend_ATDD\\PortfolioWebsite_Backend_ATDD.csproj",
       "projectName": "PortfolioWebsite_Backend_ATDD",
-      "projectPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_ATDD\\PortfolioWebsite_Backend_ATDD.csproj",
+      "projectPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend_ATDD\\PortfolioWebsite_Backend_ATDD.csproj",
       "packagesPath": "C:\\Users\\Pendragon\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_ATDD\\obj\\",
+      "outputPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend_ATDD\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -15443,8 +15443,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend\\PortfolioWebsite_Backend.csproj": {
-              "projectPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend\\PortfolioWebsite_Backend.csproj"
+            "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend\\PortfolioWebsite_Backend.csproj": {
+              "projectPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend\\PortfolioWebsite_Backend.csproj"
             }
           }
         }
