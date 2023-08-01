@@ -90,7 +90,7 @@ namespace PortfolioWebsite_Backend.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AccessToken", "CreatedAt", "Email", "PasswordHash", "Role", "UpdatedAt", "UserName" },
-                values: new object[] { 1, "", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "coleman399@gmail.com", "$2a$11$fVHVNCg8TKo2tfHPm7RypOXnUfAzg3Vfnjoi3vMfyrVuimvfxpxMi", "SuperUser", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "coleman399" });
+                values: new object[] { 1, "", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "coleman399@gmail.com", "$2a$11$bev1froRw6iWdFWN2WhOeuUNCa.OgPsnHL2h0Xf/GgpNUFbtHO6tu", "SuperUser", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "coleman399" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ForgotPasswordTokens_UserId",

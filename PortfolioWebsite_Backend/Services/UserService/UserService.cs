@@ -397,7 +397,7 @@ namespace PortfolioWebsite_Backend.Services.UserService
                 {
                     try
                     {
-                        if (_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Role)!.Equals(Roles.SuperUser.ToString()))
+                        if (!_httpContextAccessor.HttpContext!.User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == Roles.SuperUser.ToString()))
                         {
                             return serviceResponse;
                         }
