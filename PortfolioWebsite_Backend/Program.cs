@@ -42,9 +42,8 @@ try
     var connectionString = builder.Configuration["ConnectionStrings:LocalMySqlDb"];
     builder.Services.AddDbContext<UserContext>(options =>
     {
-        //options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-
-        options.UseSqlServer(builder.Configuration["ConnectionStrings:AzureSqlDb"]);
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+        //options.UseSqlServer(builder.Configuration["ConnectionStrings:AzureSqlDb"]);
     });
     builder.Services.AddDbContext<ContactContext>();
     builder.Services.AddControllers();

@@ -12,7 +12,7 @@ using PortfolioWebsite_Backend.Models.ContactModel;
 namespace PortfolioWebsite_Backend.Migrations.Contact
 {
     [DbContext(typeof(ContactContext))]
-    [Migration("20230801095631_Contact")]
+    [Migration("20230801103513_Contact")]
     partial class Contact
     {
         /// <inheritdoc />

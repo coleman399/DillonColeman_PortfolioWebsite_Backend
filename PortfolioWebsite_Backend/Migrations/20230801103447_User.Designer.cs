@@ -12,7 +12,7 @@ using PortfolioWebsite_Backend.Models.UserModel;
 namespace PortfolioWebsite_Backend.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20230801095552_User")]
+    [Migration("20230801103447_User")]
     partial class User
     {
         /// <inheritdoc />
@@ -72,7 +72,7 @@ namespace PortfolioWebsite_Backend.Migrations
                             AccessToken = "",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "coleman399@gmail.com",
-                            PasswordHash = "$2a$11$fVHVNCg8TKo2tfHPm7RypOXnUfAzg3Vfnjoi3vMfyrVuimvfxpxMi",
+                            PasswordHash = "$2a$11$bev1froRw6iWdFWN2WhOeuUNCa.OgPsnHL2h0Xf/GgpNUFbtHO6tu",
                             Role = "SuperUser",
                             UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "coleman399"

@@ -15343,19 +15343,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-<<<<<<< HEAD:PortfolioWebsite_Backend_ATDDs/obj/project.assets.json
       "projectUniqueName": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend_ATDDs\\PortfolioWebsite_Backend_ATDDs.csproj",
       "projectName": "PortfolioWebsite_Backend_ATDDs",
       "projectPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend_ATDDs\\PortfolioWebsite_Backend_ATDDs.csproj",
       "packagesPath": "C:\\Users\\Pendragon\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend_ATDDs\\obj\\",
-=======
-      "projectUniqueName": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend_ATDD\\PortfolioWebsite_Backend_ATDD.csproj",
-      "projectName": "PortfolioWebsite_Backend_ATDD",
-      "projectPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend_ATDD\\PortfolioWebsite_Backend_ATDD.csproj",
-      "packagesPath": "C:\\Users\\Pendragon\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Pendragon\\OneDrive\\Documents\\Save\\Dillon\\Programming\\Project Explorer\\C# Projects\\PortfolioWebsite_Backend_Repo\\PortfolioWebsite_Backend_ATDD\\obj\\",
->>>>>>> 8fe01394c586d353509eaf812480ca6565c03ea4:PortfolioWebsite_Backend_ATDD/obj/project.assets.json
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
