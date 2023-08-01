@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\PortfolioWebsite_Backend.props" />
-</Project>
