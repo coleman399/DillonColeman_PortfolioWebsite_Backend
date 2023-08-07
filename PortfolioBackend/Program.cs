@@ -14,6 +14,7 @@ global using PortfolioBackend.Services.ContactService;
 global using PortfolioBackend.Services.EmailService;
 global using PortfolioBackend.Services.UserService;
 global using Serilog;
+using Asp.Versioning;
 using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -82,7 +83,7 @@ builder.Services.AddHealthChecks()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "PortfolioWebsiteBackend", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "PortfolioWebsiteBackend", Version = "1.0" });
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: Bearer <token>",
@@ -119,7 +120,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-var test = builder.Configuration["JWTSecurityKey"];
+builder.Services.AddApiVersioning(options =>
+{
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+});
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
 var app = builder.Build();
 
