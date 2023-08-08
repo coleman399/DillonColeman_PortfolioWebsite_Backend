@@ -109,7 +109,7 @@ namespace PortfolioBackend.Services.UserService
                     ForgotPasswordToken = new ForgotPasswordToken()
                     {
                         Id = 3,
-                        Token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFkbWluMkVtYWlsQHRlc3QudGVzdCIsInVuaXF1ZV9uYW1lIjoiVGVzdEFkbWluMiIsIm5iZiI6MTY5MDYyNjEwOCwiZXhwIjoxODQ4NDc4OTA4LCJpYXQiOjE2OTA2MjYxMDh9.tizerlPldeF3hF031FAg_7tXGJdInEUeNmJlJf7dEITgFzfyg190aob53vuban_RIq16AfQ62zzwy_SpvpzfSA",
+                        Token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFkbWluMkVtYWlsQHRlc3QudGVzdCIsInVuaXF1ZV9uYW1lIjoiVGVzdEFkbWluMiIsIm5iZiI6MTY5MTUwNjk2MiwiZXhwIjoxODQ5MzU5NzYyLCJpYXQiOjE2OTE1MDY5NjJ9.-1ZbRpG8oIt3hUftJzSVy6Qd-umRrVwBTZv0V87nGMncmhrq1mPPhMrASqn8sAG1ZkeXVLjkacNXWy15ppcjrw",
                         UserId = 4,
                         IsValidated = true,
                         ExpiresAt = DateTime.Now.AddDays(1),
@@ -163,7 +163,7 @@ namespace PortfolioBackend.Services.UserService
                     ForgotPasswordToken =  new ForgotPasswordToken()
                     {
                         Id = 5,
-                        Token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVzZXIyRW1haWxAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0VXNlcjIiLCJuYmYiOjE2OTA2MjYxODQsImV4cCI6MTg0ODQ3ODk4NCwiaWF0IjoxNjkwNjI2MTg0fQ.LKum_iS0iFTnKcNv2gdG_qPLkLrIZaagKftI4ynd3wLWphPlfMCaVGxsDC4aMwnSd2kKAQN96ZkGE1vIG--_rw",
+                        Token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVzZXIyRW1haWxAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0VXNlcjIiLCJuYmYiOjE2OTE1MDcxMzQsImV4cCI6MTg0OTM1OTkzNCwiaWF0IjoxNjkxNTA3MTM0fQ.ge7paINSEnZ1XgMFsC0-nqlCak4j53UD3Fo9ezBOuZ1W5fqYcK8ZbFB2EdCa3RuOKh_3P_tI2kDrv95CFSsnvg",
                         UserId = 6,
                         IsValidated = true,
                         ExpiresAt = DateTime.Now.AddDays(1),
@@ -189,7 +189,7 @@ namespace PortfolioBackend.Services.UserService
                     ForgotPasswordToken = new ForgotPasswordToken()
                     {
                         Id = 6,
-                        Token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVzZXIzRW1haWxAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0VXNlcjMiLCJuYmYiOjE2OTA2MjYyMjAsImV4cCI6MTg0ODQ3OTAyMCwiaWF0IjoxNjkwNjI2MjIwfQ.a5y_5A5dsblKemD199JqlLBzg7B54oiIu22GMzD0wH9NBSMPxY7wTdX7eQ_OPL0ulGs92QsVnS2CWdeM9gjgCA",
+                        Token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVzZXIzRW1haWxAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0VXNlcjMiLCJuYmYiOjE2OTE1MDcyMzQsImV4cCI6MTg0OTM2MDAzNCwiaWF0IjoxNjkxNTA3MjM0fQ.nMA5rYCxfFqQWQoyCpdPmjcNfROPNoeTmuOgP67v7q7Jesvyi10lDMonzeYbvaa3TgKvBgTygZBwqkjHDurKzw",
                         UserId = 7,
                         IsValidated = true,
                         ExpiresAt = DateTime.Now.AddDays(1),
@@ -289,8 +289,8 @@ namespace PortfolioBackend.Services.UserService
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                //Expires = DateTime.Now.AddHours(5).AddSeconds(1),
-                Expires = DateTime.Now.AddYears(5),
+                Expires = DateTime.Now.AddHours(5).AddSeconds(1),
+                //Expires = DateTime.Now.AddYears(5),
                 SigningCredentials = creds
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -335,6 +335,7 @@ namespace PortfolioBackend.Services.UserService
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
+                //Expires = DateTime.Now.AddYears(5),
                 Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = creds
             };
@@ -963,14 +964,17 @@ namespace PortfolioBackend.Services.UserService
             try
             {
                 // Verify user exists
+                string http;
                 List<User> dbUsers;
                 if (isDevelopment)
                 {
                     dbUsers = _userContext.Users.ToList();
+                    http = "http://";
                 }
                 else
                 {
                     dbUsers = await _userContext.Users.ToListAsync();
+                    http = "https://";
                 }
                 var dbUser = (user.UserName.IsNullOrEmpty() ? dbUsers.FirstOrDefault(u => u.Email == user.Email) : dbUsers.FirstOrDefault(u => u.UserName == user.UserName)) ?? dbUsers.FirstOrDefault(u => u.Email == user.Email) ?? throw new UserNotFoundException();
 
@@ -1011,7 +1015,7 @@ namespace PortfolioBackend.Services.UserService
                 var email = new ForgotPasswordEmailDto()
                 {
                     To = sendTo,
-                    Body = $"Click the link below to reset your password. <br><br>\n http://{baseUrl}/api/Auth/resetPasswordConfirmation?token={token}"
+                    Body = $"Click the link below to reset your password. <br><br>\n {http}{baseUrl}/api/Auth/resetPasswordConfirmation?token={token}"
                 };
                 await _emailService.SendForgetPassword(email);
 
