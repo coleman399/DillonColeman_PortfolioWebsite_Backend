@@ -10,16 +10,6 @@
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5202"
     },
-    "performance testing": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Performance_Testing",
-        "VaultUri": "https://dilloncoleman-keyvault.vault.azure.net/",
-        "AZURE_USERNAME": "coleman399@gmail.com"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5202"
-    },
     "production": {
       "commandName": "Project",
       "launchBrowser": true,
