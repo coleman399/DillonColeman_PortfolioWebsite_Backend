@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://portfoliobackendcontainerregistry.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_49080c5b1e45464d89f5ce65be3c20bd }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_23888ff5a1754d58a7f7e66f8bf8f7a8 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_ed4699d0313e41b6b56ffea9a7152bde }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_2732302e94754a888d6199a045b25ee6 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: portfoliobackendcontainerregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_49080c5b1e45464d89f5ce65be3c20bd }}/portfoliobackend:${{ github.sha }}
+        tags: portfoliobackendcontainerregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_ed4699d0313e41b6b56ffea9a7152bde }}/portfoliobackend:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'PortfolioWebsiteBackend'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_06624b9d322543dd9c065c7887f4960c }}
-        images: 'portfoliobackendcontainerregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_49080c5b1e45464d89f5ce65be3c20bd }}/portfoliobackend:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_ad3ff4e2775e48d8a962f5d3009e7ee3 }}
+        images: 'portfoliobackendcontainerregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_ed4699d0313e41b6b56ffea9a7152bde }}/portfoliobackend:${{ github.sha }}'
