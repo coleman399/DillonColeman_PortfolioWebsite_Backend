@@ -17,7 +17,7 @@
 ## Introduction
 A .NET 7 API for storing contact information and user data, including CRUD operations, login/logout functionality, using a MySQL database, and hosted on Azure.
 
-Check out the Documentation [here](https://github.com/coleman399/DillonColeman_PortfolioWebsite_Backend/tree/main/Documentation)
+Check out the Documentation [here](https://github.com/coleman399/DillonColeman_PortfolioWebsite_Backend/tree/develop/PortfolioBackend/Documentation)
 
 Don't forget to check out the *coming soon* [frontend]() for this project.
 
@@ -152,7 +152,7 @@ A step by step guide that will tell you how to get the production environment up
 ## Usage
 
 <p align="center">
-  <img src="/Documentation/PortfolioBackendSequenceDiagram.png" alt="Portfolio Sequence Diagram"/>
+  <img src="./PortfolioBackend/Documentation/PortfolioBackendSequenceDiagram.png" alt="Portfolio Sequence Diagram"/>
 </p>
 
 ## API Endpoints
