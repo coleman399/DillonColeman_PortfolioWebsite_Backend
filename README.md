@@ -17,7 +17,7 @@
 ## Introduction
 A .NET 7 API for storing contact information and user data, including CRUD operations, login/logout functionality, using a MySQL database, and hosted on Azure.
 
-Check out the Documentation [here](https://github.com/coleman399/DillonColeman_PortfolioWebsite_Backend/tree/develop/PortfolioBackend/Documentation)
+Check out the Documentation [here](https://github.com/coleman399/DillonColeman_PortfolioWebsite_Backend/tree/develop/PortfolioBackend/Documentation) or hit the /Documentation endpoint when running the api locally. Only the Postman collection is available in production [here](http://portfoliowebsitebackend.azurewebsites.net/Documentation/). 
 
 Don't forget to check out the *coming soon* [frontend]() for this project.
 
@@ -156,7 +156,25 @@ A step by step guide that will tell you how to get the production environment up
 </p>
 
 ## API Endpoints
-
+- Login User <- /api/Auth/login
+- Register User <- /api/Auth/register
+- Update User <- /api/Auth/updateUser?id={{userToTestId}}
+- Get User <- /api/Auth/getUsers
+- Refresh Token <- /api/Auth/refreshToken
+- Forgot Password <- /api/Auth/forgotPassword
+- Reset Password Confirmation <- /api/Auth/resetPasswordConfirmation?token={{forgotPasswordToken}}
+- Reset Password <- /api/Auth/resetPassword
+- Delete User <- /api/Auth/deleteUser?id={{userToTestId}}
+- Logout User <- /api/Auth/logout
+- Health Check <- /healthcheck
+- Get Contacts <- /api/Contact/getContacts
+- Add Contact <- /api/Contact/addContact
+- Get Contact by Id <- /api/Contact/getContactById?id={{contactToTestId}}
+- Get Contact by Name <- /api/Contact/getContactsByName?name={{contactName}}
+- Get Contact by Email <- /api/Contact/getContactsByEmail?email={{emailOfContact}}
+- Upate Contact <- /api/Contact/updateContact?id={{contactToTestId}}
+- Delete Contact <- /api/Contact/deleteContact?id={{contactToTestId}}
+- Documentation <- /Documentation
 
 ## Running Tests
 In Visual Studio, Navigate to the test explorer
