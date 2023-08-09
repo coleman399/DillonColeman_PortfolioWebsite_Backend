@@ -152,7 +152,7 @@ A step by step guide that will tell you how to get the production environment up
 ## Usage
 
 <p align="center">
-  <img src="./Documentation/PortfolioBackendSequenceDiagram.png" alt="Portfolio Sequence Diagram"/>
+  <img src="/Documentation/PortfolioBackendSequenceDiagram.png" alt="Portfolio Sequence Diagram"/>
 </p>
 
 ## API Endpoints
@@ -187,8 +187,8 @@ We are using the Asp.Versioning Package as our versioning tool. Branching strate
 
 ## Authors
 Dillon Coleman
-	- Email: coleman399@gmail.com
-	- [LinkedIn](https://www.linkedin.com/in/dillonthedev/)
+	\nEmail: coleman399@gmail.com
+	\n[LinkedIn](https://www.linkedin.com/in/dillonthedev/)
 
 ## License
 This project is licensed under the terms of the MIT license.
