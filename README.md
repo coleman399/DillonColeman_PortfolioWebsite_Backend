@@ -80,18 +80,18 @@ A step by step guide that will tell you how to get the production environment up
 - Now that we can generate an image in Docker, still in a Development Enviroment, we need to set up Azure
 	- There are serveral ways of doing this.
 		1. Right click the project and select Publish
-			2. The Publish UI should appear, enter the following conditions
-				- if you don't know are have no options, Create New
-				1. Target = Azure			
-			    2. Specify target = Azure Container Registry
-			    3. Registry = Create new select it
-			    4. Container build = Docker Desktop
-		2. Navigate to the Azure Portal [Azure Portal](https://portal.azure.com/)
-			2. Create an account if you haven't already
-			3. Using the search bar Find and Create a Container registry
-			4. Using the search bar Find and Create a Key vault
-			5. Using the search bar Find and Create an App Service
-			6. Using the search bar Find and Create an Azure Database for MySQL flexible server
+			- The Publish UI should appear, enter the following conditions
+				- if you don't know are have no options, Select Create New
+					1. Target = Azure			
+					2. Specify target = Azure Container Registry
+					3. Registry = Create new select it
+					4. Container build = Docker Desktop
+		2. Navigate to [Azure Portal](https://portal.azure.com/)
+			- Create an account if you haven't already
+			- Using the search bar Find and Create a Container registry
+			- Using the search bar Find and Create a Key vault
+			- Using the search bar Find and Create an App Service
+			- Using the search bar Find and Create an Azure Database for MySQL flexible server
 	- Back in Visual Studio, 	
 	     right click on Connected Services within the PortfolioBackend project, 
 		     and select Manage Connected Services	
