@@ -190,8 +190,8 @@ We are using the Asp.Versioning Package as our versioning tool. Branching strate
 
 ## Authors
 Dillon Coleman
-Email: coleman399@gmail.com
-[LinkedIn](https://www.linkedin.com/in/dillonthedev/)
+	- Email: coleman399@gmail.com
+	- [LinkedIn](https://www.linkedin.com/in/dillonthedev/)
 
 ## License
 This project is licensed under the terms of the MIT license.
