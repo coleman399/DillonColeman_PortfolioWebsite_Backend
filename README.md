@@ -37,7 +37,7 @@ These instructions will get you a copy of the project up and running on your loc
 		- If you need additional help, see [this article](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.1&tabs=windows#enable-secret-storage)
 - Once you've gain access to your secrets.json, add the following set of secrets using your own information
 	- "AzureMySqlDb" < - > "Server=yourserver;Database=yourdatabase;Uid=yourusername;Pwd=yourpassword;"
-		* you won't need the this information yet, but it will be necessary to run in production *
+		* you won't need the this information yet, but it will be necessary to run in production
 	- "LocalMySqlDb" <- if you want to test application using MySql Workbench before Azure MySql 
     - "EmailSettings:DisplayName" 
 	- "EmailSettings:From"
@@ -92,9 +92,7 @@ A step by step guide that will tell you how to get the production environment up
 			- Using the search bar Find and Create a Key vault
 			- Using the search bar Find and Create an App Service
 			- Using the search bar Find and Create an Azure Database for MySQL flexible server
-	- Back in Visual Studio, 	
-	     right click on Connected Services within the PortfolioBackend project, 
-		     and select Manage Connected Services	
+	- Back in Visual Studio, right click on Connected Services within the PortfolioBackend project, and select Manage Connected Services	
 	- Connect Azure Key Vault
 	- Back in Azure Portal, Update your newly created Key Vault with the same configuration you used for the user secrets.
 		- For email setting, I created one secret name EmailSettings, added a Json object with the settings, then parsed the secret at run time
@@ -149,7 +147,7 @@ A step by step guide that will tell you how to get the production environment up
 	- don't forget to check the container repo and deployment center for clues
 - Once you've successfully deployed the api, Navigate back to Overview and Select Health Check
 - Enable and add /healthcheck to Path
-- Success <- from here on is all you. Explore features and resources as needed. I suggest Application Insights.
+- Success - Congrats! From here on, it is all you. Explore features and add resources as needed. I suggest Application Insights.
 			
 ## Usage
 
