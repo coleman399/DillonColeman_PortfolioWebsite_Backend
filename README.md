@@ -194,4 +194,4 @@ Dillon Coleman <br />
 This project is licensed under the terms of the MIT license.
 
 ## Acknowledgments
-- Thank you for your time. Happy Coding! <3
+Thank you for your time and Happy Coding! <3
