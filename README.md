@@ -177,9 +177,9 @@ A step by step guide that will tell you how to get the production environment up
 - Documentation <- /Documentation
 
 ## Running Tests
-In Visual Studio, Navigate to the test explorer
+1. In Visual Studio, Navigate to the test explorer
 	- if no tests are present, check if Test Discovery is turned on by clicking the gear icon
-Click the green play button 
+2. Click the green play button 
 
 In a future update, we will use test containers to run all tests.
 
