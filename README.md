@@ -30,9 +30,10 @@ These instructions will get you a copy of the project up and running on your loc
     - If you don't have a user secrets file, you will be prompted to create one
     - If not, it is possible that you haven't enabled secret storage for your user account
 		- To do this, open a command prompt and run the following command:
-		```
-		dotnet user-secrets init
-		```
+		
+			```
+			dotnet user-secrets init
+			```
 		- Then, attempt to open the user secrets file again
 		- If you need additional help, see [this article](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.1&tabs=windows#enable-secret-storage)
 - Once you've gain access to your secrets.json, add the following set of secrets using your own information
