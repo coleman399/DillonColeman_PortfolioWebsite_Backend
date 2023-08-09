@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>edb8a080-5bae-4dee-bad5-db21f09e81c4</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <ApplicationInsightsResourceId>/subscriptions/f0522803-5092-4e22-bb89-c9b8d843faa4/resourceGroups/DefaultResourceGroup-EUS/providers/microsoft.insights/components/PortfolioBackend</ApplicationInsightsResourceId>
+    <ApplicationInsightsResourceId>/subscriptions/f0522803-5092-4e22-bb89-c9b8d843faa4/resourceGroups/DefaultResourceGroup-EUS/providers/microsoft.insights/components/PortfolioWebsiteBackend</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>

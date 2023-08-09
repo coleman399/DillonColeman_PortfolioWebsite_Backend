@@ -1,0 +1,822 @@
+{
+	"info": {
+		"_postman_id": "8ac169e8-76b1-4138-a3d6-d41d85c2ebe0",
+		"name": "Portfolio Website Backend Public",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18252230"
+	},
+	"item": [
+		{
+			"name": "Contact Controller",
+			"item": [
+				{
+					"name": "Get Contacts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{loginToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5202/api/Contact/getContacts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Contact",
+								"getContacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Contact",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"const contactToTestId = jsonData.data.id;\r",
+									"pm.collectionVariables.set(\"contactToTestId\", contactToTestId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\" : \"string\",\r\n    \"Email\" : \"string@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5202/api/Contact/addContact",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Contact",
+								"addContact"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contact By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{loginToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5202/api/Contact/getContactById?id={{contactToTestId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Contact",
+								"getContactById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{contactToTestId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contacts By Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{loginToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5202/api/Contact/getContactsByName?name=string",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Contact",
+								"getContactsByName"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "string"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contacts By Email",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{loginToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5202/api/Contact/getContactsByEmail?email=string@gmail.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Contact",
+								"getContactsByEmail"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "string@gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Contact",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{loginToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"string\",\r\n  \"email\": \"User1Email@test.test\",\r\n  \"phone\": \"1234567890\",\r\n  \"message\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5202/api/Contact/updateContact?id={{contactToTestId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Contact",
+								"updateContact"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{contactToTestId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Contact",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{loginToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5202/api/Contact/deleteContact?id={{contactToTestId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Contact",
+								"deleteContact"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{contactToTestId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth Controller",
+			"item": [
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"const loginToken = jsonData.data.token;\r",
+									"pm.collectionVariables.set(\"loginToken\", loginToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"TestSuperUser\",\r\n  \"email\": \"SuperUserEmail@test.test\",\r\n  \"password\": \"SuperUserPassword1\",\r\n  \"passwordConfirmation\": \"SuperUserPassword1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5202/api/Auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"const userToTestId = jsonData.data.id;\r",
+									"pm.collectionVariables.set(\"userToTestId\", userToTestId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"ExampleUser\",\r\n  \"email\": \"ExampleUser@test.test\",\r\n  \"role\" : \"User\",\r\n  \"password\": \"ExampleUser1\",\r\n  \"passwordConfirmation\": \"ExampleUser1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5202/api/Auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{loginToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"TestUser1\",\r\n  \"email\": \"User1Email@test.test\",\r\n  \"password\": \"UserPassword1\",\r\n  \"passwordConfirmation\": \"UserPassword1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5202/api/Auth/updateUser?id={{userToTestId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Auth",
+								"updateUser"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{userToTestId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{loginToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5202/api/Auth/getUsers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Auth",
+								"getUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"const loginToken = jsonData.data.token;\r",
+									"pm.collectionVariables.set(\"loginToken\", loginToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{loginToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5202/api/Auth/refreshToken",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Auth",
+								"refreshToken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"\",\r\n  \"email\": \"SuperUserEmail@test.test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5202/api/Auth/forgotPassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Auth",
+								"forgotPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password Confirmation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);\r",
+									"const resetPasswordConfirmationToken = jsonData.data.token;\r",
+									"pm.collectionVariables.set(\"resetPasswordConfirmationToken\", resetPasswordConfirmationToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5202/api/Auth/resetPasswordConfirmation?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlN1cGVyVXNlckVtYWlsQHRlc3QudGVzdCIsInVuaXF1ZV9uYW1lIjoiVGVzdFN1cGVyVXNlciIsIm5iZiI6MTY5MTUwNzAyOSwiZXhwIjoxODQ5MzU5ODI5LCJpYXQiOjE2OTE1MDcwMjl9.RWqHgG2BtwAIJ2Rb5BX0m7VZPIHb9VbtMs0Z2j-sgwNtj7buqCV9DnEKx6MyywJALEIs0PrQZP216U0vmbKgAQ",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Auth",
+								"resetPasswordConfirmation"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlN1cGVyVXNlckVtYWlsQHRlc3QudGVzdCIsInVuaXF1ZV9uYW1lIjoiVGVzdFN1cGVyVXNlciIsIm5iZiI6MTY5MTUwNzAyOSwiZXhwIjoxODQ5MzU5ODI5LCJpYXQiOjE2OTE1MDcwMjl9.RWqHgG2BtwAIJ2Rb5BX0m7VZPIHb9VbtMs0Z2j-sgwNtj7buqCV9DnEKx6MyywJALEIs0PrQZP216U0vmbKgAQ"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{resetPasswordConfirmationToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"password\": \"SuperUserPassword1\",\r\n  \"passwordConfirmation\": \"SuperUserPassword1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5202/api/Auth/resetPassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Auth",
+								"resetPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{loginToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5202/api/Auth/deleteUser?id={{userToTestId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Auth",
+								"deleteUser"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{userToTestId}}"
+								},
+								{
+									"key": "id",
+									"value": "4",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{loginToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Correlation-ID",
+								"value": "111-111-111-111",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5202/api/Auth/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"api",
+								"Auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Correlation-ID",
+								"value": "2000",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5202/healthcheck",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5202",
+							"path": [
+								"healthcheck"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "loginToken",
+			"value": " "
+		},
+		{
+			"key": "resetPasswordConfirmationToken",
+			"value": " "
+		},
+		{
+			"key": "userToTest",
+			"value": " "
+		},
+		{
+			"key": "userToTestId",
+			"value": " "
+		},
+		{
+			"key": "contactToTestId",
+			"value": " "
+		}
+	]
+}
