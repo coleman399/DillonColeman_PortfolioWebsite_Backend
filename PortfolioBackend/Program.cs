@@ -17,6 +17,7 @@ global using Serilog;
 using Asp.Versioning;
 using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog.Formatting.Json;
@@ -119,7 +120,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTSecurityKey"]!)),
         };
     });
-
+builder.Services.AddDirectoryBrowser();
 builder.Services.AddApiVersioning(options =>
 {
     options.ReportApiVersions = true;
@@ -142,6 +143,16 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseStaticFiles();
+
+app.UseFileServer(new FileServerOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(Directory.GetCurrentDirectory(), "Documentation")),
+    RequestPath = "/Documentation",
+    EnableDirectoryBrowsing = true
+});
 
 app.MapHealthChecks("/healthcheck");
 

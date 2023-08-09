@@ -29,8 +29,7 @@ These instructions will get you a copy of the project up and running on your loc
 - Right click on the PortfolioBackend project and select "Manage User Secrets"
     - If you don't have a user secrets file, you will be prompted to create one
     - If not, it is possible that you haven't enabled secret storage for your user account
-		- To do this, open a command prompt and run the following command:
-		
+		- To do this, open a command prompt and run the following command:		
 			```
 			dotnet user-secrets init
 			```
@@ -158,9 +157,6 @@ A step by step guide that will tell you how to get the production environment up
 
 ## API Endpoints
 
-<p align="center">
-  <a src="./Documentation/LivingDoc-8.7.23.html" alt="Please view the LivingDoc.html found within the Documentation folder"/>
-</p>
 
 ## Running Tests
 In Visual Studio, Navigate to the test explorer
