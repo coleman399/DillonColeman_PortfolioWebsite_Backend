@@ -186,9 +186,9 @@ Please contact me if you have questions or would like to suggest something. I'm 
 We are using the Asp.Versioning Package as our versioning tool. Branching strategy - main, latest version | rollback, the last version. Updates will be incremented in decimal form until reaching next version. Each whole number represents a major update. 
 
 ## Authors
-Dillon Coleman
-	\nEmail: coleman399@gmail.com
-	\n[LinkedIn](https://www.linkedin.com/in/dillonthedev/)
+Dillon Coleman <br />
+	Email: coleman399@gmail.com <br />
+	[LinkedIn](https://www.linkedin.com/in/dillonthedev/)
 
 ## License
 This project is licensed under the terms of the MIT license.
