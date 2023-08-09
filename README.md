@@ -36,19 +36,19 @@ These instructions will get you a copy of the project up and running on your loc
 		- Then, attempt to open the user secrets file again
 		- If you need additional help, see [this article](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.1&tabs=windows#enable-secret-storage)
 - Once you've gain access to your secrets.json, add the following set of secrets using your own information
-	"AzureMySqlDb" < - > "Server=yourserver;Database=yourdatabase;Uid=yourusername;Pwd=yourpassword;"
-		- you won't need the this information yet, but it will be necessary to run in production
-	"LocalMySqlDb" <- if you want to test application using MySql Workbench before Azure MySql 
-    "EmailSettings:DisplayName" 
-	"EmailSettings:From"
-	"EmailSettings:Host"
-	"EmailSettings:Password"
-	"EmailSettings:Port"
-	"EmailSettings:UserName"
-	"JWTSecurityKey"
-	"SuperUserEmail"
-	"SuperUserPassword"
-	"SuperUserUserName"
+	- "AzureMySqlDb" < - > "Server=yourserver;Database=yourdatabase;Uid=yourusername;Pwd=yourpassword;"
+		* you won't need the this information yet, but it will be necessary to run in production *
+	- "LocalMySqlDb" <- if you want to test application using MySql Workbench before Azure MySql 
+    - "EmailSettings:DisplayName" 
+	- "EmailSettings:From"
+	- "EmailSettings:Host"
+	- "EmailSettings:Password"
+	- "EmailSettings:Port"
+	- "EmailSettings:UserName"
+	- "JWTSecurityKey"
+	- "SuperUserEmail"
+	- "SuperUserPassword"
+	- "SuperUserUserName"
 - Right click the PortfolioBackend and select Open in Terminal 
 - Verify that you're using the development launch setting and run the following command: 
 		```
