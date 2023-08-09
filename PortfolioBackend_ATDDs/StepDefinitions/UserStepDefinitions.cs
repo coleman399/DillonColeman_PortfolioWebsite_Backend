@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.IdentityModel.Tokens;
 using NUnit.Framework;
 using PortfolioBackend.Dtos.UserDtos;
+using PortfolioBackend.Helpers;
 using PortfolioBackend.Models.UserModel;
 using System.Net;
 using System.Net.Http.Json;
@@ -677,15 +678,15 @@ namespace PortfolioBackend_ATDDs.StepDefinitions
                 string token;
                 if (_scenarioContext.ContainsKey("SuperUserAccessToken"))
                 {
-                    token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlN1cGVyVXNlckVtYWlsQHRlc3QudGVzdCIsInVuaXF1ZV9uYW1lIjoiVGVzdFN1cGVyVXNlciIsIm5iZiI6MTY5MTM3NzgyMiwiZXhwIjoxNjkxNDY0MjIyLCJpYXQiOjE2OTEzNzc4MjJ9.ec_lCigWCuTGoZsXLkRVV2lBAP8zpGKq4xC6F6CeYIcaz-e5ebh9sLvk54CEgkE2l_KmwzF-90TRKN9N20I5Jw";
+                    token = Constants.TEST_ADMIN_FORGOT_PASSWORD_TOKEN;
                 }
                 else if (_scenarioContext.ContainsKey("AdminAccessToken"))
                 {
-                    token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlRlc3RBZG1pbjFAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0QWRtaW4xIiwibmJmIjoxNjkxMzc3OTM4LCJleHAiOjE2OTE0NjQzMzgsImlhdCI6MTY5MTM3NzkzOH0.FhP8lC9Ager8SFdYBF2xGaAe9Tbf0Z87-fj7QFsmODbboRI78iMRK4dQra8uKcuuI_rLTJjhzxa62AcMGwY9vA";
+                    token = Constants.TEST_ADMIN_FORGOT_PASSWORD_TOKEN;
                 }
                 else
                 {
-                    token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVzZXIxRW1haWxAdGVzdC50ZXN0IiwidW5pcXVlX25hbWUiOiJUZXN0VXNlcjEiLCJuYmYiOjE2OTEzNzgwNDAsImV4cCI6MTY5MTQ2NDQ0MCwiaWF0IjoxNjkxMzc4MDQwfQ.9ZaL8D4SuLGx_-cnfxiPvcUWQ6FhwzIGxM7JREIMmaFwyRsTJ6hpEH8L0jPGQSMLRNTSQwMj25_JdMI7JpXRGA";
+                    token = Constants.TEST_USER_FORGOT_PASSWORD_TOKEN;
                 }
                 var request = new HttpRequestMessage(HttpMethod.Post, $"api/Auth/resetPasswordConfirmation?token={token}");
                 var resetPasswordResponse = _client.SendAsync(request).GetAwaiter().GetResult();
