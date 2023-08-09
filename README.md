@@ -127,6 +127,7 @@ A step by step guide that will tell you how to get the production environment up
 		- recheck permissions
 		- verify your connected to the correct vault
 	- if you are stuggling to connect to database,
+		- check if MySql Workbench is connected to the database, [Workbench Docs](https://dev.mysql.com/doc/workbench/en/)
 		- check connectionstring in vault matches the mysql connectionstring in Azure
 		- recheck permissions
 - Once you have the keyvault and database connected, migrate the database using ef tools
@@ -193,7 +194,7 @@ Dillon Coleman
 [LinkedIn](https://www.linkedin.com/in/dillonthedev/)
 
 ## License
-Mention if the project is licensed.
+This project is licensed under the terms of the MIT license.
 
 ## Acknowledgments
 - Thank you for your time. Happy Coding! <3
