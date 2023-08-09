@@ -24,18 +24,18 @@ Don't forget to check out the *coming soon* [frontend]() for this project.
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-- clone the repo
-- open the solution in Visual Studio
-- right click on the PortfolioBackend project and select "Manage User Secrets"
-    - if you don't have a user secrets file, you will be prompted to create one
-    - if not, it is possible that you haven't enabled secret storage for your user account
-		- to do this, open a command prompt and run the following command:
+- Clone the repo
+- Open the solution in Visual Studio
+- Right click on the PortfolioBackend project and select "Manage User Secrets"
+    - If you don't have a user secrets file, you will be prompted to create one
+    - If not, it is possible that you haven't enabled secret storage for your user account
+		- To do this, open a command prompt and run the following command:
 		```
 		dotnet user-secrets init
 		```
-		- then, attempt to open the user secrets file again
-		- if you need additional help, see [this article](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.1&tabs=windows#enable-secret-storage)
-- once you've gain access to your secrets.json, add the following set of secrets using your own information
+		- Then, attempt to open the user secrets file again
+		- If you need additional help, see [this article](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.1&tabs=windows#enable-secret-storage)
+- Once you've gain access to your secrets.json, add the following set of secrets using your own information
 	"AzureMySqlDb" < - > "Server=yourserver;Database=yourdatabase;Uid=yourusername;Pwd=yourpassword;"
 		- you won't need the this information yet, but it will be necessary to run in production
 	"LocalMySqlDb" <- if you want to test application using MySql Workbench before Azure MySql 
@@ -49,30 +49,30 @@ These instructions will get you a copy of the project up and running on your loc
 	"SuperUserEmail"
 	"SuperUserPassword"
 	"SuperUserUserName"
-- right click the PortfolioBackend and select Open in Terminal 
-- verify that you're using the the development launch setting and run the following command: 
+- Right click the PortfolioBackend and select Open in Terminal 
+- Verify that you're using the development launch setting and run the following command: 
 		```
 		dotnet watch run
 		```
 		OR press the green play button
-	- if any errors accure, try to clean and rebuild solution, verify user secrets, check logs
-	- if you are still having issues, please reach out to me and I will assist best I can
-- once you've confirmed that the api runs, open another PortfolioBackend terminal and run the following command: 
+	- If errors, try to clean and rebuild solution, verify user secrets, check logs
+	- If you are still having issues, please reach out to me and I will assist best I can
+- Once you've confirmed that the api runs, open another PortfolioBackend terminal and run the following command: 
 		```
 		dotnet test
 		```
 
 ### Prerequisites
 - Basics
-	Visual Studio <-> [download](https://visualstudio.microsoft.com/vs/getting-started/)
+	- Visual Studio <-> [download](https://visualstudio.microsoft.com/vs/getting-started/)
 - Things you need to install if you plan on using this api in production 
-	Docker Desktop < - > [download](https://www.docker.com/products/docker-desktop/)
-	MySql Workbench < - > [download](https://dev.mysql.com/downloads/workbench/)
+	- Docker Desktop < - > [download](https://www.docker.com/products/docker-desktop/)
+	- MySql Workbench < - > [download](https://dev.mysql.com/downloads/workbench/)
 
 ### Installation
 A step by step guide that will tell you how to get the production environment up and running.
 
-- right click PortfolioBackend project and hover over Add, then select Docker support, Target OS Linux
+- Right click PortfolioBackend project and hover over Add, then select Docker support, Target OS Linux
 	- this should generate a Dockerfile for you
 - Verify Docker Desktop is up and running, and that you've selected the Docker launch setting
 - Run the application
@@ -82,7 +82,8 @@ A step by step guide that will tell you how to get the production environment up
 		1. Right click the project and select Publish
 			2. The Publish UI should appear, enter the following conditions
 				- if you don't know are have no options, Create New
-				1. Target = Azure						    2. Specify target = Azure Container Registry
+				1. Target = Azure			
+			    2. Specify target = Azure Container Registry
 			    3. Registry = Create new select it
 			    4. Container build = Docker Desktop
 		2. Navigate to the Azure Portal [Azure Portal](https://portal.azure.com/)
@@ -91,7 +92,8 @@ A step by step guide that will tell you how to get the production environment up
 			4. Using the search bar Find and Create a Key vault
 			5. Using the search bar Find and Create an App Service
 			6. Using the search bar Find and Create an Azure Database for MySQL flexible server
-	- Back in Visual Studio, 		     right click on Connected Services within the PortfolioBackend project, 
+	- Back in Visual Studio, 	
+	     right click on Connected Services within the PortfolioBackend project, 
 		     and select Manage Connected Services	
 	- Connect Azure Key Vault
 	- Back in Azure Portal, Update your newly created Key Vault with the same configuration you used for the user secrets.
@@ -119,7 +121,8 @@ A step by step guide that will tell you how to get the production environment up
 			- Container type = Single Container, Select Managed identity, your container registry, the image, tag = latest, and Turn on Continuous deployment 
 		- Save
 - Back in Visual Studio, using the production launch settings, run the api and confirm vault secrets are being read and connection to the database
-	- if you are struggling to connect to vault, 	    - right click Connected Services within PortfolioBackend and select Manage Connected Services
+	- if you are struggling to connect to vault, 
+	    - right click Connected Services within PortfolioBackend and select Manage Connected Services
 		- try reconnecting to the keyvault
 		- recheck permissions
 		- verify your connected to the correct vault
@@ -144,18 +147,19 @@ A step by step guide that will tell you how to get the production environment up
 	- don't forget to check the container repo and deployment center for clues
 - Once you've successfully deployed the api, Navigate back to Overview and Select Health Check
 - Enable and add /healthcheck to Path
-- Success <- from here on is all you. Explore and features and resources as needed. I suggest Application Insights.
+- Success <- from here on is all you. Explore features and resources as needed. I suggest Application Insights.
 			
 ## Usage
 
 <p align="center">
-  <img src="./Documentation/PortfolioBackendSequenceDiagram.png" alt="Sublime's custom image"/>
+  <img src="./Documentation/PortfolioBackendSequenceDiagram.png" alt="Portfolio Sequence Diagram"/>
 </p>
 
-![Sequence_Diagram](./Documentation/PortfolioBackendSequenceDiagram.png)
-
 ## API Endpoints
-[Living Doc](./Documentation/LivingDoc-8.7.23.html)
+
+<p align="center">
+  <a src="./Documentation/LivingDoc-8.7.23.html" alt="Please view the LivingDoc.html found within the Documentation folder"/>
+</p>
 
 ## Running Tests
 In Visual Studio, Navigate to the test explorer
@@ -179,16 +183,17 @@ There currently three branches. Main, Develop, and Rollback. Rollback carries th
 - Azure <- Api host
 
 ## Contributing
-Please contact me if you have questions or would like to suggest something. I'm very open and would love the feed back!
+Please contact me if you have questions or would like to suggest something. I'm very open and would love feedback!
 
 ## Versioning
 We are using the Asp.Versioning Package as our versioning tool. Branching strategy - main, latest version | rollback, the last version. Updates will be incremented in decimal form until reaching next version. Each whole number represents a major update. 
 
 ## Authors
-Dillon Coleman <3
+Dillon Coleman
+[LinkedIn](https://www.linkedin.com/in/dillonthedev/)
 
 ## License
 Mention if the project is licensed.
 
 ## Acknowledgments
-- Thank you for your time. Keep Coding! <3
+- Thank you for your time. Happy Coding! <3
