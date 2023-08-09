@@ -120,6 +120,7 @@ A step by step guide that will tell you how to get the production environment up
 			- Under Settings, Select Container Registry 
 			- Container type = Single Container, Select Managed identity, your container registry, the image, tag = latest, and Turn on Continuous deployment 
 		- Save
+- Navigate to your Azure Database for MySQL flexible server, using the left navigation under settings, select Connect - Click MySQL Workbench and follow the instructions to connect to your database
 - Back in Visual Studio, using the production launch settings, run the api and confirm vault secrets are being read and connection to the database
 	- if you are struggling to connect to vault, 
 	    - right click Connected Services within PortfolioBackend and select Manage Connected Services
@@ -191,6 +192,7 @@ We are using the Asp.Versioning Package as our versioning tool. Branching strate
 
 ## Authors
 Dillon Coleman
+Email: coleman399@gmail.com
 [LinkedIn](https://www.linkedin.com/in/dillonthedev/)
 
 ## License
