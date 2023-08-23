@@ -129,14 +129,20 @@ builder.Services.AddApiVersioning(options =>
 });
 builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
+builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+// normally Swagger would be used in development only, but since this is a portfolio project I added it in production
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
@@ -153,6 +159,9 @@ app.UseFileServer(new FileServerOptions
     RequestPath = "/Documentation",
     EnableDirectoryBrowsing = true
 });
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.MapHealthChecks("/healthcheck");
 

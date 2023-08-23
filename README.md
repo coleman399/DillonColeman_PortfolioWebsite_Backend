@@ -1,215 +1,115 @@
- # PortfolioBackend
-- [Introduction](#introduction)
-- [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Running Tests](#running-tests)
-- [Deployment](#deployment)
-- [Built With](#built-with)
-- [Contributing](#contributing)
-- [Versioning](#versioning)
-- [Authors](#authors)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
+﻿# PortfolioBackend 📁
+A .NET 7 API for managing contact information and user data.
 
-## Introduction
-A .NET 7 API for storing contact information and user data, including CRUD operations, login/logout functionality, using a MySQL database, and hosted on Azure.
+- [**Introduction**](#introduction)
+- [**Getting Started**](#getting-started)
+- [**Usage**](#usage)
+- [**API Endpoints**](#api-endpoints)
+- [**Testing**](#running-tests)
+- [**Deployment**](#deployment)
+- [**Technologies**](#built-with)
+- [**Contributing**](#contributing)
+- [**Versioning**](#versioning)
+- [**Authors**](#authors)
+- [**License**](#license)
+- [**Acknowledgments**](#acknowledgments)
 
-Check out the Documentation [here](https://github.com/coleman399/DillonColeman_PortfolioWebsite_Backend/tree/develop/PortfolioBackend/Documentation) or hit the /Documentation endpoint when running the api locally. Only the Postman collection is available in production [here](http://portfoliowebsitebackend.azurewebsites.net/Documentation/). 
+## Introduction 🌐
+PortfolioBackend is a versatile API designed for storing contact details and user information. Features include CRUD operations, authentication, and hosting support on Azure. Explore our [Documentation](https://github.com/coleman399/DillonColeman_PortfolioWebsite_Backend/tree/develop/PortfolioBackend/Documentation) or access the /Documentation endpoint locally. Note: The Postman collection is only available in production [here](http://portfoliowebsitebackend.azurewebsites.net/Documentation/). 
 
-Don't forget to check out the *coming soon* [frontend]() for this project.
+Swagger UI is available [here](https://portfoliowebsitebackend.azurewebsites.net/swagger/index.html).
 
-## Getting Started
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+Coming Soon: Our frontend for this project. Stay Tuned!
 
-- Clone the repo
-- Open the solution in Visual Studio
-- Right click on the PortfolioBackend project and select "Manage User Secrets"
-    - If you don't have a user secrets file, you will be prompted to create one
-    - If not, it is possible that you haven't enabled secret storage for your user account
-		- To do this, open a command prompt and run the following command:		
-			```
-			dotnet user-secrets init
-			```
-		- Then, attempt to open the user secrets file again
-		- If you need additional help, see [this article](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.1&tabs=windows#enable-secret-storage)
-- Once you've gain access to your secrets.json, add the following set of secrets using your own information
-	- "AzureMySqlDb" < - > "Server=yourserver;Database=yourdatabase;Uid=yourusername;Pwd=yourpassword;"
-		* you won't need the this information yet, but it will be necessary to run in production
-	- "LocalMySqlDb" <- if you want to test application using MySql Workbench before Azure MySql 
-    - "EmailSettings:DisplayName" 
-	- "EmailSettings:From"
-	- "EmailSettings:Host"
-	- "EmailSettings:Password"
-	- "EmailSettings:Port"
-	- "EmailSettings:UserName"
-	- "JWTSecurityKey"
-	- "SuperUserEmail"
-	- "SuperUserPassword"
-	- "SuperUserUserName"
-- Right click the PortfolioBackend and select Open in Terminal 
-- Verify that you're using the development launch setting and run the following command: 
-		```
-		dotnet watch run
-		```
-		OR press the green play button
-	- If errors, try to clean and rebuild solution, verify user secrets, check logs
-	- If you are still having issues, please reach out to me and I will assist best I can
-- Once you've confirmed that the api runs, open another PortfolioBackend terminal and run the following command: 
-		```
-		dotnet test
-		```
+## Getting Started 🚀
+Want to get a local copy up and running? Follow these steps:
 
-### Prerequisites
-- Basics
-	- Visual Studio <-> [download](https://visualstudio.microsoft.com/vs/getting-started/)
-- Things you need to install if you plan on using this api in production 
-	- Docker Desktop < - > [download](https://www.docker.com/products/docker-desktop/)
-	- MySql Workbench < - > [download](https://dev.mysql.com/downloads/workbench/)
+1. **Setup**:
+    - Clone this repository.
+    - Launch the solution in Visual Studio.
+    - Manage your User Secrets for the PortfolioBackend project.
 
-### Installation
-A step by step guide that will tell you how to get the production environment up and running.
+2. **User Secrets Configuration**:
+    - [Details on initializing and configuring secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0&tabs=windows)
 
-- Right click PortfolioBackend project and hover over Add, then select Docker support, Target OS Linux
-	- this should generate a Dockerfile for you
-- Verify Docker Desktop is up and running, and that you've selected the Docker launch setting
-- Run the application
-	- Read an errors and fix according, most likely a configuration issue. If you need help please reach out.
-- Now that we can generate an image in Docker, still in a Development Enviroment, we need to set up Azure
-	- There are serveral ways of doing this.
-		1. Right click the project and select Publish
-			- The Publish UI should appear, enter the following conditions
-				- if you don't know are have no options, Select Create New
-					1. Target = Azure			
-					2. Specify target = Azure Container Registry
-					3. Registry = Create new select it
-					4. Container build = Docker Desktop
-		2. Navigate to [Azure Portal](https://portal.azure.com/)
-			- Create an account if you haven't already
-			- Using the search bar Find and Create a Container registry
-			- Using the search bar Find and Create a Key vault
-			- Using the search bar Find and Create an App Service
-			- Using the search bar Find and Create an Azure Database for MySQL flexible server
-	- Back in Visual Studio, right click on Connected Services within the PortfolioBackend project, and select Manage Connected Services	
-	- Connect Azure Key Vault
-	- Back in Azure Portal, Update your newly created Key Vault with the same configuration you used for the user secrets.
-		- For email setting, I created one secret name EmailSettings, added a Json object with the settings, then parsed the secret at run time
-	- Navigate to your Web Service, using the left navigation under settings, select Identity
-		- Verify that system assigned is on
-	- Navigate to your Key Vault, using the left navigation, select Access control (IAM)
-		- Add Role assignment
-			- Under Role Tab, Select Key Vault Secrets User
-			- Under Members Tab, Select Managed identity, then + Select members, select your subscription, the app service, and the api itself
-		- Review and assign
-	- Navigate to your Azure Database for MySQL flexible server
-		- Add Role assignment
-			- Under Role Tab, Select Reader
-			- Under Members Tab, Select Managed identity, then + Select members, select your subscription, the app service, and the api itself
-		- Review and assign
-	- Navigate to your Container registry
-		- Add Role assignment
-			- Under Role Tab, Select AcrPull
-			- Under Members Tab, Select Managed identity, then + Select members, select your subscription, the app service, and the api itself
-		- Review and assign
-	- Navigate to your Web Service
-		- Using the left navigation panel, Select Deployment Center
-			- Under Settings, Select Container Registry 
-			- Container type = Single Container, Select Managed identity, your container registry, the image, tag = latest, and Turn on Continuous deployment 
-		- Save
-- Navigate to your Azure Database for MySQL flexible server, using the left navigation under settings, select Connect - Click MySQL Workbench and follow the instructions to connect to your database
-- Back in Visual Studio, using the production launch settings, run the api and confirm vault secrets are being read and connection to the database
-	- if you are struggling to connect to vault, 
-	    - right click Connected Services within PortfolioBackend and select Manage Connected Services
-		- try reconnecting to the keyvault
-		- recheck permissions
-		- verify your connected to the correct vault
-	- if you are stuggling to connect to database,
-		- check if MySql Workbench is connected to the database, [Workbench Docs](https://dev.mysql.com/doc/workbench/en/)
-		- check connectionstring in vault matches the mysql connectionstring in Azure
-		- recheck permissions
-- Once you have the keyvault and database connected, migrate the database using ef tools
-	- if you don't have ef installed run the following command: 
-	```
-	dotnet tool install --global dotnet-ef
-	```
-	- Example migration commands - Replace <<CONTEXT>> with UserContact/ContactContext: 
-	```
-	dotnet ef migrations add <<NAME>> --context <<CONTEXT>>
-	dotnet ef database update --context <<CONTEXT>>
-	```
-- Run Tests then Publish
-- After Publishing completes head back to your Azure Portal - Web Service and Select Overview from the left navigation panel 
-- Under the Logs tab, Select View log stream
-- Check everything went well
-	- Try not to get frustrated! almost there
-	- don't forget to check the container repo and deployment center for clues
-- Once you've successfully deployed the api, Navigate back to Overview and Select Health Check
-- Enable and add /healthcheck to Path
-- Success - Congrats! From here on, it is all you. Explore features and add resources as needed. I suggest Application Insights.
-			
-## Usage
+3. **Run**:
+    - Navigate to PortfolioBackend terminal.
+    - Use the `dotnet watch run` command or hit the green play button.
 
+4. **Tests**:
+    - Open another PortfolioBackend terminal.
+    - Run tests using the `dotnet test` command.
+
+5. **Prerequisites**:
+    - [Visual Studio](https://visualstudio.microsoft.com/vs/getting-started/)
+    - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+    - [MySql Workbench](https://dev.mysql.com/downloads/workbench/)
+
+6. **Installation & Production**:
+    - A comprehensive guide for production setup is available [here](https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore?tabs=net70&pivots=development-environment-vs).
+    - A Key Vault guide can be found [here](https://learn.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-7.0#secret-storage-in-the-production-environment-with-azure-key-vault).
+    
+## Usage 🖥
 <p align="center">
-  <img src="./PortfolioBackend/Documentation/PortfolioBackendSequenceDiagram.png" alt="Portfolio Sequence Diagram"/>
+  <img src="./PortfolioBackend/Documentation/PortfolioBackendSequenceDiagram.png" alt="Portfolio Sequence Diagram" width="80%"/>
 </p>
 
-## API Endpoints
-- Login User <- /api/Auth/login
-- Register User <- /api/Auth/register
-- Update User <- /api/Auth/updateUser?id={{userToTestId}}
-- Get User <- /api/Auth/getUsers
-- Refresh Token <- /api/Auth/refreshToken
-- Forgot Password <- /api/Auth/forgotPassword
-- Reset Password Confirmation <- /api/Auth/resetPasswordConfirmation?token={{forgotPasswordToken}}
-- Reset Password <- /api/Auth/resetPassword
-- Delete User <- /api/Auth/deleteUser?id={{userToTestId}}
-- Logout User <- /api/Auth/logout
-- Health Check <- /healthcheck
-- Get Contacts <- /api/Contact/getContacts
-- Add Contact <- /api/Contact/addContact
-- Get Contact by Id <- /api/Contact/getContactById?id={{contactToTestId}}
-- Get Contact by Name <- /api/Contact/getContactsByName?name={{contactName}}
-- Get Contact by Email <- /api/Contact/getContactsByEmail?email={{emailOfContact}}
-- Upate Contact <- /api/Contact/updateContact?id={{contactToTestId}}
-- Delete Contact <- /api/Contact/deleteContact?id={{contactToTestId}}
-- Documentation <- /Documentation
+## API Endpoints 📌
+- **Authentication**:
+    - Login: `/api/Auth/login`
+    - Register: `/api/Auth/register`
+    - Update User: `/api/Auth/updateUser?id={{userToTestId}}`
+    ... [More Endpoints](https://portfoliowebsitebackend.azurewebsites.net/html/LivingDoc-8.7.23.html)
+    
+- **Contact Management**:
+    - Get All: `/api/Contact/getContacts`
+    ... [More Endpoints](https://portfoliowebsitebackend.azurewebsites.net/html/LivingDoc-8.7.23.html)
 
-## Running Tests
-1. In Visual Studio, Navigate to the test explorer
-	- if no tests are present, check if Test Discovery is turned on by clicking the gear icon
-2. Click the green play button 
+## Running Tests 🧪
+- Use Visual Studio's Test Explorer.
+- Check Test Discovery status.
+- Hit the green play button.
 
-In a future update, we will use test containers to run all tests.
+_Future update will introduce test containers._
 
-## Deployment
-Single Container Deployment using Docker and Azure Container Repository.
+## Deployment 🚢
+We use Docker and Azure Container Repository for deployment. Navigate [here](https://learn.microsoft.com/en-us/visualstudio/containers/deploy-app-service?view=vs-2022) for detailed deployment strategies.
 
-There currently three branches. Main, Develop, and Rollback. Rollback carries the last version, main the latest. Should the need to roll back, pull the rollback branch and publish.
+## Built With 🛠
+- **Tokenization**: BCrypt
+- **Email**: MailKit
+- **Logging**: Serilog
+- **Testing**: NUnit/Specflow
+- **Documentation**: Swagger
+- **Deployment**: Docker/Azure Container Registry
+- **Database**: MySql
+- **ORM**: Entity Framework Core
+- **Authentication**: JWT
+- **Versioning**: Asp.Versioning
+- **Hosting**: Azure App Service
+- **Monitoring**: Azure Application Insights
 
-## Built With
-- BCrypt <- Tokens 
-- MailKit <- Email
-- Serilog <- Logging
-- Specflow <- Acceptance Testing
-- NUnit <- Unit Tests
-- Docker <- Deployment Strategy
-- Azure <- Api host
+## Contributing 🤝
+Open to suggestions and feedback. Contact me for queries!
 
-## Contributing
-Please contact me if you have questions or would like to suggest something. I'm very open and would love feedback!
+## Versioning 🏷
+The Asp.Versioning Package is our tool of choice. 
 
-## Versioning
-We are using the Asp.Versioning Package as our versioning tool. Branching strategy - main, latest version | rollback, the last version. Updates will be incremented in decimal form until reaching next version. Each whole number represents a major update. 
+Our Branching strategy:
 
-## Authors
-Dillon Coleman <br />
-	Email: coleman399@gmail.com <br />
-	[LinkedIn](https://www.linkedin.com/in/dillonthedev/)
+Main branch contains latest version. 
+Rollback branch contains the last version.
+Develop branch contains the only branch allowed to be worked on. 
 
-## License
-This project is licensed under the terms of the MIT license.
+Updates will be incremented in decimal form until reaching next complete version. Each whole number represents a major update..
 
-## Acknowledgments
-Thank you for your time and Happy Coding! <3
+## Authors ✍️
+**Dillon Coleman**  
+- 📧: coleman399@gmail.com  
+- 🔗: [LinkedIn](https://www.linkedin.com/in/dillonthedev/)
+
+## License 📜
+This project is under the MIT license.
+
+## Acknowledgments 🙏
+Thank you for exploring PortfolioBackend. Happy coding! 💻
