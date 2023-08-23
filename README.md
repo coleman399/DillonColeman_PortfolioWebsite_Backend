@@ -55,15 +55,7 @@ Want to get a local copy up and running? Follow these steps:
 </p>
 
 ## API Endpoints 📌
-- **Authentication**:
-    - Login: `/api/Auth/login`
-    - Register: `/api/Auth/register`
-    - Update User: `/api/Auth/updateUser?id={{userToTestId}}`
-    ... [More Endpoints](https://portfoliowebsitebackend.azurewebsites.net/html/LivingDoc-8.7.23.html)
-    
-- **Contact Management**:
-    - Get All: `/api/Contact/getContacts`
-    ... [More Endpoints](https://portfoliowebsitebackend.azurewebsites.net/html/LivingDoc-8.7.23.html)
+Swagger UI is available [here](https://portfoliowebsitebackend.azurewebsites.net/swagger/index.html).
 
 ## Running Tests 🧪
 - Use Visual Studio's Test Explorer.
@@ -93,13 +85,13 @@ We use Docker and Azure Container Repository for deployment. Navigate [here](htt
 Open to suggestions and feedback. Contact me for queries!
 
 ## Versioning 🏷
-The Asp.Versioning Package is our tool of choice. 
 
 Our Branching strategy:
 
-Main branch contains latest version. 
-Rollback branch contains the last version.
-Develop branch contains the only branch allowed to be worked on. 
+Main branch contains latest version. <br />
+Rollback branch contains the last version. <br /> 
+Develop branch contains the only branch allowed to be worked on. <br />
+Feature/Bugfix branches are created from Develop and merged back into Develop. <br />
 
 Updates will be incremented in decimal form until reaching next complete version. Each whole number represents a major update..
 
