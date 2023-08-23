@@ -88,9 +88,10 @@ Open to suggestions and feedback. Contact me for queries!
 
 Our Branching strategy:
 
-Main branch contains latest version. \n
-Rollback branch contains the last version. \n 
-Develop branch contains the only branch allowed to be worked on. \n
+Main branch contains latest version. <br />
+Rollback branch contains the last version. <br /> 
+Develop branch contains the only branch allowed to be worked on. <br />
+Feature/Bugfix branches are created from Develop and merged back into Develop. <br />
 
 Updates will be incremented in decimal form until reaching next complete version. Each whole number represents a major update..
 
